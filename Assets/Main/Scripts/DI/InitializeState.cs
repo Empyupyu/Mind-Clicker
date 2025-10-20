@@ -2,12 +2,12 @@
 
 public class InitializeState : IGameState
 {
-    private PlayerData playerData;
+    private PlayerDataRef playerData;
     private readonly SaveLoadService saveLoadService;
     private readonly GameFlowController gameFlowController;
     private const string PLAYER_DATA = "PlayerSaveData";
 
-    public InitializeState(PlayerData playerData, SaveLoadService saveLoadService, GameFlowController gameFlowController)
+    public InitializeState(PlayerDataRef playerData, SaveLoadService saveLoadService, GameFlowController gameFlowController)
     {
         this.playerData = playerData;
         this.saveLoadService = saveLoadService;
@@ -16,7 +16,8 @@ public class InitializeState : IGameState
 
     public async UniTask Enter()
     {
-        playerData = await saveLoadService.Load(PLAYER_DATA);
+        var data = await saveLoadService.Load(PLAYER_DATA);
+        playerData.Set(data);
 
         gameFlowController.LoadingLevel();
     }

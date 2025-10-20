@@ -8,7 +8,7 @@ using Zenject;
 
 public class MindController : IInitializable, IDisposable, ITickable
 {
-    private readonly PlayerData playerData;
+    private readonly PlayerDataRef playerData;
     private readonly MindView mindView;
     private readonly ThoughtSpawner thoughtSpawner;
     private readonly Mind mind;
@@ -20,7 +20,7 @@ public class MindController : IInitializable, IDisposable, ITickable
 
     private bool isLevelUp;
 
-    public MindController(PlayerData playerData, MindView mindView, ThoughtSpawner thoughtSpawner, Mind mind,  MindData mindData, AudioPlayer audioPlayer, UpgradeMaterialAnimation upgradeMaterialAnimation)
+    public MindController(PlayerDataRef playerData, MindView mindView, ThoughtSpawner thoughtSpawner, Mind mind,  MindData mindData, AudioPlayer audioPlayer, UpgradeMaterialAnimation upgradeMaterialAnimation)
     {
         this.playerData = playerData;
         this.mindView = mindView;
@@ -33,7 +33,7 @@ public class MindController : IInitializable, IDisposable, ITickable
 
     public void Initialize()
     {
-        RedrawProgress(playerData.MindPoints / mind.PointForLevelUp);
+        RedrawProgress(playerData.Value.MindPoints / mind.PointForLevelUp);
         RedrawMindLevel();
 
         thoughtSpawner.OnDestroy += StartFarmingMindPoints;
@@ -101,12 +101,12 @@ public class MindController : IInitializable, IDisposable, ITickable
 
     private void RedrawMindPoints()
     {
-        mindView.ProgressText.text = string.Format("{00:0.0}", playerData.MindPoints) + "/" + string.Format("{00:0.0}", mind.PointForLevelUp);
+        mindView.ProgressText.text = string.Format("{00:0.0}", playerData.Value.MindPoints) + "/" + string.Format("{00:0.0}", mind.PointForLevelUp);
     }
 
     private void RedrawMindLevel()
     {
-        mindView.MindLevelText.text = "" + (playerData.MindLevel + 1);
+        mindView.MindLevelText.text = "" + (playerData.Value.MindLevel + 1);
     }
 
     public void Dispose()

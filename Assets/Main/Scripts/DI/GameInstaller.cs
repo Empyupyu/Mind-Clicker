@@ -15,6 +15,7 @@ public class GameInstaller : MonoInstaller
         Container.Bind<DefaultPlayerDataProvider>().AsSingle().WithArguments(playerDefaultSettings);
 
         Container.Bind<PlayerData>().AsSingle();
+        Container.Bind<PlayerDataRef>().AsSingle();
         Container.Bind<GameData>().AsSingle();
         Container.Bind<MindData>().FromScriptableObject(mindData).AsSingle();
         Container.Bind<SoundConfig>().FromScriptableObject(soundConfig).AsSingle();

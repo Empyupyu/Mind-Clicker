@@ -67,6 +67,7 @@ public class LevelInstaller : MonoInstaller
         Container.Bind<IUpgradeEffect>().To<AddDamagePerSecondTiear1Effect>().AsSingle().WithArguments(upgradeConfigs.Find(config => config.Type.ToString().Equals(typeof(AddDamagePerSecondTiear1Effect).Name)));
 
         Container.BindInterfacesAndSelfTo<Upgrade>().AsSingle();
+        Container.BindInterfacesAndSelfTo<UpgradeSaveService>().AsSingle();
         Container.BindInterfacesAndSelfTo<UpgradeController>().AsSingle();
         Container.BindInterfacesAndSelfTo<UpgradeSoundFeedbackService>().AsSingle();
     }

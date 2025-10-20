@@ -14,13 +14,13 @@ public class ThoughtSpawner : IDisposable
     private readonly ThoughtUIView thoughtViewPrefab;
     private readonly List<NegativeThought> negativThoughts;
     private readonly GameData gameData;
-    private readonly PlayerData playerData;
+    private readonly PlayerDataRef playerData;
 
     private ThoughtFactory thoughtFactory;
     private List<ThoughtUIView> viewPool;
     private UniTaskCompletionSource spawnDelaySource;
 
-    public ThoughtSpawner(NegativeThoughtConfig thoughtConfigs, List<SphereArcSpawner> sphereArcSpawners, ThoughtUIView thoughtViewPrefab, GameData gameData, PlayerData playerData)
+    public ThoughtSpawner(NegativeThoughtConfig thoughtConfigs, List<SphereArcSpawner> sphereArcSpawners, ThoughtUIView thoughtViewPrefab, GameData gameData, PlayerDataRef playerData)
     {
         this.thoughtConfigs = thoughtConfigs;
         this.sphereArcSpawners = sphereArcSpawners;
@@ -94,7 +94,7 @@ public class ThoughtSpawner : IDisposable
         float minInterval = 3f;
         float decayRate = 0.045f;
 
-        float interval = minInterval + (baseInterval - minInterval) * Mathf.Exp(-decayRate * (playerData.MindLevel + 1));
+        float interval = minInterval + (baseInterval - minInterval) * Mathf.Exp(-decayRate * (playerData.Value.MindLevel + 1));
 
         float noise = UnityEngine.Random.Range(-0.15f, 0.15f);
         interval *= (1f + noise);
@@ -132,7 +132,7 @@ public class ThoughtSpawner : IDisposable
 
     private NegativeThoughtForm GetRandomForm()
     {
-        var level = thoughtConfigs.NegativeThoughtLevels[Mathf.Clamp(playerData.MindLevel, 0, int.MaxValue)];
+        var level = thoughtConfigs.NegativeThoughtLevels[Mathf.Clamp(playerData.Value.MindLevel, 0, int.MaxValue)];
 
         return level.NegativeThoughtForms[UnityEngine.Random.Range(0, level.NegativeThoughtForms.Count)];
     }

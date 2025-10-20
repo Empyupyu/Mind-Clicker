@@ -10,10 +10,10 @@ public class Upgrade : IInitializable
 
     private readonly MoneyWallet wallet;
     private readonly List<IUpgradeEffect> effects;
-    private readonly PlayerData playerData;
+    private readonly PlayerDataRef playerData;
     private readonly Dictionary<string, UpgradeData> effectsData = new();
 
-    public Upgrade(MoneyWallet wallet, List<IUpgradeEffect> effects, PlayerData playerData)
+    public Upgrade(MoneyWallet wallet, List<IUpgradeEffect> effects, PlayerDataRef playerData)
     {
         this.wallet = wallet;
         this.effects = effects;
@@ -28,9 +28,9 @@ public class Upgrade : IInitializable
 
     private void InitializeUpgrades()
     {
-        if (playerData.Upgrades == null)
+        if (playerData.Value.Upgrades == null)
         {
-            playerData.Upgrades = new List<UpgradeProgress>();
+            playerData.Value.Upgrades = new List<UpgradeProgress>();
         }
 
         foreach (var effect in effects)
@@ -46,11 +46,11 @@ public class Upgrade : IInitializable
 
     private void ApplyActiveUpgrades()
     {
-        foreach (var upgrade in playerData.Upgrades)
+        foreach (var upgrade in playerData.Value.Upgrades)
         {
             UpgradeData upgradeData = effectsData[upgrade.ID];
 
-            if (upgradeData.Level == 0) continue;
+            if (upgradeData.UpgradeProgress.Level == 0) continue;
 
             upgradeData.Effect.Apply(upgrade.Level);
         }
@@ -63,11 +63,11 @@ public class Upgrade : IInitializable
         if (!wallet.HasEnough(upgradeData.Price)) return;
         wallet.Spend(upgradeData.Price);
 
-        upgradeData.SetLevel(upgradeData.Level + 1);
-        upgradeData.SetLevelBonuseEffect(CalculateBonusEffect(upgradeData.Effect, upgradeData.Level + 1));
-        upgradeData.SetNextLevelBonuseEffect(CalculateBonusEffect(upgradeData.Effect, upgradeData.Level + 2));
-        upgradeData.SetPrice(CalculatePrice(upgradeData.Effect, upgradeData.Level + 1));
-        upgradeData.Effect.Apply(upgradeData.Level);
+        upgradeData.UpgradeProgress.Level++;
+        upgradeData.SetLevelBonuseEffect(CalculateBonusEffect(upgradeData.Effect, upgradeData.UpgradeProgress.Level + 1));
+        upgradeData.SetNextLevelBonuseEffect(CalculateBonusEffect(upgradeData.Effect, upgradeData.UpgradeProgress.Level + 2));
+        upgradeData.SetPrice(CalculatePrice(upgradeData.Effect, upgradeData.UpgradeProgress.Level + 1));
+        upgradeData.Effect.Apply(upgradeData.UpgradeProgress.Level);
 
         OnUpgrade?.Invoke(upgradeData);
     }
@@ -79,18 +79,18 @@ public class Upgrade : IInitializable
         return new UpgradeData(upgrade, effect,
             CalculatePrice(effect, upgrade.Level),
             CalculateBonusEffect(effect, upgrade.Level + 1),
-            CalculateBonusEffect(effect, upgrade.Level + 2), upgrade.Level);
+            CalculateBonusEffect(effect, upgrade.Level + 2));
     }
 
     public UpgradeProgress GetUpgrade(string typeName)
     {
-        UpgradeProgress upgradeProgress = playerData.Upgrades.FirstOrDefault(upgrade => upgrade.ID.Equals(typeName));
+        UpgradeProgress upgradeProgress = playerData.Value.Upgrades.FirstOrDefault(upgrade => upgrade.ID.Equals(typeName));
 
         if(upgradeProgress == null)
         {
             upgradeProgress = new UpgradeProgress();
             upgradeProgress.ID = typeName;
-            playerData.Upgrades.Add(upgradeProgress);
+            playerData.Value.Upgrades.Add(upgradeProgress);
         }
 
         return upgradeProgress;

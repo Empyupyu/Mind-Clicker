@@ -8,13 +8,11 @@ public class DealDamage : ITickable
 
     private readonly ThoughtSpawner thoughtSpawner;
     private readonly GameData gameData;
-    private readonly PlayerData playerData;
 
-    public DealDamage(PlayerData playerData, ThoughtSpawner thoughtSpawner, GameData gameData)
+    public DealDamage(ThoughtSpawner thoughtSpawner, GameData gameData)
     {
         this.thoughtSpawner = thoughtSpawner;
         this.gameData = gameData;
-        this.playerData = playerData;
     }
 
     public void Tick()

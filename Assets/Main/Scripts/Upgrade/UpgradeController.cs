@@ -54,7 +54,7 @@ public class UpgradeController : IInitializable, IDisposable
     private void RedrawUpgradeView(UpgradeData upgradeData)
     {
         float price = upgradeData.Price;
-        int level = upgradeData.Level;
+        int level = upgradeData.UpgradeProgress.Level;
 
         UpgradeView view = upgradeViews[upgradeData.Effect.UpgradeConfig.Type.ToString()];
 
@@ -72,7 +72,7 @@ public class UpgradeController : IInitializable, IDisposable
 
         string description;
 
-        if (upgradeData.Level == 0)
+        if (upgradeData.UpgradeProgress.Level == 0)
         {
             description =
                 upgradeConfig.DescriptionPrefix +

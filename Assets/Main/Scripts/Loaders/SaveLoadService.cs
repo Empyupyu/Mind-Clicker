@@ -3,6 +3,7 @@
 public class SaveLoadService
 {
     private readonly IPlayerDataProvider provider;
+    private const string SAVE_KEY = "SavePlayerDataKey";
 
     public SaveLoadService(IPlayerDataProvider provider)
     {
@@ -10,5 +11,5 @@ public class SaveLoadService
     }
 
     public UniTask<PlayerData> Load(string key) => provider.Load(key);
-    public UniTask Save(string key, PlayerData data) => provider.Save(key, data);
+    public UniTask Save(PlayerData data) => provider.Save(SAVE_KEY, data);
 }

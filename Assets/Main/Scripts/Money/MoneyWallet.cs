@@ -5,27 +5,27 @@ public class MoneyWallet
     public event Action<float> OnPut, OnSpend;
     public event Action OnNotEnough;
 
-    private readonly PlayerData playerData;
+    private readonly PlayerDataRef playerData;
 
-    public MoneyWallet(PlayerData playerData)
+    public MoneyWallet(PlayerDataRef playerData)
     {
         this.playerData = playerData;
     }
 
     public bool HasEnough(float price)
     {
-        return playerData.Money >= price;
+        return playerData.Value.Money >= price;
     }
 
     public float GetAmount()
     {
-        return playerData.Money;
+        return playerData.Value.Money;
     }
 
     public void Put(float amount)
     {
-        playerData.Money += amount;
-        OnPut?.Invoke(playerData.Money);
+        playerData.Value.Money += amount;
+        OnPut?.Invoke(playerData.Value.Money);
     }
 
     public void Spend(float amount)
@@ -36,7 +36,7 @@ public class MoneyWallet
             return;
         }
 
-        playerData.Money -= amount;
-        OnSpend?.Invoke(playerData.Money);
+        playerData.Value.Money -= amount;
+        OnSpend?.Invoke(playerData.Value.Money);
     }
 }

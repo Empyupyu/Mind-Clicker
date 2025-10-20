@@ -7,13 +7,13 @@ public class Mind
     public event Action OnLevelReduce;
 
     public float PointForLevelUp { get; private set; }
-    public float ProgressPercent => playerData.MindPoints / PointForLevelUp;
-    private bool ShouldLevelUp => playerData.MindPoints == PointForLevelUp;
+    public float ProgressPercent => playerData.Value.MindPoints / PointForLevelUp;
+    private bool ShouldLevelUp => playerData.Value.MindPoints == PointForLevelUp;
 
-    private readonly PlayerData playerData;
+    private readonly PlayerDataRef playerData;
     private readonly MindData mindData;
 
-    public Mind(PlayerData playerData, MindData mindData)
+    public Mind(PlayerDataRef playerData, MindData mindData)
     {
         this.playerData = playerData;
         this.mindData = mindData;
@@ -24,10 +24,10 @@ public class Mind
 
     public void AddMindPoints(float deltaTime)
     {
-        playerData.MindPoints += mindData.BaseGainRate * deltaTime;
+        playerData.Value.MindPoints += mindData.BaseGainRate * deltaTime;
 
-        if (playerData.MindPoints >= PointForLevelUp)
-            playerData.MindPoints = PointForLevelUp;
+        if (playerData.Value.MindPoints >= PointForLevelUp)
+            playerData.Value.MindPoints = PointForLevelUp;
 
         if (!ShouldLevelUp) return;
 
@@ -36,8 +36,8 @@ public class Mind
 
     public void LevelUp()
     {
-        playerData.MindLevel++;
-        playerData.MindPoints = 0;
+        playerData.Value.MindLevel++;
+        playerData.Value.MindPoints = 0;
         ApplyNextTargetMindPoints();
 
         OnLevelUp?.Invoke();
@@ -45,24 +45,24 @@ public class Mind
 
     public void ReduceLevel()
     {
-        playerData.MindLevel--;
+        playerData.Value.MindLevel--;
         OnLevelReduce?.Invoke();
     }
 
     private void ApplyNextTargetMindPoints()
     {
-        PointForLevelUp = playerData.MindLevel < mindData.MindLevels.Count
-            ? mindData.MindLevels[playerData.MindLevel].MindPointsForLevelUp
-            : mindData.MindLevels[^1].MindPointsForLevelUp * playerData.MindLevel;
+        PointForLevelUp = playerData.Value.MindLevel < mindData.MindLevels.Count
+            ? mindData.MindLevels[playerData.Value.MindLevel].MindPointsForLevelUp
+            : mindData.MindLevels[^1].MindPointsForLevelUp * playerData.Value.MindLevel;
     }
 
     private void InitializeProgress()
     {
-        if (playerData.MindLevelsProgress == null || playerData.MindLevelsProgress.Count == 0)
+        if (playerData.Value.MindLevelsProgress == null || playerData.Value.MindLevelsProgress.Count == 0)
         {
-            playerData.MindLevelsProgress = new List<MindLevel>
+            playerData.Value.MindLevelsProgress = new List<MindLevel>
             {
-                mindData.MindLevels[playerData.MindLevel]
+                mindData.MindLevels[playerData.Value.MindLevel]
             };
         }
     }
