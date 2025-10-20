@@ -68,5 +68,6 @@ public class LevelInstaller : MonoInstaller
 
         Container.BindInterfacesAndSelfTo<Upgrade>().AsSingle();
         Container.BindInterfacesAndSelfTo<UpgradeController>().AsSingle();
+        Container.BindInterfacesAndSelfTo<UpgradeSoundFeedbackService>().AsSingle();
     }
 }

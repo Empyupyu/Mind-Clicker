@@ -9,24 +9,25 @@ public class UpgradeController : IInitializable, IDisposable
 {
     private readonly Upgrade upgrade;
     private readonly UpgradeShopView upgradeShopView;
-    private readonly AudioPlayer audioPlayer;
-    private readonly SoundConfig soundConfig;
 
     private Dictionary<string, UpgradeView> upgradeViews;
 
-    public UpgradeController(Upgrade upgrade, UpgradeShopView upgradeShopView, AudioPlayer audioPlayer, SoundConfig soundConfig)
+    public UpgradeController(Upgrade upgrade, UpgradeShopView upgradeShopView)
     {
         this.upgrade = upgrade;
         this.upgradeShopView = upgradeShopView;
-        this.audioPlayer = audioPlayer;
-        this.soundConfig = soundConfig;
     }
 
     public void Initialize()
     {
-        upgradeViews = new Dictionary<string, UpgradeView>();
         upgrade.OnUpgrade += OnUpgrade;
 
+        CreateUpgradeViews();
+    }
+
+    private void CreateUpgradeViews()
+    {
+        upgradeViews = new Dictionary<string, UpgradeView>();
         var upgrades = upgrade.EffectsData.Values.ToList();
 
         for (int i = 0; i < upgrades.Count; i++)
@@ -34,11 +35,11 @@ public class UpgradeController : IInitializable, IDisposable
             IUpgradeEffect effect = upgrades[i].Effect;
             UpgradeView view = GameObject.Instantiate(upgradeShopView.UpgradeViewPrefab, upgradeShopView.ContentContainer);
             view.GetComponent<RectTransform>().localPosition = new Vector3(0, -i * upgradeShopView.OffsetBetweenUpgradeView.y, 0);
-           
-           view.Buy.onClick.AddListener(() =>
-           {
-               Buy(effect.GetType().Name);           
-           });
+
+            view.Buy.onClick.AddListener(() =>
+            {
+                Buy(effect.GetType().Name);
+            });
 
             upgradeViews.Add(effect.UpgradeConfig.Type.ToString(), view);
             RedrawUpgradeView(upgrades[i]);
@@ -48,20 +49,28 @@ public class UpgradeController : IInitializable, IDisposable
     private void OnUpgrade(UpgradeData data)
     {
         RedrawUpgradeView(data);
-        audioPlayer.PlaySFX(soundConfig.BuyUpgradeSound, soundConfig.BuyUpgradeVolume);
     }
 
     private void RedrawUpgradeView(UpgradeData upgradeData)
     {
-        float currentEffect = upgradeData.CurrentLevelBonusEffect;
-        float nextLevelEffect = upgradeData.NextLevelBonusEffect;
         float price = upgradeData.Price;
         int level = upgradeData.Level;
 
-        UpgradeConfig upgradeConfig = upgradeData.Effect.UpgradeConfig;
-        UpgradeView view = upgradeViews[upgradeConfig.Type.ToString()];
+        UpgradeView view = upgradeViews[upgradeData.Effect.UpgradeConfig.Type.ToString()];
 
-        string description = "";
+        view.Description.text = GetDescription(upgradeData);
+        view.Level.gameObject.SetActive(level > 0);
+        view.Level.text = "Level:" + level;
+        view.Price.text = price.ToString() + "$";
+    }
+
+    private string GetDescription(UpgradeData upgradeData)
+    {
+        float currentEffect = upgradeData.CurrentLevelBonusEffect;
+        float nextLevelEffect = upgradeData.NextLevelBonusEffect;
+        UpgradeConfig upgradeConfig = upgradeData.Effect.UpgradeConfig;
+
+        string description;
 
         if (upgradeData.Level == 0)
         {
@@ -81,13 +90,10 @@ public class UpgradeController : IInitializable, IDisposable
                 upgradeConfig.DescriptionSuffix;
         }
 
-        view.Description.text = description;
-        view.Level.gameObject.SetActive(level > 0);
-        view.Level.text = "Level:" + level;
-        view.Price.text = price.ToString() + "$";
+        return description;
     }
 
-    public void Buy(string upgradeType)
+    private void Buy(string upgradeType)
     {
         upgrade.Buy(upgradeType);
     }
