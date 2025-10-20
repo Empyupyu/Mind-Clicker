@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a47b0a987930175478b210da49492916, type: 3}
+  m_Name: NegativeThoughtConfig
+  m_EditorClassIdentifier: 
+  <NegativeThoughtLevels>k__BackingField:
+  - {fileID: 11400000, guid: 31869703c04bab649ac053e11b91d50f, type: 2}
+  - {fileID: 11400000, guid: ec1a7cca682d3e24ea0ef6120c835389, type: 2}
+  - {fileID: 11400000, guid: 0907757121c35fc43b8d8f1677831fe7, type: 2}
+  - {fileID: 11400000, guid: 6c09c5ec57136ba499f4785fcc6e0aa0, type: 2}
+  - {fileID: 11400000, guid: 82ef33d2b59f9ad48aaba8d59657a7d5, type: 2}
+  - {fileID: 11400000, guid: 5a4d6860adbcc1a4ebf9d28e3e099797, type: 2}
+  - {fileID: 11400000, guid: 9f6f0fbeae0d80348b516b29c0aa8a75, type: 2}
+  - {fileID: 11400000, guid: 05d89daaa2880af47968d0101e60c12f, type: 2}
+  - {fileID: 11400000, guid: 10de29266769de64ab0d82861a243e6c, type: 2}
+  - {fileID: 11400000, guid: d4535cb5874b1db4583991917c234e5e, type: 2}
+  - {fileID: 11400000, guid: f8d1d9d0938c28742aa2ff96a7353bdf, type: 2}
+  <MaxThoughtsInGame>k__BackingField: 5

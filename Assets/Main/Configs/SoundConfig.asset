@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82f9b45dbc8537248bf769df10ffb16c, type: 3}
+  m_Name: SoundConfig
+  m_EditorClassIdentifier: 
+  <ClickSound>k__BackingField: {fileID: 8300000, guid: 890bf25cf13e4f0449a54d52ba321d55, type: 3}
+  <ClickVolume>k__BackingField: 1
+  <BuyUpgradeSound>k__BackingField: {fileID: 8300000, guid: a4e413544427eff4ba4f05b16dd6c1a4, type: 3}
+  <BuyUpgradeVolume>k__BackingField: 1
+  <ThoughtDestroySound>k__BackingField: {fileID: 8300000, guid: 6d40e46a419162a488e7cfd1455e83c7, type: 3}
+  <ThoughtDestroyVolume>k__BackingField: 1

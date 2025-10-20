@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2896ad09bd8b1974c9fd634873aea9c7, type: 3}
+  m_Name: NegativeThoughtLevel 2
+  m_EditorClassIdentifier: 
+  <NegativeThoughtForms>k__BackingField:
+  - {fileID: 11400000, guid: a23f79323c1e307409016a6986a1eedf, type: 2}
+  - {fileID: 11400000, guid: a882f75554c0a924e8b46d486d02d4d9, type: 2}
+  - {fileID: 11400000, guid: d7ce814a3b8f7324e9dea77c098d5862, type: 2}
+  - {fileID: 11400000, guid: 777a051c040fceb4fb783752c758b35b, type: 2}
