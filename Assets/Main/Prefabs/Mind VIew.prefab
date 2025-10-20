@@ -268,6 +268,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <ProgressBar>k__BackingField: {fileID: 914918176532420244}
   <ProgressText>k__BackingField: {fileID: 4743963043180798133}
+  <BossTimerText>k__BackingField: {fileID: 0}
   <MindLevelText>k__BackingField: {fileID: 3164747534591104309}
 --- !u!1 &5542078947555265309
 GameObject:
@@ -678,7 +679,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.5, g: 0.5, b: 0.5, a: 0.3882353}
+  m_Color: {r: 0.22352941, g: 0.5529412, b: 1, a: 0.6117647}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

@@ -41,6 +41,15 @@ public class LevelInstaller : MonoInstaller
         Container.BindInterfacesAndSelfTo<DamageFeedbackService>().AsSingle();
         Container.BindInterfacesAndSelfTo<MindController>().AsSingle();
         Container.Bind<Timer>().AsSingle();
+
+        BindWallet();
+    }
+
+    private void BindWallet()
+    {
+        Container.Bind<MoneyWallet>().AsSingle();
+        Container.BindInterfacesAndSelfTo<MoneyController>().AsSingle();
+        Container.BindInterfacesAndSelfTo<ThoughtRewardHandler>().AsSingle();
     }
 
     private void BindThoughtFactory()
@@ -57,6 +66,7 @@ public class LevelInstaller : MonoInstaller
 
         Container.Bind<IUpgradeEffect>().To<AddDamagePerSecondTiear1Effect>().AsSingle().WithArguments(upgradeConfigs.Find(config => config.Type.ToString().Equals(typeof(AddDamagePerSecondTiear1Effect).Name)));
 
+        Container.BindInterfacesAndSelfTo<Upgrade>().AsSingle();
         Container.BindInterfacesAndSelfTo<UpgradeController>().AsSingle();
     }
 }

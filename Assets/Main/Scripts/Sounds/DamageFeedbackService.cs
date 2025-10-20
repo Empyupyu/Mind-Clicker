@@ -1,6 +1,7 @@
-﻿using Zenject;
+﻿using System;
+using Zenject;
 
-public class DamageFeedbackService : IInitializable
+public class DamageFeedbackService : IInitializable, IDisposable
 {
     private readonly DealDamage dealDamage;
     private readonly ThoughtSpawner thoughtSpawner;
@@ -17,14 +18,23 @@ public class DamageFeedbackService : IInitializable
 
     public void Initialize()
     {
-        dealDamage.OnClickDamage += () =>
-        {
-            audioPlayer.PlaySFX(soundConfig.ClickSound, soundConfig.ClickVolume);
-        };
+        dealDamage.OnClickDamage += PlayClickEffect;
+        thoughtSpawner.OnDestroy += PlayDestroyEffect;
+    }
 
-        thoughtSpawner.OnDestroy += () =>
-        {
-            audioPlayer.PlaySFX(soundConfig.ThoughtDestroySound, soundConfig.ThoughtDestroyVolume);
-        };
+    private void PlayDestroyEffect(NegativeThought negativeThought)
+    {
+        audioPlayer.PlaySFX(soundConfig.ThoughtDestroySound, soundConfig.ThoughtDestroyVolume);
+    }
+
+    private void PlayClickEffect()
+    {
+        audioPlayer.PlaySFX(soundConfig.ClickSound, soundConfig.ClickVolume);
+    }
+
+    public void Dispose()
+    {
+        dealDamage.OnClickDamage -= PlayClickEffect;
+        thoughtSpawner.OnDestroy -= PlayDestroyEffect;
     }
 }

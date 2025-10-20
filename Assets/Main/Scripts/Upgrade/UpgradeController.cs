@@ -1,26 +1,23 @@
 using Main.Scripts.Views;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Zenject;
 
-public class UpgradeController : IInitializable
+public class UpgradeController : IInitializable, IDisposable
 {
+    private readonly Upgrade upgrade;
     private readonly UpgradeShopView upgradeShopView;
-    private readonly List<IUpgradeEffect> effects;
-    private readonly PlayerData playerData;
     private readonly AudioPlayer audioPlayer;
     private readonly SoundConfig soundConfig;
-    private readonly List<UpgradeProgress> savedProgress;
 
-    private readonly Dictionary<string, IUpgradeEffect> effectMap = new();
     private Dictionary<string, UpgradeView> upgradeViews;
 
-    public UpgradeController(UpgradeShopView upgradeShopView, List<IUpgradeEffect> effects, PlayerData playerData, AudioPlayer audioPlayer, SoundConfig soundConfig)
+    public UpgradeController(Upgrade upgrade, UpgradeShopView upgradeShopView, AudioPlayer audioPlayer, SoundConfig soundConfig)
     {
+        this.upgrade = upgrade;
         this.upgradeShopView = upgradeShopView;
-        this.effects = effects;
-        this.playerData = playerData;
         this.audioPlayer = audioPlayer;
         this.soundConfig = soundConfig;
     }
@@ -28,106 +25,79 @@ public class UpgradeController : IInitializable
     public void Initialize()
     {
         upgradeViews = new Dictionary<string, UpgradeView>();
+        upgrade.OnUpgrade += OnUpgrade;
 
-        InitializeUpgrades();
-        ApplyActiveUpgrades();
+        var upgrades = upgrade.EffectsData.Values.ToList();
 
-        for (int i = 0; i < effects.Count; i++)
+        for (int i = 0; i < upgrades.Count; i++)
         {
-            IUpgradeEffect effect = effects[i];
-            var view = GameObject.Instantiate(upgradeShopView.UpgradeViewPrefab, upgradeShopView.ContentContainer);
+            IUpgradeEffect effect = upgrades[i].Effect;
+            UpgradeView view = GameObject.Instantiate(upgradeShopView.UpgradeViewPrefab, upgradeShopView.ContentContainer);
             view.GetComponent<RectTransform>().localPosition = new Vector3(0, -i * upgradeShopView.OffsetBetweenUpgradeView.y, 0);
            
            view.Buy.onClick.AddListener(() =>
            {
-               Buy(effect.GetType().Name);
-               audioPlayer.PlaySFX(soundConfig.BuyUpgradeSound, soundConfig.BuyUpgradeVolume);
+               Buy(effect.GetType().Name);           
            });
 
-            UpgradeProgress upgradeProgress = GetUpgrade(effect.UpgradeConfig.Type.ToString());
-            int upgradeLevel = upgradeProgress != null ? upgradeProgress.Level : 0;
-
-            RedrawUpgradeView(effect, view, upgradeLevel);
-
             upgradeViews.Add(effect.UpgradeConfig.Type.ToString(), view);
+            RedrawUpgradeView(upgrades[i]);
         }
     }
 
-    private void RedrawUpgradeView(IUpgradeEffect effect, UpgradeView view, int upgradeLevel)
+    private void OnUpgrade(UpgradeData data)
     {
-        float currentEffect = effect.UpgradeConfig.BaseEffect + effect.UpgradeConfig.EffectMultiplier * (upgradeLevel + 1);
+        RedrawUpgradeView(data);
+        audioPlayer.PlaySFX(soundConfig.BuyUpgradeSound, soundConfig.BuyUpgradeVolume);
+    }
+
+    private void RedrawUpgradeView(UpgradeData upgradeData)
+    {
+        float currentEffect = upgradeData.CurrentLevelBonusEffect;
+        float nextLevelEffect = upgradeData.NextLevelBonusEffect;
+        float price = upgradeData.Price;
+        int level = upgradeData.Level;
+
+        UpgradeConfig upgradeConfig = upgradeData.Effect.UpgradeConfig;
+        UpgradeView view = upgradeViews[upgradeConfig.Type.ToString()];
 
         string description = "";
 
-        if (upgradeLevel == 0)
+        if (upgradeData.Level == 0)
         {
             description =
-                effect.UpgradeConfig.DescriptionPrefix +
+                upgradeConfig.DescriptionPrefix +
                 $" {currentEffect:0.00} " +
-                effect.UpgradeConfig.DescriptionSuffix;
+                upgradeConfig.DescriptionSuffix;
         }
         else
         {
-            float nextEffect = effect.UpgradeConfig.BaseEffect + effect.UpgradeConfig.EffectMultiplier * (upgradeLevel + 2);
+            float nextEffect = nextLevelEffect;
 
             description =
-                effect.UpgradeConfig.DescriptionPrefix +
+                upgradeConfig.DescriptionPrefix +
                 $" <b>{currentEffect:0.00}</b>" +
                 $" <b><color=green>(+{nextEffect:0.00})</color></b> " +
-                effect.UpgradeConfig.DescriptionSuffix;
+                upgradeConfig.DescriptionSuffix;
         }
 
         view.Description.text = description;
-        view.Level.gameObject.SetActive(upgradeLevel > 0);
-        view.Level.text = "Level:" + upgradeLevel;
-        view.Price.text = (effect.UpgradeConfig.BasePrice + (upgradeLevel * effect.UpgradeConfig.PriceMultiplier)).ToString() + "$";
+        view.Level.gameObject.SetActive(level > 0);
+        view.Level.text = "Level:" + level;
+        view.Price.text = price.ToString() + "$";
     }
 
-    private void InitializeUpgrades()
+    public void Buy(string upgradeType)
     {
-        foreach (var effect in effects)
-        {
-            string typeName = effect.GetType().Name;
-            effectMap[typeName] = effect;
-        }
+        upgrade.Buy(upgradeType);
     }
 
-    private void ApplyActiveUpgrades()
+    public void Dispose()
     {
-        if(playerData.Upgrades == null)
+        foreach (var view in upgradeViews.Values)
         {
-            playerData.Upgrades = new List<UpgradeProgress>();
+            view.Buy.onClick.RemoveAllListeners();
         }
-
-        foreach (var upgrade in playerData.Upgrades)
-        {
-            IUpgradeEffect effect = effectMap[upgrade.ID];
-            effect.Apply(upgrade.Level);
-        }
-    }
-
-    public void Buy(string upgradName)
-    {
-        string typeName = upgradName;
-
-        var upgrade = GetUpgrade(typeName);
-
-        if (upgrade == null)
-        {
-            upgrade = new UpgradeProgress { ID = typeName, Level = 0 };
-            playerData.Upgrades.Add(upgrade);
-        }
-
-        upgrade.Level++;
-
-        effectMap[typeName].Apply(upgrade.Level);
-
-        RedrawUpgradeView(effectMap[typeName], upgradeViews[typeName], upgrade.Level);
-    }
-
-    private UpgradeProgress GetUpgrade(string typeName)
-    {
-        return playerData.Upgrades.FirstOrDefault(upgrade => upgrade.ID.Equals(typeName));
     }
 }
 

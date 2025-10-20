@@ -9,15 +9,17 @@ public class NegativeThought
     public string Name { get; }
     public float MaxHealth { get; }
     public float CurrentHealth { get; private set; }
+    public float Money { get; }
 
     public bool IsActive;
 
-    public NegativeThought(string id, string name, float health)
+    public NegativeThought(string id, string name, float health, float money)
     {
         Id = id;
         Name = name;
         MaxHealth = health;
         CurrentHealth = health;
+        Money = money;
     }
 
     public void ApplyDamage(float damage)

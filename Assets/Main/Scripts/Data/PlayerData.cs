@@ -10,6 +10,8 @@ public class PlayerData
 
     public int CurrentLevel;
 
+    public float Money;
+
     public List<UpgradeProgress> Upgrades;
     public List<MindLevel> MindLevelsProgress;
 }

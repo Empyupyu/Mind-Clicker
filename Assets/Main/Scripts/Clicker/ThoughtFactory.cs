@@ -24,7 +24,7 @@ public class ThoughtFactory : IInitializable
 
     public NegativeThought GetThought(NegativeThoughtForm config)
     {
-        NegativeThought thought = new NegativeThought(config.Id, config.Name, config.Health);
+        NegativeThought thought = new NegativeThought(config.Id, config.Name, config.Health, config.Money);
         thoughtsDic.TryGetValue(config.ThoughtType, out IThoughtLogic thoughtLogic);
 
         if(thoughtLogic == null) { return thought; }

@@ -7,7 +7,7 @@ using UnityEngine;
 public class ThoughtSpawner : IDisposable
 {
     public event Action OnSpawn;
-    public event Action OnDestroy;
+    public event Action<NegativeThought> OnDestroy;
 
     private readonly NegativeThoughtConfig thoughtConfigs;
     private readonly List<SphereArcSpawner> sphereArcSpawners;
@@ -42,7 +42,6 @@ public class ThoughtSpawner : IDisposable
 
         SpawnThought();
     }
-
 
     public NegativeThought GetTargetThought()
     {
@@ -104,6 +103,7 @@ public class ThoughtSpawner : IDisposable
         var controlTask = spawnDelaySource.Task;
 
         await UniTask.WhenAny(delayTask, controlTask);
+        await UniTask.WaitUntil(() => negativThoughts.Count < thoughtConfigs.MaxThoughtsInGame);
 
         if (controlTask.Status == UniTaskStatus.Canceled)
             return;
@@ -151,7 +151,7 @@ public class ThoughtSpawner : IDisposable
 
         GameObject.Destroy(thoughtView.gameObject);
 
-        OnDestroy.Invoke();
+        OnDestroy.Invoke(thought);
     }
 
     private void Unsubscribe()

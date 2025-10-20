@@ -18,6 +18,8 @@ public class MindController : IInitializable, IDisposable, ITickable
 
     private CancellationTokenSource mindPointCts;
 
+    private bool isLevelUp;
+
     public MindController(PlayerData playerData, MindView mindView, ThoughtSpawner thoughtSpawner, Mind mind,  MindData mindData, AudioPlayer audioPlayer, UpgradeMaterialAnimation upgradeMaterialAnimation)
     {
         this.playerData = playerData;
@@ -39,7 +41,7 @@ public class MindController : IInitializable, IDisposable, ITickable
         mind.OnLevelReduce += RedrawMindLevel;
     }
 
-    private void StartFarmingMindPoints()
+    private void StartFarmingMindPoints(NegativeThought negativeThought = null)
     {
         mindPointCts = new CancellationTokenSource();
         FarmingMindPoints(mindPointCts.Token).Forget();
@@ -47,7 +49,7 @@ public class MindController : IInitializable, IDisposable, ITickable
 
     private async UniTask FarmingMindPoints(CancellationToken token)
     {
-        while (!HasBadThoughts())
+        while (!HasBadThoughts() && !isLevelUp)
         {
             if (token.IsCancellationRequested) return;
 
@@ -71,6 +73,7 @@ public class MindController : IInitializable, IDisposable, ITickable
 
     private async UniTask LevelUp()
     {
+        isLevelUp = true;
         mindPointCts?.Cancel();
 
         await mindView.ProgressBar.DOFillAmount(1, .3f).AsyncWaitForCompletion().AsUniTask();
@@ -86,6 +89,8 @@ public class MindController : IInitializable, IDisposable, ITickable
         RedrawMindPoints();
         RedrawMindLevel();
         thoughtSpawner.SpawnThought();
+
+        isLevelUp = false;
     }
 
     private void RedrawProgress(float progress)
@@ -107,6 +112,8 @@ public class MindController : IInitializable, IDisposable, ITickable
     public void Dispose()
     {
         thoughtSpawner.OnDestroy -= StartFarmingMindPoints;
+        mind.OnLevelUp -= LevelUpTransition;
+        mind.OnLevelReduce -= RedrawMindLevel;
     }
 
     public void Tick()
