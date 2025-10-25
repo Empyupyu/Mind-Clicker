@@ -2,7 +2,7 @@
 using UnityEngine;
 using Zenject;
 
-public class ConfigInstaller : MonoInstaller
+public class LevelConfigInstaller : MonoInstaller
 {
     [SerializeField] private List<UpgradeConfig> upgradeConfigs;
     [SerializeField] private NegativeThoughtConfig thoughtConfigs;
