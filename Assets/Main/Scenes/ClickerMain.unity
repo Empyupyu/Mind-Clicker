@@ -1109,6 +1109,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Thought Normal Head
       objectReference: {fileID: 0}
+    - target: {fileID: 5574802840941641288, guid: 0bd3d8bf591a456479bcb6577984b0aa, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:

@@ -17,7 +17,7 @@ public class InitializeState : IGameState
     public async UniTask Enter()
     {
         var data = await saveLoadService.Load(PLAYER_DATA);
-        playerData.Set(data);
+        playerData.Set(new PlayerData());
 
         gameFlowController.LoadingLevel();
     }

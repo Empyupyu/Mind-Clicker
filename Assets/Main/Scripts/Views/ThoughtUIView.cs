@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class ThoughtUIView : MonoBehaviour
@@ -8,6 +9,7 @@ public class ThoughtUIView : MonoBehaviour
     [field : SerializeField] public Image Icon {  get; private set; }
 
     [SerializeField] private Image healthBar;
+    [SerializeField] private TextMeshProUGUI healthText;
 
     public void Initialize(NegativeThought thought, SphereArcSpawner sphereArcSpawner)
     {
@@ -16,8 +18,9 @@ public class ThoughtUIView : MonoBehaviour
         healthBar.fillAmount = 1;
     }
 
-    public void Redraw(float value)
+    public void Redraw(NegativeThought thought)
     {
-        healthBar.fillAmount = value;
+        healthBar.fillAmount = thought.CurrentHealth / thought.MaxHealth;
+        healthText.text = thought.CurrentHealth.ToAbbreviatedString();
     }
 }

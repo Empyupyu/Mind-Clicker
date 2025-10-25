@@ -1,16 +1,15 @@
 using Main.Scripts.Views;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Zenject;
 
-public class UpgradeController : IInitializable, IDisposable
+public class UpgradeController : IInitializable
 {
     private readonly Upgrade upgrade;
     private readonly UpgradeShopView upgradeShopView;
-
-    private Dictionary<string, UpgradeView> upgradeViews;
+    private Dictionary<string, UpgradeStateView> upgradeViews;
+    private const int InitialUnlockedCount = 1;
 
     public UpgradeController(Upgrade upgrade, UpgradeShopView upgradeShopView)
     {
@@ -27,41 +26,75 @@ public class UpgradeController : IInitializable, IDisposable
 
     private void CreateUpgradeViews()
     {
-        upgradeViews = new Dictionary<string, UpgradeView>();
+        upgradeViews = new Dictionary<string, UpgradeStateView>();
         var upgrades = upgrade.EffectsData.Values.ToList();
 
         for (int i = 0; i < upgrades.Count; i++)
         {
-            IUpgradeEffect effect = upgrades[i].Effect;
-            UpgradeView view = GameObject.Instantiate(upgradeShopView.UpgradeViewPrefab, upgradeShopView.ContentContainer);
+            var upgradeData = upgrades[i];
+            var effect = upgradeData.Effect;
+
+            var view = GameObject.Instantiate(upgradeShopView.UpgradeStateView, upgradeShopView.ContentContainer);
             view.GetComponent<RectTransform>().localPosition = new Vector3(0, -i * upgradeShopView.OffsetBetweenUpgradeView.y, 0);
 
-            view.Buy.onClick.AddListener(() =>
+            bool isUnlocked = i < InitialUnlockedCount;
+            var state = isUnlocked ? UpgradeViewState.Unlocked : UpgradeViewState.Locked;
+
+            view.SetState(state);
+
+            if (isUnlocked)
             {
-                Buy(effect.GetType().Name);
-            });
+                view.SubscribeToBuy(() => Buy(effect.GetType().Name));
+            }
 
             upgradeViews.Add(effect.UpgradeConfig.Type.ToString(), view);
-            RedrawUpgradeView(upgrades[i]);
+            RedrawUpgradeView(upgradeData);
         }
+
+        // ComingSoon
+        var comingSoonView = GameObject.Instantiate(upgradeShopView.UpgradeStateView, upgradeShopView.ContentContainer);
+        comingSoonView.GetComponent<RectTransform>().localPosition = new Vector3(0, -upgrades.Count * upgradeShopView.OffsetBetweenUpgradeView.y, 0);
+        comingSoonView.SetState(UpgradeViewState.ComingSoon);
     }
 
     private void OnUpgrade(UpgradeData data)
     {
         RedrawUpgradeView(data);
+
+        var upgrades = upgrade.EffectsData.Values.ToList();
+        int index = upgrades.FindIndex(u => u.Effect.UpgradeConfig.Type == data.Effect.UpgradeConfig.Type);
+
+        int nextIndex = index + 1;
+        if (nextIndex < upgrades.Count)
+        {
+            var nextData = upgrades[nextIndex];
+            var nextView = upgradeViews[nextData.Effect.UpgradeConfig.Type.ToString()];
+
+            if (nextView != null)
+            {
+                nextView.SetState(UpgradeViewState.Unlocked);
+                nextView.SubscribeToBuy(() => Buy(nextData.Effect.GetType().Name));
+                RedrawUpgradeView(nextData);
+            }
+        }
     }
 
     private void RedrawUpgradeView(UpgradeData upgradeData)
     {
+        var view = upgradeViews[upgradeData.Effect.UpgradeConfig.Type.ToString()];
+        var stateView = view;
+
+        if (stateView == null)
+            return;
+
+        if (stateView.CurrentState != UpgradeViewState.Unlocked)
+            return;
+
         float price = upgradeData.Price;
         int level = upgradeData.UpgradeProgress.Level;
+        string desc = GetDescription(upgradeData);
 
-        UpgradeView view = upgradeViews[upgradeData.Effect.UpgradeConfig.Type.ToString()];
-
-        view.Description.text = GetDescription(upgradeData);
-        view.Level.gameObject.SetActive(level > 0);
-        view.Level.text = "Level:" + level;
-        view.Price.text = price.ToString() + "$";
+        stateView.UpdateContent(desc, level, price);
     }
 
     private string GetDescription(UpgradeData upgradeData)
@@ -96,14 +129,6 @@ public class UpgradeController : IInitializable, IDisposable
     private void Buy(string upgradeType)
     {
         upgrade.Buy(upgradeType);
-    }
-
-    public void Dispose()
-    {
-        foreach (var view in upgradeViews.Values)
-        {
-            view.Buy.onClick.RemoveAllListeners();
-        }
     }
 }
 

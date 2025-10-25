@@ -2,5 +2,7 @@
 {
     Tier1Enemy,
     Boss1,
+    BossCemetery,
+    BossPhone,
     EliteEnemy,
 }

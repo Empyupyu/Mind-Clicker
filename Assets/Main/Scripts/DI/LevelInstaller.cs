@@ -14,6 +14,7 @@ public class LevelInstaller : MonoInstaller
     [SerializeField] private List<UpgradeConfig> upgradeConfigs;
     [SerializeField] private NegativeThoughtConfig thoughtConfigs;
     [SerializeField] private CharacterConfig characterConfig;
+    [SerializeField] private CemeteryEnvironmentView cemeteryEnvironmentView;
 
     public override void InstallBindings()
     {
@@ -54,8 +55,13 @@ public class LevelInstaller : MonoInstaller
 
     private void BindThoughtFactory()
     {
+        Container.Bind<CemeteryEnvironmentView>().FromInstance(cemeteryEnvironmentView).AsSingle();
+        
+        Container.BindInterfacesAndSelfTo<BossFightPrepare>().AsTransient();
+
         Container.Bind<IThoughtLogic>().To<Tier1EnemyThoughtLogic>().AsTransient().WithArguments(ThoughtType.Tier1Enemy);
-        Container.Bind<IThoughtLogic>().To<BossThoughtLogic>().AsTransient().WithArguments(ThoughtType.Boss1);
+        Container.Bind<IThoughtLogic>().To<BossBubbleThoughtLogic>().AsTransient().WithArguments(ThoughtType.Boss1);
+        Container.Bind<IThoughtLogic>().To<BossCemeteryThoughtLogic>().AsTransient().WithArguments(ThoughtType.BossCemetery);
 
         Container.BindInterfacesAndSelfTo<ThoughtFactory>().AsSingle();
     }

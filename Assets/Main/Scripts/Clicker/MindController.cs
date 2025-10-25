@@ -77,7 +77,6 @@ public class MindController : IInitializable, IDisposable, ITickable
         mindPointCts?.Cancel();
 
         await mindView.ProgressBar.DOFillAmount(1, .3f).AsyncWaitForCompletion().AsUniTask();
-
         await mindView.ProgressBar.transform.DOShakeRotation(.3f, 10, 5, 15, true).AsyncWaitForCompletion().AsUniTask();
 
         audioPlayer.PlaySFX(mindData.UpgradeSound, mindData.SoundVolume);
@@ -101,7 +100,8 @@ public class MindController : IInitializable, IDisposable, ITickable
 
     private void RedrawMindPoints()
     {
-        mindView.ProgressText.text = string.Format("{00:0.0}", playerData.Value.MindPoints) + "/" + string.Format("{00:0.0}", mind.PointForLevelUp);
+        mindView.ProgressText.text = playerData.Value.MindPoints.ToAbbreviatedString() + "/" 
+            + mind.PointForLevelUp.ToAbbreviatedString();
     }
 
     private void RedrawMindLevel()

@@ -62,6 +62,7 @@ public class ThoughtSpawner : IDisposable
         negativThoughts.Add(newThought);
 
         ThoughtUIView thoughtView = GameObject.Instantiate(thoughtViewPrefab);
+        thoughtView.Redraw(newThought);
 
         newThought.OnDeath += OnDestroyThought;
         newThought.OnHealthChange += thoughtView.Redraw;

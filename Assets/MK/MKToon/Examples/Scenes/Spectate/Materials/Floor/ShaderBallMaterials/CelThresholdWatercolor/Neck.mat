@@ -323,7 +323,7 @@ Material:
     - _SpecularIntensity: 1.5
     - _SpecularMode: 1
     - _SpecularSmoothness: 0.249
-    - _SpecularThresholdOffset: 1
+    - _SpecularThresholdOffset: 0.378
     - _SrcBlend: 1
     - _Stencil: 1
     - _StencilComp: 8
