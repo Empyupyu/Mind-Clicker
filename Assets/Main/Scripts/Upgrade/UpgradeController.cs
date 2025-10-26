@@ -44,7 +44,7 @@ public class UpgradeController : IInitializable
 
             if (isUnlocked)
             {
-                view.SubscribeToBuy(() => Buy(effect.GetType().Name));
+                InitializeBuyView(effect, view);
             }
 
             upgradeViews.Add(effect.UpgradeConfig.Type.ToString(), view);
@@ -55,6 +55,12 @@ public class UpgradeController : IInitializable
         var comingSoonView = GameObject.Instantiate(upgradeShopView.UpgradeStateView, upgradeShopView.ContentContainer);
         comingSoonView.GetComponent<RectTransform>().localPosition = new Vector3(0, -upgrades.Count * upgradeShopView.OffsetBetweenUpgradeView.y, 0);
         comingSoonView.SetState(UpgradeViewState.ComingSoon);
+    }
+
+    private void InitializeBuyView(IUpgradeEffect effect, UpgradeStateView view)
+    {
+        view.SubscribeToBuy(() => Buy(effect.GetType().Name));
+        view.SetIcon(effect.UpgradeConfig.Icon);
     }
 
     private void OnUpgrade(UpgradeData data)
@@ -73,7 +79,7 @@ public class UpgradeController : IInitializable
             if (nextView != null)
             {
                 nextView.SetState(UpgradeViewState.Unlocked);
-                nextView.SubscribeToBuy(() => Buy(nextData.Effect.GetType().Name));
+                InitializeBuyView(nextData.Effect, nextView);
                 RedrawUpgradeView(nextData);
             }
         }

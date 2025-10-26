@@ -44,6 +44,11 @@ public class UpgradeStateView : MonoBehaviour
         buyUpgradeView.Price.text = $"{price}$";
     }
 
+    public void SetIcon(Sprite icon)
+    {
+        buyUpgradeView.Icon.sprite = icon;
+    }
+
     public void SubscribeToBuy(Action onClick)
     {
         buyUpgradeView.Buy.onClick.RemoveAllListeners();

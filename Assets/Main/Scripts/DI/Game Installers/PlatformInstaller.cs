@@ -2,8 +2,12 @@
 
 public class PlatformInstaller : MonoInstaller
 {
+    [Inject] private ProjectSettingsConfig projectSettingsConfig;
+
     public override void InstallBindings()
     {
-        Container.Bind<IPlayerDataProvider>().To<YandexCloudDataProvider>().AsSingle();
+        var providerClass = PlayerDataProviderFactory.GetProviderType(projectSettingsConfig.PlayerDataProviderType);
+
+        Container.Bind(typeof(IPlayerDataProvider)).To(providerClass).AsSingle();
     }
 }

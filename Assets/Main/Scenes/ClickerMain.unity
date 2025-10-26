@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 1
   m_SubtractiveShadowColor: {r: 1, g: 1, b: 1, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: cb879a436a7692845a0f2ed7883aa098, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 74bdd88279bbeea479f1068bffe6e751, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -1296,6 +1296,7 @@ MonoBehaviour:
   mindData: {fileID: 11400000, guid: 2130333fe9ee0b8458667c1fd6e9438d, type: 2}
   playerDefaultSettings: {fileID: 11400000, guid: e099d9c5022d575438afe3c6a31a5dc2, type: 2}
   soundConfig: {fileID: 11400000, guid: 57bdcbab3a1a8564c85f1b84c5650e04, type: 2}
+  projectSettingsConfig: {fileID: 11400000, guid: a1bf54402a0abce4e83aaf26b026e516, type: 2}
 --- !u!4 &1876848995
 Transform:
   m_ObjectHideFlags: 0
