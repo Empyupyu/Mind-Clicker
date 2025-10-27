@@ -9,6 +9,7 @@ public class NegativeThoughtForm : ScriptableObject
     [field: SerializeField] public Sprite Icon { get; private set; }
     [field: SerializeField] public float Health { get; private set; }
     [field: SerializeField] public float Money { get; private set; }
+    [field: SerializeField] public SpawnPointDirection SpawnPointDirection { get; private set; } = SpawnPointDirection.Random;
     [field: SerializeField] public GameObject Head { get; private set; }
     [field: SerializeField] public GameObject Body { get; private set; }
 }                                                   

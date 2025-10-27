@@ -1,22 +1,24 @@
 ﻿using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
+using Zenject.SpaceFighter;
 using RenderSettings = UnityEngine.RenderSettings;
 
 public class BossCemeteryThoughtLogic : BossThoughtLogicBase
 {
     private readonly CemeteryEnvironmentView cemeteryEnvironmentView;
     private readonly LightService lightService;
-
+    private readonly AudioPlayer audioPlayer;
     private CemeteryEnvironmentView instanceEnvironmentView;
     private Material currentSkybox;
     private Material transitionMaterial;
 
-    public BossCemeteryThoughtLogic(ThoughtType thoughtType, BossFightPrepare bossFightPrepare, CemeteryEnvironmentView cemeteryEnvironmentView, LightService lightService)
+    public BossCemeteryThoughtLogic(ThoughtType thoughtType, BossFightPrepare bossFightPrepare, CemeteryEnvironmentView cemeteryEnvironmentView, LightService lightService, AudioPlayer audioPlayer)
         : base(thoughtType, bossFightPrepare)
     {
         this.cemeteryEnvironmentView = cemeteryEnvironmentView;
         this.lightService = lightService;
+        this.audioPlayer = audioPlayer;
     }
 
     public override void AttachTo(NegativeThought thought)
@@ -30,7 +32,9 @@ public class BossCemeteryThoughtLogic : BossThoughtLogicBase
     private async UniTask InitializeEnvironment()
     {
         instanceEnvironmentView = GameObject.Instantiate(cemeteryEnvironmentView);
-       
+
+        audioPlayer.PlayMusic(instanceEnvironmentView.AudioClip, 1f);
+
         EnableGhosts(false);
         lightService.SetEnvironmentLighting(cemeteryEnvironmentView.LightConfig);
         lightService.SetLightIntensity(.3f, instanceEnvironmentView.Duration);

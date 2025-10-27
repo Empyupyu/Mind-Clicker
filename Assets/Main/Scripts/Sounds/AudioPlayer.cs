@@ -49,7 +49,7 @@ public class AudioPlayer : MonoBehaviour, IDisposable
          (gameAmbiantClip, .7f),
         };
 
-        SequenceMusic(sequence, 15000);
+        SequenceMusic(sequence, 15000).Forget();
     }
 
     public void SetMusicVolume(float volumePercent)
@@ -128,7 +128,7 @@ public class AudioPlayer : MonoBehaviour, IDisposable
         }
     }
 
-    private void PlayMusic(AudioClip clip, float durationPercent)
+    public void PlayMusic(AudioClip clip, float durationPercent)
     {
         if (clip == null || musicSource == null) return;
 

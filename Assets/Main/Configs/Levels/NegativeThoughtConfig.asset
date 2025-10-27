@@ -25,3 +25,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d4535cb5874b1db4583991917c234e5e, type: 2}
   - {fileID: 11400000, guid: f8d1d9d0938c28742aa2ff96a7353bdf, type: 2}
   <MaxThoughtsInGame>k__BackingField: 5
+  <BaseHP>k__BackingField: 5
+  <GrowthHPRate>k__BackingField: 0.13
+  <HPAcceleration>k__BackingField: 0.01

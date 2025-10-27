@@ -10,7 +10,8 @@ public class ThoughtSpawner : IDisposable
     public event Action<NegativeThought> OnDestroy;
 
     private readonly NegativeThoughtConfig thoughtConfigs;
-    private readonly List<SphereArcSpawner> sphereArcSpawners;
+    private readonly List<SphereArcSpawner> spawnPointsSuffle;
+    private readonly List<SphereArcSpawner> spawnPointsOrigin;
     private readonly ThoughtUIView thoughtViewPrefab;
     private readonly List<NegativeThought> negativThoughts;
     private readonly GameData gameData;
@@ -20,15 +21,17 @@ public class ThoughtSpawner : IDisposable
     private List<ThoughtUIView> viewPool;
     private UniTaskCompletionSource spawnDelaySource;
 
-    public ThoughtSpawner(NegativeThoughtConfig thoughtConfigs, List<SphereArcSpawner> sphereArcSpawners, ThoughtUIView thoughtViewPrefab, GameData gameData, PlayerDataRef playerData)
+    public ThoughtSpawner(NegativeThoughtConfig thoughtConfigs, List<SphereArcSpawner> spawnPoints, ThoughtUIView thoughtViewPrefab, GameData gameData, PlayerDataRef playerData)
     {
         this.thoughtConfigs = thoughtConfigs;
-        this.sphereArcSpawners = sphereArcSpawners;
+        this.spawnPointsSuffle = spawnPoints;
         this.thoughtViewPrefab = thoughtViewPrefab;
         this.gameData = gameData;
         this.playerData = playerData;
 
         negativThoughts = new List<NegativeThought>();
+        spawnPointsOrigin = new List<SphereArcSpawner>();
+        spawnPointsOrigin.AddRange(spawnPoints);
     }
 
     public void SetFactory(ThoughtFactory thoughtFactory)
@@ -58,7 +61,7 @@ public class ThoughtSpawner : IDisposable
         spawnDelaySource?.TrySetCanceled();
         var config = GetRandomForm();
 
-        NegativeThought newThought = thoughtFactory.GetThought(config);
+        NegativeThought newThought = thoughtFactory.GetThought(config, playerData.Value.MindLevel);
         negativThoughts.Add(newThought);
 
         ThoughtUIView thoughtView = GameObject.Instantiate(thoughtViewPrefab);
@@ -70,7 +73,7 @@ public class ThoughtSpawner : IDisposable
         thoughtView.gameObject.SetActive(false);
         viewPool.Add(thoughtView);
 
-        SphereArcSpawner spawnPoint = GetRandomSpawnPoint();
+        SphereArcSpawner spawnPoint = GetSpawnPoint(config.SpawnPointDirection);
         spawnPoint.OnSpawnCompleted += OnThoughtSpawned;
 
         thoughtView.Initialize(newThought, spawnPoint);
@@ -83,7 +86,7 @@ public class ThoughtSpawner : IDisposable
     {
         spawner.OnSpawnCompleted -= OnThoughtSpawned;
         spawner.ThoughtUIView.Thought.IsActive = true;
-       
+
         OnSpawn?.Invoke();
     }
 
@@ -123,17 +126,23 @@ public class ThoughtSpawner : IDisposable
         }
     }
 
+    private SphereArcSpawner GetSpawnPoint(SpawnPointDirection spawnPointDirection = SpawnPointDirection.Random)
+    {
+        return spawnPointDirection.Equals(SpawnPointDirection.Random) ? GetRandomSpawnPoint() :
+            spawnPointsOrigin[(int)spawnPointDirection];
+    }
+
     private SphereArcSpawner GetRandomSpawnPoint()
     {
-        sphereArcSpawners.Shuffle();
+        spawnPointsSuffle.Shuffle();
 
-        SphereArcSpawner sphereArcSpawner = sphereArcSpawners.FirstOrDefault(view => !view.IsActive);
+        SphereArcSpawner sphereArcSpawner = spawnPointsSuffle.FirstOrDefault(view => !view.IsActive);
         return sphereArcSpawner;
     }
 
     private NegativeThoughtForm GetRandomForm()
     {
-        var level = thoughtConfigs.NegativeThoughtLevels[Mathf.Clamp(playerData.Value.MindLevel, 0, int.MaxValue)];
+        var level = thoughtConfigs.NegativeThoughtLevels[Mathf.Clamp(playerData.Value.MindLevel, 0, thoughtConfigs.NegativeThoughtLevels.Count - 1)];
 
         return level.NegativeThoughtForms[UnityEngine.Random.Range(0, level.NegativeThoughtForms.Count)];
     }
@@ -171,4 +180,3 @@ public class ThoughtSpawner : IDisposable
         Unsubscribe();
     }
 }
-

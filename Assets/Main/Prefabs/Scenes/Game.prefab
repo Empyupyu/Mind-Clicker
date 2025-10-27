@@ -34,11 +34,11 @@ Transform:
   - {fileID: 6383812818682991088}
   - {fileID: 6019909373371574526}
   - {fileID: 8936693864104822878}
-  - {fileID: 8735751622596018850}
   - {fileID: 5856128700216488487}
-  - {fileID: 3626826196348045817}
   - {fileID: 7500769711721712431}
   - {fileID: 3383072892163411054}
+  - {fileID: 3626826196348045817}
+  - {fileID: 8735751622596018850}
   m_Father: {fileID: 5716887833522073842}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1279925937141349863
@@ -674,11 +674,11 @@ MonoBehaviour:
   characterConfig: {fileID: 11400000, guid: c28dbace7516529478e61d6ee78249e9, type: 2}
   originLightConfig: {fileID: 11400000, guid: 465bb3987eaf7244d9397e89bf88e71b, type: 2}
   sphereArcSpawners:
-  - {fileID: 730320945199328924}
   - {fileID: 2475896571000872473}
-  - {fileID: 4705157576896734663}
   - {fileID: 1945861361618413329}
   - {fileID: 6767245620855283792}
+  - {fileID: 4705157576896734663}
+  - {fileID: 730320945199328924}
 --- !u!1 &7878463385138395270
 GameObject:
   m_ObjectHideFlags: 0
@@ -1832,7 +1832,7 @@ PrefabInstance:
       objectReference: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
     - target: {fileID: 7176188621750907741, guid: 068aedd3d106d0b468db1355d9e54b55, type: 3}
       propertyPath: m_Name
-      value: SphereArcSpawner (5)
+      value: SphereArcSpawner (3)
       objectReference: {fileID: 0}
     - target: {fileID: 8633152027476903460, guid: 068aedd3d106d0b468db1355d9e54b55, type: 3}
       propertyPath: pointA
@@ -2139,7 +2139,7 @@ PrefabInstance:
       objectReference: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
     - target: {fileID: 7176188621750907741, guid: 068aedd3d106d0b468db1355d9e54b55, type: 3}
       propertyPath: m_Name
-      value: SphereArcSpawner (3)
+      value: SphereArcSpawner (4)
       objectReference: {fileID: 0}
     - target: {fileID: 8633152027476903460, guid: 068aedd3d106d0b468db1355d9e54b55, type: 3}
       propertyPath: pointA
@@ -2762,7 +2762,7 @@ PrefabInstance:
       objectReference: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
     - target: {fileID: 7176188621750907741, guid: 068aedd3d106d0b468db1355d9e54b55, type: 3}
       propertyPath: m_Name
-      value: SphereArcSpawner (2)
+      value: SphereArcSpawner (1)
       objectReference: {fileID: 0}
     - target: {fileID: 8633152027476903460, guid: 068aedd3d106d0b468db1355d9e54b55, type: 3}
       propertyPath: pointA
@@ -3069,7 +3069,7 @@ PrefabInstance:
       objectReference: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
     - target: {fileID: 7176188621750907741, guid: 068aedd3d106d0b468db1355d9e54b55, type: 3}
       propertyPath: m_Name
-      value: SphereArcSpawner (4)
+      value: SphereArcSpawner (2)
       objectReference: {fileID: 0}
     - target: {fileID: 8633152027476903460, guid: 068aedd3d106d0b468db1355d9e54b55, type: 3}
       propertyPath: pointA
@@ -3454,7 +3454,7 @@ PrefabInstance:
       objectReference: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
     - target: {fileID: 7176188621750907741, guid: 068aedd3d106d0b468db1355d9e54b55, type: 3}
       propertyPath: m_Name
-      value: SphereArcSpawner (1)
+      value: 'SphereArcSpawner (5) '
       objectReference: {fileID: 0}
     - target: {fileID: 8633152027476903460, guid: 068aedd3d106d0b468db1355d9e54b55, type: 3}
       propertyPath: pointA
