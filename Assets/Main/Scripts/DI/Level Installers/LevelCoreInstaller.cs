@@ -6,6 +6,7 @@ public class LevelCoreInstaller : MonoInstaller
     {
         Container.Bind<Mind>().AsSingle();
         Container.Bind<UpgradeMaterialAnimation>().AsSingle();
+        Container.Bind<LightService>().AsSingle();
         Container.BindInterfacesAndSelfTo<DealDamage>().AsSingle();
         Container.BindInterfacesAndSelfTo<DamageFeedbackService>().AsSingle();
         Container.BindInterfacesAndSelfTo<MindController>().AsSingle();

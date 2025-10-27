@@ -12,6 +12,7 @@ public class LevelViewInstaller : MonoInstaller
     [SerializeField] private CharacterView characterView;
     [SerializeField] private UpgradeShopView upgradeShopView;
     [SerializeField] private CemeteryEnvironmentView cemeteryEnvironmentView;
+    [SerializeField] private Light directionLight;
 
     public override void InstallBindings()
     {
@@ -21,6 +22,7 @@ public class LevelViewInstaller : MonoInstaller
         Container.Bind<CharacterView>().FromInstance(characterView).AsSingle();
         Container.Bind<ThoughtUIView>().FromInstance(thoughtViewPrefab).AsSingle();
         Container.Bind<CemeteryEnvironmentView>().FromInstance(cemeteryEnvironmentView).AsSingle();
+        Container.Bind<Light>().FromInstance(directionLight).AsSingle();
         Container.Bind<MindView>().FromComponentInNewPrefab(mindView).AsSingle();
         Container.Bind<UpgradeShopView>().FromComponentInNewPrefab(upgradeShopView).AsSingle();
     }

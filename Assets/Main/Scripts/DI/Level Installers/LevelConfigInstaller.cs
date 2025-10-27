@@ -7,11 +7,13 @@ public class LevelConfigInstaller : MonoInstaller
     [SerializeField] private List<UpgradeConfig> upgradeConfigs;
     [SerializeField] private NegativeThoughtConfig thoughtConfigs;
     [SerializeField] private CharacterConfig characterConfig;
+    [SerializeField] private LightConfig originLightConfig;
     [SerializeField] private List<SphereArcSpawner> sphereArcSpawners;
 
     public override void InstallBindings()
     {
         Container.Bind<CharacterConfig>().FromInstance(characterConfig).AsSingle();
+        Container.Bind<LightConfig>().FromInstance(originLightConfig).AsSingle();
         Container.Bind<NegativeThoughtConfig>().FromInstance(thoughtConfigs).AsSingle();
         Container.Bind<List<UpgradeConfig>>().FromInstance(upgradeConfigs).AsSingle();
         Container.Bind<List<SphereArcSpawner>>().FromInstance(sphereArcSpawners).AsSingle();

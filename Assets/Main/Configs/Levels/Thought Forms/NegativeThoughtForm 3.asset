@@ -15,7 +15,7 @@ MonoBehaviour:
   <ThoughtType>k__BackingField: 0
   <Id>k__BackingField: 1
   <Name>k__BackingField: 123
-  <Icon>k__BackingField: {fileID: 21300000, guid: fae551a372a450b449a3a0e8dfdbdf84, type: 3}
+  <Icon>k__BackingField: {fileID: 21300000, guid: 8a94a25e6ce8cfe4ba3506df648fa354, type: 3}
   <Health>k__BackingField: 5
   <Money>k__BackingField: 5
   <Head>k__BackingField: {fileID: 5574802840941641288, guid: 0bd3d8bf591a456479bcb6577984b0aa, type: 3}

@@ -180,7 +180,7 @@ Material:
     - _AlphaToMask: 0
     - _BLEND_NORMALS: 1
     - _BaseMapScale: 0
-    - _Base_Map_Scale: -41.37
+    - _Base_Map_Scale: 0.53
     - _Base_Normal_Map_Scale: 1
     - _Blend: 0
     - _BlendModePreserveSpecular: 0
@@ -217,7 +217,7 @@ Material:
     - _MossDirection: -0.11
     - _MossMetallicSmoothness: 0
     - _MossNormalStrength: 0.31
-    - _Normal_Strength: 0.345
+    - _Normal_Strength: 2
     - _OVERLAY: 1
     - _OcclusionStrength: 1
     - _Parallax: 0.005
@@ -237,7 +237,7 @@ Material:
     - _ZWriteControl: 0
     m_Colors:
     - _BaseColor: {r: 0.8396226, g: 0.71310794, b: 0.53466535, a: 1}
-    - _Color: {r: 0.8490566, g: 0.72162724, b: 0.47659308, a: 1}
+    - _Color: {r: 0.764151, g: 0.58912104, b: 0.24870951, a: 1}
     - _Coverage_Color: {r: 0.8018868, g: 0.8018868, b: 0.8018868, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _MossOffset: {r: 0, g: 0, b: 0, a: 0}

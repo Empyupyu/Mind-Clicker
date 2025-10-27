@@ -206,8 +206,8 @@ Material:
     m_Ints: []
     m_Floats:
     - _AddPrecomputedVelocity: 0
-    - _AdditionalLightsFalloff: 1
-    - _AdditionalLightsThreshold: 0.525
+    - _AdditionalLightsFalloff: 0.504
+    - _AdditionalLightsThreshold: 0.47
     - _AdvancedTab: 1
     - _AlbedoMapIntensity: 1
     - _AlembicMotionVectors: 0
@@ -241,8 +241,8 @@ Material:
     - _DetailUVSet: 0
     - _Diffuse: 2
     - _DiffuseMode: 1
-    - _DiffuseSmoothness: 0.41
-    - _DiffuseThresholdOffset: 0.562
+    - _DiffuseSmoothness: 0.571
+    - _DiffuseThresholdOffset: 0.522
     - _Dissolve: 0
     - _DissolveAmount: 0
     - _DissolveBorderSize: 0.689
@@ -278,7 +278,7 @@ Material:
     - _LightCuts: 3
     - _LightCutsScale: 0.5
     - _LightStyle: 0
-    - _LightThreshold: 0.361
+    - _LightThreshold: 0.418
     - _LightTransmission: 0
     - _LightTransmissionDistortion: 0.105
     - _LightTransmissionIntensity: 1
@@ -310,20 +310,20 @@ Material:
     - _RimSize: 1.35
     - _RimSmoothness: 0.631
     - _RimStyle: 0
-    - _RimThresholdOffset: 0.668
+    - _RimThresholdOffset: 0.561
     - _Roughness: 0.5
     - _SSSDistortion: 0.25
     - _SSSSmoothness: 0
     - _Saturation: 1
     - _SketchMapScale: 1.61
-    - _Smoothness: 0.5
+    - _Smoothness: 0.309
     - _SmoothnessTextureChannel: 0
     - _Specular: 1
     - _SpecularHighlights: 1
     - _SpecularIntensity: 1.5
     - _SpecularMode: 1
-    - _SpecularSmoothness: 0.249
-    - _SpecularThresholdOffset: 0.378
+    - _SpecularSmoothness: 0.188
+    - _SpecularThresholdOffset: 0.509
     - _SrcBlend: 1
     - _Stencil: 1
     - _StencilComp: 8

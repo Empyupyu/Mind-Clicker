@@ -46,16 +46,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pointA: {fileID: 0}
   pointB: {fileID: 0}
-  spherePrefab: {fileID: 5574802840941641288, guid: 0bd3d8bf591a456479bcb6577984b0aa, type: 3}
-  thoughtCanvasPrefab: {fileID: 0}
-  arcHeight: 0.9
+  arcHeight: 0.5
   minDistanceBetweenSpheres: 0.4
   maxSphereCount: 99
   targetOffset: {x: 0, y: 0.2, z: 0}
-  baseScale: 0.11
-  scaleExponent: 3
+  baseScale: 0.1
+  scaleExponent: 2
   baseDuration: 1.2
   durationDecay: 0.15
   delayStep: 0.16
-  target: {fileID: 0}
   approachDistance: 0.51

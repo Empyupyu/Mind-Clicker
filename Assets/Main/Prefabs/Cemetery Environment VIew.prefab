@@ -69,6 +69,7 @@ Transform:
   - {fileID: 197739139550084239}
   - {fileID: 4394254150419619785}
   - {fileID: 4795202640102326343}
+  - {fileID: 3707026030473737278}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5079350071641335817
@@ -92,7 +93,7 @@ MonoBehaviour:
   <Mushrooms>k__BackingField:
   - {fileID: 7676442058625172683}
   - {fileID: 6008566645172285372}
-  <ToSkybox>k__BackingField: {fileID: 2100000, guid: d495dd505cd630e47880986abb84c438, type: 2}
+  <LightConfig>k__BackingField: {fileID: 11400000, guid: 7b941957ffdaf174b8d3d7a1ab07f008, type: 2}
   <Duration>k__BackingField: 2
 --- !u!1 &2910244093664934655
 GameObject:
@@ -442,6 +443,68 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 1206755207025163169, guid: 74132bcdca7f7d245a825825c3fc7909, type: 3}
   m_PrefabInstance: {fileID: 1851664303146885274}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &2590510060628867663
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 5080834888804230803}
+    m_Modifications:
+    - target: {fileID: 1189328140524621425, guid: dbbf8ce299389734eb1b7619fa40e7af, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1189328140524621425, guid: dbbf8ce299389734eb1b7619fa40e7af, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1189328140524621425, guid: dbbf8ce299389734eb1b7619fa40e7af, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1.78
+      objectReference: {fileID: 0}
+    - target: {fileID: 1189328140524621425, guid: dbbf8ce299389734eb1b7619fa40e7af, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 1189328140524621425, guid: dbbf8ce299389734eb1b7619fa40e7af, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 1189328140524621425, guid: dbbf8ce299389734eb1b7619fa40e7af, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1189328140524621425, guid: dbbf8ce299389734eb1b7619fa40e7af, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1189328140524621425, guid: dbbf8ce299389734eb1b7619fa40e7af, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 1189328140524621425, guid: dbbf8ce299389734eb1b7619fa40e7af, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1189328140524621425, guid: dbbf8ce299389734eb1b7619fa40e7af, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5086431937074291682, guid: dbbf8ce299389734eb1b7619fa40e7af, type: 3}
+      propertyPath: m_Name
+      value: Fog Particle System
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: dbbf8ce299389734eb1b7619fa40e7af, type: 3}
+--- !u!4 &3707026030473737278 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1189328140524621425, guid: dbbf8ce299389734eb1b7619fa40e7af, type: 3}
+  m_PrefabInstance: {fileID: 2590510060628867663}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4184303377251113314
 PrefabInstance:

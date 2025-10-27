@@ -1,19 +1,22 @@
 ﻿using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
+using RenderSettings = UnityEngine.RenderSettings;
 
 public class BossCemeteryThoughtLogic : BossThoughtLogicBase
 {
     private readonly CemeteryEnvironmentView cemeteryEnvironmentView;
+    private readonly LightService lightService;
 
     private CemeteryEnvironmentView instanceEnvironmentView;
     private Material currentSkybox;
     private Material transitionMaterial;
 
-    public BossCemeteryThoughtLogic(ThoughtType thoughtType, BossFightPrepare bossFightPrepare, CemeteryEnvironmentView cemeteryEnvironmentView)
+    public BossCemeteryThoughtLogic(ThoughtType thoughtType, BossFightPrepare bossFightPrepare, CemeteryEnvironmentView cemeteryEnvironmentView, LightService lightService)
         : base(thoughtType, bossFightPrepare)
     {
         this.cemeteryEnvironmentView = cemeteryEnvironmentView;
+        this.lightService = lightService;
     }
 
     public override void AttachTo(NegativeThought thought)
@@ -27,8 +30,12 @@ public class BossCemeteryThoughtLogic : BossThoughtLogicBase
     private async UniTask InitializeEnvironment()
     {
         instanceEnvironmentView = GameObject.Instantiate(cemeteryEnvironmentView);
+       
         EnableGhosts(false);
-        ChangeSkyBox(instanceEnvironmentView.ToSkybox);
+        lightService.SetEnvironmentLighting(cemeteryEnvironmentView.LightConfig);
+        lightService.SetLightIntensity(.3f, instanceEnvironmentView.Duration);
+        lightService.SetSunRotate(new Vector2(-4f, 200), instanceEnvironmentView.Duration);
+        ChangeSkyBox(instanceEnvironmentView.LightConfig.Skybox);
 
         foreach (var mushroom in instanceEnvironmentView.Mushrooms)
         {
@@ -58,6 +65,7 @@ public class BossCemeteryThoughtLogic : BossThoughtLogicBase
 
         bossFightPrepare.StartFight();
     }
+
 
     private void EnableGhosts(bool isActive)
     {
@@ -89,12 +97,19 @@ public class BossCemeteryThoughtLogic : BossThoughtLogicBase
 
     protected override void OnTimerFinished()
     {
+        lightService.ToOriginEnvironmentLighting();
+        lightService.ToOriginSunRotate(instanceEnvironmentView.Duration);
+        lightService.ToOriginSunRotate(instanceEnvironmentView.Duration);
+        ChangeSkyBox(currentSkybox);
         GameObject.Destroy(instanceEnvironmentView.gameObject);
     }
 
     protected override void OnBossDeath(NegativeThought negativeThought)
     {
         base.OnBossDeath(negativeThought);
+        lightService.ToOriginEnvironmentLighting();
+        lightService.ToOriginSunRotate(instanceEnvironmentView.Duration);
+        lightService.ToOriginSunRotate(instanceEnvironmentView.Duration);
         ChangeSkyBox(currentSkybox);
         GameObject.Destroy(instanceEnvironmentView.gameObject);
     }
