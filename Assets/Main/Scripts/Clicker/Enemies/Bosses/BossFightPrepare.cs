@@ -23,7 +23,7 @@ public class BossFightPrepare : IDisposable
 
     public void Prepare()
     {
-        thoughtSpawner.DestroyAllThought();
+        thoughtSpawner.DestroyAll();
         bossViewInstance = GameObject.Instantiate(bossView);
     }
 
@@ -38,8 +38,8 @@ public class BossFightPrepare : IDisposable
     private void TimerFinished()
     {
         mind.ReduceLevel();
-        thoughtSpawner.DestroyAllThought();
-        thoughtSpawner.SpawnThought();
+        thoughtSpawner.DestroyAll();
+        thoughtSpawner.Spawn();
         timer.Disable();
         GameObject.Destroy(bossViewInstance.gameObject);
 

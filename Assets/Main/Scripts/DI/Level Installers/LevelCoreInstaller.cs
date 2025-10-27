@@ -12,7 +12,7 @@ public class LevelCoreInstaller : MonoInstaller
         Container.BindInterfacesAndSelfTo<MindController>().AsSingle();
         Container.Bind<Timer>().AsSingle();
         Container.Bind<MoneyWallet>().AsSingle();
-        Container.BindInterfacesAndSelfTo<MoneyController>().AsSingle();
+        Container.BindInterfacesAndSelfTo<MoneyController>().AsSingle().Lazy();
         Container.BindInterfacesAndSelfTo<ThoughtRewardHandler>().AsSingle();
     }
 }

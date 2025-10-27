@@ -63,7 +63,7 @@ public class MindController : IInitializable, IDisposable, ITickable
 
     private bool HasBadThoughts()
     {
-        return thoughtSpawner.GetTargetThought() != null;
+        return thoughtSpawner.GetTarget() != null;
     }
 
     private void LevelUpTransition()
@@ -87,7 +87,7 @@ public class MindController : IInitializable, IDisposable, ITickable
 
         RedrawMindPoints();
         RedrawMindLevel();
-        thoughtSpawner.SpawnThought();
+        thoughtSpawner.Spawn();
 
         isLevelUp = false;
     }

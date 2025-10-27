@@ -6,12 +6,12 @@ public class DealDamage : ITickable
 {
     public event Action OnClickDamage;
 
-    private readonly ThoughtSpawner thoughtSpawner;
+    private readonly IThoughtLifecycleService lifecycle;
     private readonly GameData gameData;
 
-    public DealDamage(ThoughtSpawner thoughtSpawner, GameData gameData)
+    public DealDamage(IThoughtLifecycleService lifecycle, GameData gameData)
     {
-        this.thoughtSpawner = thoughtSpawner;
+        this.lifecycle = lifecycle;
         this.gameData = gameData;
     }
 
@@ -43,11 +43,11 @@ public class DealDamage : ITickable
     {
         if (gameData.DamagePerSecond == 0) return;
 
-        NegativeThought thought = thoughtSpawner.GetTargetThought();
+        NegativeThought thought = lifecycle.GetTarget();
 
         if (thought == null) return;
         if (!thought.IsActive) return;
 
-        thoughtSpawner.GetTargetThought().ApplyDamage(gameData.DamagePerSecond * Time.deltaTime);
+        lifecycle.GetTarget().ApplyDamage(gameData.DamagePerSecond * Time.deltaTime);
     }
 }

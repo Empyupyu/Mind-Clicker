@@ -14,6 +14,8 @@ public class LightService
     private Tweener equatorTween;
     private Tweener groundTween;
 
+    private Material transitionMaterial;
+
     public LightService(Light directionLight, LightConfig originLightConfig)
     {
         this.directionLight = directionLight;
@@ -80,5 +82,25 @@ public class LightService
     {
         rotateTween?.Kill();
         rotateTween = directionLight.transform.DOLocalRotate(originSunRotate, duration);
+    }
+
+    public void ChangeSkyBox(Material material, float duration)
+    {
+        Material targetMaterial = RenderSettings.skybox;
+        transitionMaterial = new Material(RenderSettings.skybox);
+        RenderSettings.skybox = transitionMaterial;
+
+        DOTween.To(
+            () => 0f,
+            t =>
+            {
+                transitionMaterial.Lerp(targetMaterial, material, t);
+            },
+            1f,
+            duration
+        ).OnComplete(() =>
+        {
+            RenderSettings.skybox = material;
+        });
     }
 }

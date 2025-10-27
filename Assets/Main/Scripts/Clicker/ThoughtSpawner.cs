@@ -1,182 +1,111 @@
 ﻿using Cysharp.Threading.Tasks;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
 
-public class ThoughtSpawner : IDisposable
+public class ThoughtSpawner : IThoughtSpawner, IDisposable
 {
     public event Action OnSpawn;
     public event Action<NegativeThought> OnDestroy;
 
-    private readonly NegativeThoughtConfig thoughtConfigs;
-    private readonly List<SphereArcSpawner> spawnPointsSuffle;
-    private readonly List<SphereArcSpawner> spawnPointsOrigin;
-    private readonly ThoughtUIView thoughtViewPrefab;
-    private readonly List<NegativeThought> negativThoughts;
-    private readonly GameData gameData;
+    private readonly IThoughtFormSelector formSelector;
+    private readonly ISpawnPointSelector spawnSelector;
+    private readonly IThoughtViewPool viewPool;
+    private readonly IThoughtLifecycleService lifecycle;
+    private readonly ISpawnTimingCalculator timing;
+    private readonly NegativeThoughtConfig config;
     private readonly PlayerDataRef playerData;
 
-    private ThoughtFactory thoughtFactory;
-    private List<ThoughtUIView> viewPool;
+    private ThoughtFactory factory;
     private UniTaskCompletionSource spawnDelaySource;
+    private Action<NegativeThought> onThoughtDestroyedHandler;
 
-    public ThoughtSpawner(NegativeThoughtConfig thoughtConfigs, List<SphereArcSpawner> spawnPoints, ThoughtUIView thoughtViewPrefab, GameData gameData, PlayerDataRef playerData)
+    public ThoughtSpawner(
+        IThoughtFormSelector formSelector,
+        ISpawnPointSelector spawnSelector,
+        IThoughtViewPool viewPool,
+        IThoughtLifecycleService lifecycle,
+        ISpawnTimingCalculator timing,
+        NegativeThoughtConfig config,
+        PlayerDataRef playerData)
     {
-        this.thoughtConfigs = thoughtConfigs;
-        this.spawnPointsSuffle = spawnPoints;
-        this.thoughtViewPrefab = thoughtViewPrefab;
-        this.gameData = gameData;
+        this.formSelector = formSelector;
+        this.spawnSelector = spawnSelector;
+        this.viewPool = viewPool;
+        this.lifecycle = lifecycle;
+        this.timing = timing;
+        this.config = config;
         this.playerData = playerData;
 
-        negativThoughts = new List<NegativeThought>();
-        spawnPointsOrigin = new List<SphereArcSpawner>();
-        spawnPointsOrigin.AddRange(spawnPoints);
+        onThoughtDestroyedHandler = thought => OnDestroy?.Invoke(thought);
+        lifecycle.OnDestroy += onThoughtDestroyedHandler;
     }
+
+    public NegativeThought GetTarget() => lifecycle.GetTarget();
+    public ThoughtUIView GetRandomView() => lifecycle.GetRandomView();
 
     public void SetFactory(ThoughtFactory thoughtFactory)
     {
-        this.thoughtFactory = thoughtFactory;
+        factory = thoughtFactory;
     }
 
-    public void StartSpawn()
-    {
-        viewPool = new List<ThoughtUIView>();
-
-        SpawnThought();
-    }
-
-    public NegativeThought GetTargetThought()
-    {
-        return negativThoughts.Count != 0 ? negativThoughts[0] : null;
-    }
-
-    public ThoughtUIView GetThoughtView()
-    {
-        return viewPool[UnityEngine.Random.Range(0, viewPool.Count)];
-    }
-
-    public void SpawnThought()
+    public void Spawn()
     {
         spawnDelaySource?.TrySetCanceled();
-        var config = GetRandomForm();
 
-        NegativeThought newThought = thoughtFactory.GetThought(config, playerData.Value.MindLevel);
-        negativThoughts.Add(newThought);
+        var form = formSelector.Select(playerData.Value.MindLevel);
+        var thought = factory.GetThought(form, playerData.Value.MindLevel);
+        var view = viewPool.Get();
 
-        ThoughtUIView thoughtView = GameObject.Instantiate(thoughtViewPrefab);
-        thoughtView.Redraw(newThought);
+        view.Redraw(thought);
+        
+        var spawner = spawnSelector.Select(form.SpawnPointDirection);
+        spawner.OnSpawnCompleted += OnSpawnComplete;
 
-        newThought.OnDeath += OnDestroyThought;
-        newThought.OnHealthChange += thoughtView.Redraw;
+        view.Initialize(thought, spawner);
+        viewPool.Register(view);
+        lifecycle.Register(thought, view);
+        view.Icon.sprite = form.Icon;
 
-        thoughtView.gameObject.SetActive(false);
-        viewPool.Add(thoughtView);
-
-        SphereArcSpawner spawnPoint = GetSpawnPoint(config.SpawnPointDirection);
-        spawnPoint.OnSpawnCompleted += OnThoughtSpawned;
-
-        thoughtView.Initialize(newThought, spawnPoint);
-        thoughtView.Icon.sprite = config.Icon;
-
-        spawnPoint.SpawnAlongArc(thoughtView, config);
+        spawner.SpawnAlongArc(view, form);
     }
 
-    private void OnThoughtSpawned(SphereArcSpawner spawner)
+    private void OnSpawnComplete(SphereArcSpawner spawner)
     {
-        spawner.OnSpawnCompleted -= OnThoughtSpawned;
+        spawner.OnSpawnCompleted -= OnSpawnComplete;
         spawner.ThoughtUIView.Thought.IsActive = true;
-
         OnSpawn?.Invoke();
     }
 
-    public async UniTask SetDelayNextSpawn()
+    public async UniTask SpawnWithDelay()
     {
         spawnDelaySource = new UniTaskCompletionSource();
 
-        float baseInterval = 30f;
-        float minInterval = 3f;
-        float decayRate = 0.045f;
-
-        float interval = minInterval + (baseInterval - minInterval) * Mathf.Exp(-decayRate * (playerData.Value.MindLevel + 1));
-
-        float noise = UnityEngine.Random.Range(-0.15f, 0.15f);
-        interval *= (1f + noise);
-
+        float interval = timing.CalculateInterval(playerData.Value.MindLevel);
         var delayTask = UniTask.Delay((int)(interval * 1000));
         var controlTask = spawnDelaySource.Task;
 
         await UniTask.WhenAny(delayTask, controlTask);
-        await UniTask.WaitUntil(() => negativThoughts.Count < thoughtConfigs.MaxThoughtsInGame);
+        await UniTask.WaitUntil(() => lifecycle.GetTarget() == null || config.MaxThoughtsInGame > 1);
 
         if (controlTask.Status == UniTaskStatus.Canceled)
             return;
 
-        SpawnThought();
+        Spawn();
     }
 
-    public void DestroyAllThought()
+    public void DestroyAll()
     {
         spawnDelaySource?.TrySetCanceled();
-
-        for (int i = 0; i < negativThoughts.Count;)
-        {
-            var thought = negativThoughts[0];
-            OnDestroyThought(thought);
-        }
-    }
-
-    private SphereArcSpawner GetSpawnPoint(SpawnPointDirection spawnPointDirection = SpawnPointDirection.Random)
-    {
-        return spawnPointDirection.Equals(SpawnPointDirection.Random) ? GetRandomSpawnPoint() :
-            spawnPointsOrigin[(int)spawnPointDirection];
-    }
-
-    private SphereArcSpawner GetRandomSpawnPoint()
-    {
-        spawnPointsSuffle.Shuffle();
-
-        SphereArcSpawner sphereArcSpawner = spawnPointsSuffle.FirstOrDefault(view => !view.IsActive);
-        return sphereArcSpawner;
-    }
-
-    private NegativeThoughtForm GetRandomForm()
-    {
-        var level = thoughtConfigs.NegativeThoughtLevels[Mathf.Clamp(playerData.Value.MindLevel, 0, thoughtConfigs.NegativeThoughtLevels.Count - 1)];
-
-        return level.NegativeThoughtForms[UnityEngine.Random.Range(0, level.NegativeThoughtForms.Count)];
-    }
-
-    private void OnDestroyThought(NegativeThought thought)
-    {
-        ThoughtUIView thoughtView = viewPool.FirstOrDefault(t => t.Thought.Equals(thought));
-
-        thought.OnHealthChange -= thoughtView.Redraw;
-        thought.OnDeath -= OnDestroyThought;
-        
-        negativThoughts.Remove(thought);
-        viewPool.Remove(thoughtView);
-
-        thoughtView.SphereArcSpawner.DisableView();
-
-        GameObject.Destroy(thoughtView.gameObject);
-
-        OnDestroy.Invoke(thought);
-    }
-
-    private void Unsubscribe()
-    {
-        int i = 0;
-        foreach (var item in negativThoughts)
-        {
-            item.OnDeath -= OnDestroyThought;
-            item.OnHealthChange -= viewPool[i].Redraw;
-            i++;
-        }
+        lifecycle.UnregisterAll();
     }
 
     public void Dispose()
     {
-        Unsubscribe();
+        if (onThoughtDestroyedHandler != null)
+        {
+            lifecycle.OnDestroy -= onThoughtDestroyedHandler;
+            onThoughtDestroyedHandler = null;
+        }
+
+        lifecycle.UnregisterAll();
     }
 }

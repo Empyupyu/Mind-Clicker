@@ -20,7 +20,7 @@ public class LevelState : IGameState
         await audioPlayer.Opening();
 
         await UniTask.Delay(1000);
-        gameData.Level.Container.Resolve<ThoughtSpawner>().StartSpawn();
+        gameData.Level.Container.Resolve<ThoughtSpawner>().Spawn();
     }
 
     private void MusicFinished(AudioClip clip)

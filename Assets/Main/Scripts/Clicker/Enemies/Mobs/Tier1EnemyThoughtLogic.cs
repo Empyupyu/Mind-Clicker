@@ -14,6 +14,6 @@ public class Tier1EnemyThoughtLogic : IThoughtLogic
 
     public void AttachTo(NegativeThought thought) 
     {
-        thoughtSpawner.SetDelayNextSpawn().Forget();
+        thoughtSpawner.SpawnWithDelay().Forget();
     }
 }

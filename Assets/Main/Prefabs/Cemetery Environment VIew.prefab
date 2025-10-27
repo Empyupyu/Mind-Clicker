@@ -95,6 +95,7 @@ MonoBehaviour:
   - {fileID: 6008566645172285372}
   <LightConfig>k__BackingField: {fileID: 11400000, guid: 7b941957ffdaf174b8d3d7a1ab07f008, type: 2}
   <Duration>k__BackingField: 2
+  <AudioClip>k__BackingField: {fileID: 8300000, guid: d3663ae976dc2994b93bae402e0f64ad, type: 3}
 --- !u!1 &2910244093664934655
 GameObject:
   m_ObjectHideFlags: 0

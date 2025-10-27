@@ -1,17 +1,17 @@
 {
     "PlayerData": {
-        "MindPoints": 1.3529874086380005,
-        "MindLevel": 17,
+        "MindPoints": 0.0,
+        "MindLevel": 3,
         "CurrentLevel": 0,
-        "Money": 2.869997024536133,
+        "Money": 2.619999885559082,
         "Upgrades": [
             {
                 "ID": "AddClickDamageEffect",
-                "Level": 7
+                "Level": 2
             },
             {
                 "ID": "AddDamagePerSecondTiear1Effect",
-                "Level": 1
+                "Level": 0
             }
         ],
         "MindLevelsProgress": [
@@ -28,5 +28,5 @@
         false,
         false
     ],
-    "idSave": 36
+    "idSave": 39
 }

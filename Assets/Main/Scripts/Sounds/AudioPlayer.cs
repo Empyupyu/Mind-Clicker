@@ -52,6 +52,18 @@ public class AudioPlayer : MonoBehaviour, IDisposable
         SequenceMusic(sequence, 15000).Forget();
     }
 
+    public void PlayMainSoundTrack()
+    {
+        var sequence = new List<(AudioClip, float)>
+        {
+         (gameAmbiantClip, .01f),
+         (gameAmbiantClip, 1f),
+         (gameAmbiantClip, .7f),
+        };
+
+        SequenceMusic(sequence, 0).Forget();
+    }
+
     public void SetMusicVolume(float volumePercent)
     {
         musicSource.volume = Mathf.Clamp01(volumePercent);

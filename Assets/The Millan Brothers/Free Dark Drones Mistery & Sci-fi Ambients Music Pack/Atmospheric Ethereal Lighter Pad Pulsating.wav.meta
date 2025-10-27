@@ -1,0 +1,30 @@
+fileFormatVersion: 2
+guid: 60576d1f77ff49d42829f4b1b351102e
+AudioImporter:
+  externalObjects: {}
+  serializedVersion: 6
+  defaultSettings:
+    loadType: 0
+    sampleRateSetting: 0
+    sampleRateOverride: 44100
+    compressionFormat: 1
+    quality: 1
+    conversionMode: 0
+  platformSettingOverrides: {}
+  forceToMono: 0
+  normalize: 1
+  preloadAudioData: 1
+  loadInBackground: 0
+  ambisonic: 0
+  3D: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 233667
+  packageName: Free Dark Drones Mystery & Sci-fi Ambients Music Pack
+  packageVersion: 1.0
+  assetPath: Assets/The Millan Brothers/Free Dark Drones Mistery & Sci-fi Ambients
+    Music Pack/Atmospheric Ethereal Lighter Pad Pulsating.wav
+  uploadId: 602265

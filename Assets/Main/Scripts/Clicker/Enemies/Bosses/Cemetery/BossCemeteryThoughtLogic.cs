@@ -1,7 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using System.Collections.Generic;
 using UnityEngine;
-using Zenject.SpaceFighter;
 using RenderSettings = UnityEngine.RenderSettings;
 
 public class BossCemeteryThoughtLogic : BossThoughtLogicBase
@@ -11,7 +11,6 @@ public class BossCemeteryThoughtLogic : BossThoughtLogicBase
     private readonly AudioPlayer audioPlayer;
     private CemeteryEnvironmentView instanceEnvironmentView;
     private Material currentSkybox;
-    private Material transitionMaterial;
 
     public BossCemeteryThoughtLogic(ThoughtType thoughtType, BossFightPrepare bossFightPrepare, CemeteryEnvironmentView cemeteryEnvironmentView, LightService lightService, AudioPlayer audioPlayer)
         : base(thoughtType, bossFightPrepare)
@@ -32,44 +31,53 @@ public class BossCemeteryThoughtLogic : BossThoughtLogicBase
     private async UniTask InitializeEnvironment()
     {
         instanceEnvironmentView = GameObject.Instantiate(cemeteryEnvironmentView);
-
-        audioPlayer.PlayMusic(instanceEnvironmentView.AudioClip, 1f);
-
         EnableGhosts(false);
-        lightService.SetEnvironmentLighting(cemeteryEnvironmentView.LightConfig);
-        lightService.SetLightIntensity(.3f, instanceEnvironmentView.Duration);
-        lightService.SetSunRotate(new Vector2(-4f, 200), instanceEnvironmentView.Duration);
-        ChangeSkyBox(instanceEnvironmentView.LightConfig.Skybox);
 
-        foreach (var mushroom in instanceEnvironmentView.Mushrooms)
-        {
-            mushroom.localScale = Vector3.zero;
-        }
+        ApplySound();
+        ApplyLight();
 
-        foreach (var gravestone in instanceEnvironmentView.Gravestones)
-        {
-            gravestone.localScale = Vector3.zero;
-        }
+        SetPropsScale(instanceEnvironmentView.Mushrooms, Vector3.zero);
+        SetPropsScale(instanceEnvironmentView.Gravestones, Vector3.zero);
 
-        foreach (var mushroom in instanceEnvironmentView.Mushrooms)
-        {
-            mushroom.DOScale(1, .4f).From(0).SetEase(Ease.OutBack);
-
-            await UniTask.Delay(200);
-        }
-
-        foreach (var gravestone in instanceEnvironmentView.Gravestones)
-        {
-            gravestone.DOScale(1, 1).From(0).SetEase(Ease.OutBack);
-
-            await UniTask.Delay(500);
-        }
+        await PropsScaleAnimation(instanceEnvironmentView.Mushrooms, 1, .4f, Ease.OutBack, 200);
+        await PropsScaleAnimation(instanceEnvironmentView.Gravestones, 1, 1f, Ease.OutBack, 500);
 
         EnableGhosts(true);
 
         bossFightPrepare.StartFight();
     }
 
+    private void ApplySound()
+    {
+        audioPlayer.ForceStopAmbients();
+        audioPlayer.PlayMusic(instanceEnvironmentView.AudioClip, 1f);
+    }
+
+    private async UniTask PropsScaleAnimation(List<Transform> props, float scale, float duration, Ease ease, int delay)
+    {
+        foreach (var prop in props)
+        {
+            prop.DOScale(scale, duration).From(0).SetEase(ease);
+
+            await UniTask.Delay(delay);
+        }
+    }
+
+    private void SetPropsScale(List<Transform> props, Vector3 scale)
+    {
+        foreach (var prop in props)
+        {
+            prop.localScale = scale;
+        }
+    }
+
+    private void ApplyLight()
+    {
+        lightService.SetEnvironmentLighting(cemeteryEnvironmentView.LightConfig);
+        lightService.SetLightIntensity(.3f, instanceEnvironmentView.Duration);
+        lightService.SetSunRotate(new Vector2(-4f, 200), instanceEnvironmentView.Duration);
+        lightService.ChangeSkyBox(instanceEnvironmentView.LightConfig.Skybox, instanceEnvironmentView.Duration);
+    }
 
     private void EnableGhosts(bool isActive)
     {
@@ -79,32 +87,12 @@ public class BossCemeteryThoughtLogic : BossThoughtLogicBase
         }
     }
 
-    private void ChangeSkyBox(Material material)
-    {
-        Material targetMaterial = RenderSettings.skybox;
-        transitionMaterial = new Material(RenderSettings.skybox);
-        RenderSettings.skybox = transitionMaterial;
-
-        DOTween.To(
-            () => 0f,
-            t =>
-            {
-                transitionMaterial.Lerp(targetMaterial, material, t);
-            },
-            1f,
-            instanceEnvironmentView.Duration
-        ).OnComplete(() =>
-        {
-            RenderSettings.skybox = material;
-        });
-    }
-
     protected override void OnTimerFinished()
     {
         lightService.ToOriginEnvironmentLighting();
         lightService.ToOriginSunRotate(instanceEnvironmentView.Duration);
-        lightService.ToOriginSunRotate(instanceEnvironmentView.Duration);
-        ChangeSkyBox(currentSkybox);
+        lightService.ChangeSkyBox(currentSkybox, instanceEnvironmentView.Duration);
+        audioPlayer.PlayMainSoundTrack();
         GameObject.Destroy(instanceEnvironmentView.gameObject);
     }
 
@@ -113,8 +101,8 @@ public class BossCemeteryThoughtLogic : BossThoughtLogicBase
         base.OnBossDeath(negativeThought);
         lightService.ToOriginEnvironmentLighting();
         lightService.ToOriginSunRotate(instanceEnvironmentView.Duration);
-        lightService.ToOriginSunRotate(instanceEnvironmentView.Duration);
-        ChangeSkyBox(currentSkybox);
+        lightService.ChangeSkyBox(currentSkybox, instanceEnvironmentView.Duration);
+        audioPlayer.PlayMainSoundTrack();
         GameObject.Destroy(instanceEnvironmentView.gameObject);
     }
 }
