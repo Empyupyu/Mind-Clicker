@@ -1,20 +1,19 @@
-using Main.Scripts.Views;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using Zenject;
 
+//TODO
 public class UpgradeController : IInitializable
 {
     private readonly Upgrade upgrade;
-    private readonly UpgradeShopView upgradeShopView;
+    private readonly IUpgradeViewFactory upgradeViewFactory;
     private Dictionary<string, UpgradeStateView> upgradeViews;
     private const int InitialUnlockedCount = 1;
 
-    public UpgradeController(Upgrade upgrade, UpgradeShopView upgradeShopView)
+    public UpgradeController(Upgrade upgrade, IUpgradeViewFactory upgradeViewFactory)
     {
         this.upgrade = upgrade;
-        this.upgradeShopView = upgradeShopView;
+        this.upgradeViewFactory = upgradeViewFactory;
     }
 
     public void Initialize()
@@ -34,13 +33,8 @@ public class UpgradeController : IInitializable
             var upgradeData = upgrades[i];
             var effect = upgradeData.Effect;
 
-            var view = GameObject.Instantiate(upgradeShopView.UpgradeStateView, upgradeShopView.ContentContainer);
-            view.GetComponent<RectTransform>().localPosition = new Vector3(0, -i * upgradeShopView.OffsetBetweenUpgradeView.y, 0);
-
             bool isUnlocked = i < InitialUnlockedCount;
-            var state = isUnlocked ? UpgradeViewState.Unlocked : UpgradeViewState.Locked;
-
-            view.SetState(state);
+            var view = upgradeViewFactory.Create(effect, i, isUnlocked);
 
             if (isUnlocked)
             {
@@ -51,10 +45,7 @@ public class UpgradeController : IInitializable
             RedrawUpgradeView(upgradeData);
         }
 
-        // ComingSoon
-        var comingSoonView = GameObject.Instantiate(upgradeShopView.UpgradeStateView, upgradeShopView.ContentContainer);
-        comingSoonView.GetComponent<RectTransform>().localPosition = new Vector3(0, -upgrades.Count * upgradeShopView.OffsetBetweenUpgradeView.y, 0);
-        comingSoonView.SetState(UpgradeViewState.ComingSoon);
+        upgradeViewFactory.CreateComingSoon(upgrades.Count);
     }
 
     private void InitializeBuyView(IUpgradeEffect effect, UpgradeStateView view)

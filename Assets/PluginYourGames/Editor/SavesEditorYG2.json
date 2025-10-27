@@ -1,7 +1,7 @@
 {
     "PlayerData": {
-        "MindPoints": 0.0,
-        "MindLevel": 1,
+        "MindPoints": 0.8409625291824341,
+        "MindLevel": 0,
         "CurrentLevel": 0,
         "Money": 0.0,
         "Upgrades": [
@@ -28,5 +28,5 @@
         false,
         false
     ],
-    "idSave": 49
+    "idSave": 51
 }

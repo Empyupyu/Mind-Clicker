@@ -9,6 +9,8 @@ public class UpgradeInstaller : MonoInstaller
     public override void InstallBindings()
     {
         BindUpgradeEffects();
+        Container.Bind<UpgradeMaterialAnimation>().AsSingle();
+        Container.Bind<IUpgradeViewFactory>().To<UpgradeViewFactory>().AsSingle();
         Container.BindInterfacesAndSelfTo<Upgrade>().AsSingle();
         Container.BindInterfacesAndSelfTo<UpgradeController>().AsSingle();
         Container.BindInterfacesAndSelfTo<UpgradeSaveService>().AsSingle();

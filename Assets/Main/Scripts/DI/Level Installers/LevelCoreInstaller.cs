@@ -5,7 +5,6 @@ public class LevelCoreInstaller : MonoInstaller
     public override void InstallBindings()
     {
         Container.Bind<Mind>().AsSingle();
-        Container.Bind<UpgradeMaterialAnimation>().AsSingle();
         Container.Bind<LightService>().AsSingle();
         Container.BindInterfacesAndSelfTo<DealDamage>().AsSingle();
         Container.BindInterfacesAndSelfTo<DamageFeedbackService>().AsSingle();
