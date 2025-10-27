@@ -8,6 +8,7 @@ public class Mind
 
     public float PointForLevelUp { get; private set; }
     public float ProgressPercent => playerData.Value.MindPoints / PointForLevelUp;
+    public int Level => playerData.Value.MindLevel;
     private bool ShouldLevelUp => playerData.Value.MindPoints == PointForLevelUp;
 
     private readonly PlayerDataRef playerData;
