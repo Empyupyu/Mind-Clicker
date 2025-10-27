@@ -1,6 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
 using System;
 using UnityEngine;
+using static UnityEngine.InputManagerEntry;
 
 public class BossFightPrepare : IDisposable
 {

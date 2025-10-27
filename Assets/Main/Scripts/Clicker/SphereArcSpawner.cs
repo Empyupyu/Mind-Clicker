@@ -134,6 +134,8 @@ public class SphereArcSpawner : MonoBehaviour
 
             foreach(var gameObject in thoughtMesh)
             {
+                if (gameObject == null) continue;
+
                 gameObject.transform.DOKill();
                 gameObject.transform.DOScale(0, .2f).OnComplete(() =>
                 {

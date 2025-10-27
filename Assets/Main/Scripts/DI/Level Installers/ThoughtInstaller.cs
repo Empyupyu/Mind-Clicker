@@ -11,9 +11,10 @@ public class ThoughtInstaller : MonoInstaller
         Container.Bind<IThoughtViewPool>().To<ThoughtViewPool>().AsSingle();
         Container.Bind<ISpawnPointSelector>().To<SpawnPointSelector>().AsSingle();
         Container.Bind<IThoughtFormSelector>().To<ThoughtFormSelector>().AsSingle();
-        Container.Bind<IThoughtLogic>().To<Tier1EnemyThoughtLogic>().AsTransient().WithArguments(ThoughtType.Tier1Enemy).Lazy();
-        Container.Bind<IThoughtLogic>().To<BossBubbleThoughtLogic>().AsTransient().WithArguments(ThoughtType.Boss1).Lazy();
-        Container.Bind<IThoughtLogic>().To<BossCemeteryThoughtLogic>().AsTransient().WithArguments(ThoughtType.BossCemetery).Lazy();
+        Container.Bind<CemeteryEnvironmentController>().AsSingle();
+        Container.Bind<IThoughtLogic>().To<Tier1EnemyThoughtLogic>().AsTransient().WithArguments(ThoughtType.Tier1Enemy);
+        Container.Bind<IThoughtLogic>().To<BossBubbleThoughtLogic>().AsTransient().WithArguments(ThoughtType.Boss1);
+        Container.Bind<IThoughtLogic>().To<BossCemeteryThoughtLogic>().AsTransient().WithArguments(ThoughtType.BossCemetery);
 
         Container.BindInterfacesAndSelfTo<ThoughtFactory>().AsSingle();
         Container.BindInterfacesAndSelfTo<ThoughtSpawner>().AsSingle().OnInstantiated<ThoughtSpawner>((ctx, spawner) =>
