@@ -27,28 +27,28 @@ public class ThoughtLifecycleService : IThoughtLifecycleService
         thought.OnHealthChange += view.Redraw;
     }
 
-    private void HandleDeath(NegativeThought thought)
+    public void HandleDeath(NegativeThought thought)
     {
         if (!activeThoughts.Contains(thought)) return;
 
-        thought.OnDeath -= HandleDeath;
-        thought.OnHealthChange -= viewMap[thought].Redraw;
-
-        viewPool.Release(thought);
-        activeThoughts.Remove(thought);
-        viewMap.Remove(thought);
+        Unregister(thought);
 
         OnDestroy?.Invoke(thought);
     }
 
     public void Unregister(NegativeThought thought)
     {
-        HandleDeath(thought);
+        thought.OnDeath -= Unregister;
+        thought.OnHealthChange -= viewMap[thought].Redraw;
+
+        viewPool.Release(thought);
+        activeThoughts.Remove(thought);
+        viewMap.Remove(thought);
     }
 
     public void UnregisterAll()
     {
         foreach (var thought in activeThoughts.ToList())
-            HandleDeath(thought);
+            Unregister(thought);
     }
 }

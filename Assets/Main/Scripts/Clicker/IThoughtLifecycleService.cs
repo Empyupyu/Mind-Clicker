@@ -7,6 +7,7 @@ public interface IThoughtLifecycleService
     ThoughtUIView GetRandomView();
     NegativeThought GetTarget();
     void Register(NegativeThought thought, ThoughtUIView view);
+    void HandleDeath(NegativeThought thought);
     void Unregister(NegativeThought thought);
     void UnregisterAll();
 }

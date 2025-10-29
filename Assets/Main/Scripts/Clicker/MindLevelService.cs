@@ -1,8 +1,9 @@
 ﻿using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Main.Scripts.Views;
+using Zenject;
 
-public class MindLevelUpService : IMindLevelUpService
+public class MindLevelService : IInitializable, IMindLevelService
 {
     private readonly MindView view;
     private readonly Mind mind;
@@ -12,7 +13,7 @@ public class MindLevelUpService : IMindLevelUpService
     private readonly IMindProgressService progress;
     private readonly ThoughtSpawner spawner;
 
-    public MindLevelUpService(
+    public MindLevelService(
         MindView view,
         Mind mind,
         MindData data,
@@ -30,7 +31,14 @@ public class MindLevelUpService : IMindLevelUpService
         this.spawner = spawner;
     }
 
-    public async UniTask PlayLevelUp()
+    public void Initialize()
+    {
+        progress.Redraw();
+        RedrawMindLevel((mind.Level + 1).ToString());
+    }
+
+    //TODO
+    public async UniTask LevelUp()
     {
         progress.BlockFarming(true);
         progress.StopFarming();
@@ -39,14 +47,26 @@ public class MindLevelUpService : IMindLevelUpService
         await view.ProgressBar.transform.DOShakeRotation(.3f, 10, 5, 15, true).AsyncWaitForCompletion().AsUniTask();
 
         audio.PlaySFX(data.UpgradeSound, data.SoundVolume);
-        await animation.Apply();
+        await animation.UpgradeColorAnimation();
 
         view.ProgressBar.fillAmount = 0;
         progress.Redraw();
-
-        view.MindLevelText.text = (mind.Level + 1).ToString();
+        RedrawMindLevel((mind.Level + 1).ToString());
 
         spawner.Spawn();
         progress.BlockFarming(false);
+    }
+
+    public async UniTask LevelReduce()
+    {
+        progress.BlockFarming(false);
+        progress.StopFarming();
+        RedrawMindLevel((mind.Level + 1).ToString());
+        await animation.Reduce();
+    }
+
+    private void RedrawMindLevel(string text)
+    {
+        view.MindLevelText.text = text;
     }
 }

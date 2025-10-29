@@ -1,5 +1,4 @@
 ﻿using Cysharp.Threading.Tasks;
-using Main.Scripts.Views;
 using System;
 using UnityEngine;
 using Zenject;
@@ -7,40 +6,34 @@ using Zenject;
 public class MindController : IInitializable, IDisposable, ITickable
 {
     private readonly Mind mind;
-    private readonly MindView view;
     private readonly ThoughtSpawner spawner;
     private readonly IMindProgressService progress;
-    private readonly IMindLevelUpService levelUp;
+    private readonly IMindLevelService level;
 
     public MindController(
         Mind mind,
-        MindView view,
         ThoughtSpawner spawner,
         IMindProgressService progress,
-        IMindLevelUpService levelUp)
+        IMindLevelService levelUp)
     {
         this.mind = mind;
-        this.view = view;
         this.spawner = spawner;
         this.progress = progress;
-        this.levelUp = levelUp;
+        this.level = levelUp;
     }
 
     public void Initialize()
     {
-        progress.Redraw();
-        view.MindLevelText.text = (mind.Level + 1).ToString();
-
         spawner.OnDestroy += _ => progress.StartFarming();
-        mind.OnLevelUp += () => levelUp.PlayLevelUp().Forget();
-        mind.OnLevelReduce += () => view.MindLevelText.text = (mind.Level + 1).ToString();
+        mind.OnLevelUp += () => level.LevelUp().Forget();
+        mind.OnLevelReduce += () => level.LevelReduce().Forget();
     }
 
     public void Dispose()
     {
         spawner.OnDestroy -= _ => progress.StartFarming();
-        mind.OnLevelUp -= () => levelUp.PlayLevelUp().Forget();
-        mind.OnLevelReduce -= () => view.MindLevelText.text = (mind.Level + 1).ToString();
+        mind.OnLevelUp -= () => level.LevelUp().Forget();
+        mind.OnLevelReduce -= () => level.LevelReduce().Forget();
     }
 
     public void Tick()
@@ -48,7 +41,7 @@ public class MindController : IInitializable, IDisposable, ITickable
 #if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            levelUp.PlayLevelUp().Forget();
+            level.LevelUp().Forget();
         }
 #endif
     }

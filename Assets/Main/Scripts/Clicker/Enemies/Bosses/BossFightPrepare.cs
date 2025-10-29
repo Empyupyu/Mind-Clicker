@@ -1,7 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using System;
 using UnityEngine;
-using static UnityEngine.InputManagerEntry;
 
 public class BossFightPrepare : IDisposable
 {
@@ -28,6 +27,7 @@ public class BossFightPrepare : IDisposable
         bossViewInstance = GameObject.Instantiate(bossView);
     }
 
+    //TODO
     public void StartFight()
     {
         timer.Initialize();
@@ -42,7 +42,7 @@ public class BossFightPrepare : IDisposable
         thoughtSpawner.DestroyAll();
         thoughtSpawner.Spawn();
         timer.Disable();
-        GameObject.Destroy(bossViewInstance.gameObject);
+        RemoveBossView();
 
         OnTimerFinished?.Invoke();
     }
@@ -51,6 +51,11 @@ public class BossFightPrepare : IDisposable
     {
         timer.Disable();
         mind.LevelUp();
+        RemoveBossView();
+    }
+
+    private void RemoveBossView()
+    {
         GameObject.Destroy(bossViewInstance.gameObject);
     }
 
