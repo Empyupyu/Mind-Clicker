@@ -6,21 +6,26 @@ public class ThoughtSpawner : IThoughtSpawner, IDisposable
     public event Action OnSpawn;
     public event Action<NegativeThought> OnDestroy;
 
-    private readonly IThoughtFormSelector formSelector;
-    private readonly ISpawnPointSelector spawnSelector;
-    private readonly IThoughtViewPool viewPool;
-    private readonly IThoughtLifecycleService lifecycle;
-    private readonly ISpawnTimingCalculator timing;
-    private readonly NegativeThoughtConfig config;
-    private readonly PlayerDataRef playerData;
-
     private ThoughtFactory factory;
     private UniTaskCompletionSource spawnDelaySource;
     private Action<NegativeThought> onThoughtDestroyedHandler;
 
+    private readonly IThoughtFormSelector formSelector;
+    private readonly ISpawnPointSelector spawnPointSelector;
+    private readonly IThoughtViewPool viewPool;
+    private readonly IThoughtLifecycleService lifecycle;
+    private readonly ISpawnTimingCalculator timing;
+    private readonly SphereArcSpawner sphereArcSpawner;
+    private readonly NegativeThoughtConfig config;
+    private readonly PlayerDataRef playerData;
+
+    public NegativeThought GetTarget() => lifecycle.GetTarget();
+    public ThoughtUIView GetRandomView() => lifecycle.GetRandomView();
+
     public ThoughtSpawner(
         IThoughtFormSelector formSelector,
-        ISpawnPointSelector spawnSelector,
+        ISpawnPointSelector spawnPointSelector,
+        SphereArcSpawner sphereArcSpawner,
         IThoughtViewPool viewPool,
         IThoughtLifecycleService lifecycle,
         ISpawnTimingCalculator timing,
@@ -28,7 +33,8 @@ public class ThoughtSpawner : IThoughtSpawner, IDisposable
         PlayerDataRef playerData)
     {
         this.formSelector = formSelector;
-        this.spawnSelector = spawnSelector;
+        this.spawnPointSelector = spawnPointSelector;
+        this.sphereArcSpawner = sphereArcSpawner;
         this.viewPool = viewPool;
         this.lifecycle = lifecycle;
         this.timing = timing;
@@ -38,9 +44,6 @@ public class ThoughtSpawner : IThoughtSpawner, IDisposable
         onThoughtDestroyedHandler = thought => OnDestroy?.Invoke(thought);
         lifecycle.OnDestroy += onThoughtDestroyedHandler;
     }
-
-    public NegativeThought GetTarget() => lifecycle.GetTarget();
-    public ThoughtUIView GetRandomView() => lifecycle.GetRandomView();
 
     public void SetFactory(ThoughtFactory thoughtFactory)
     {
@@ -57,22 +60,15 @@ public class ThoughtSpawner : IThoughtSpawner, IDisposable
 
         view.Redraw(thought);
         
-        var spawner = spawnSelector.Select(form.SpawnPointDirection);
-        spawner.OnSpawnCompleted += OnSpawnComplete;
+        var spawnPoint = spawnPointSelector.Select(form.SpawnPointDirection);
+        sphereArcSpawner.OnSpawnCompleted += OnSpawnComplete;
 
-        view.Initialize(thought, spawner);
+        view.Initialize(thought, spawnPoint);
         viewPool.Register(view);
         lifecycle.Register(thought, view);
         view.Icon.sprite = form.Icon;
 
-        spawner.SpawnAlongArc(view, form);
-    }
-
-    private void OnSpawnComplete(SphereArcSpawner spawner)
-    {
-        spawner.OnSpawnCompleted -= OnSpawnComplete;
-        spawner.ThoughtUIView.Thought.IsActive = true;
-        OnSpawn?.Invoke();
+        sphereArcSpawner.Spawn(view, form, spawnPoint);
     }
 
     public async UniTask SpawnWithDelay()
@@ -84,7 +80,7 @@ public class ThoughtSpawner : IThoughtSpawner, IDisposable
         var controlTask = spawnDelaySource.Task;
 
         await UniTask.WhenAny(delayTask, controlTask);
-        await UniTask.WaitUntil(() => lifecycle.GetTarget() == null || config.MaxThoughtsInGame > 1);
+        await UniTask.WaitUntil(() => lifecycle.GetTarget() == null || config.MaxThoughtsInGame > viewPool.GetPoolCount());
 
         if (controlTask.Status == UniTaskStatus.Canceled)
             return;
@@ -107,5 +103,12 @@ public class ThoughtSpawner : IThoughtSpawner, IDisposable
         }
 
         lifecycle.UnregisterAll();
+    }
+
+    private void OnSpawnComplete(SpawnPoint spawnPoint)
+    {
+        sphereArcSpawner.OnSpawnCompleted -= OnSpawnComplete;
+        spawnPoint.ThoughtUIView.Thought.IsActive = true;
+        OnSpawn?.Invoke();
     }
 }

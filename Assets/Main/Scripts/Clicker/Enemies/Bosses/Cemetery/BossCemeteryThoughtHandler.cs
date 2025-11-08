@@ -1,13 +1,13 @@
 ﻿using Cysharp.Threading.Tasks;
 
-public class BossCemeteryThoughtLogic : BossThoughtLogicBase
+public class BossCemeteryThoughtHandler : BossThoughtHandlerBase
 {
-    private readonly CemeteryEnvironmentController cemeteryEnvironmentController;
+    private readonly BossEnvironmentController bossEnvironmentController;
 
-    public BossCemeteryThoughtLogic(ThoughtType thoughtType, BossFightPrepare bossFightPrepare, CemeteryEnvironmentController cemeteryEnvironmentController)
+    public BossCemeteryThoughtHandler(ThoughtType thoughtType, BossFightPrepare bossFightPrepare, BossEnvironmentController bossEnvironmentController)
         : base(thoughtType, bossFightPrepare)
     {
-        this.cemeteryEnvironmentController = cemeteryEnvironmentController;
+        this.bossEnvironmentController = bossEnvironmentController;
     }
 
     public override void AttachTo(NegativeThought thought)
@@ -19,19 +19,19 @@ public class BossCemeteryThoughtLogic : BossThoughtLogicBase
 
     private async UniTask InitializeEnvironment()
     {
-        await cemeteryEnvironmentController.Initialize();
+        await bossEnvironmentController.Initialize(ThoughtType);
 
         bossFightPrepare.StartFight();
     }
 
     protected override void OnTimerFinished()
     {
-        cemeteryEnvironmentController.Cleanup();
+        bossEnvironmentController.Cleanup();
     }
 
     protected override void OnBossDeath(NegativeThought negativeThought)
     {
         base.OnBossDeath(negativeThought);
-        cemeteryEnvironmentController.Cleanup();
+        bossEnvironmentController.Cleanup();
     }
 }

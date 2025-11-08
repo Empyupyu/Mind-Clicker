@@ -9,22 +9,22 @@ public class BossFightPrepare : IDisposable
     private readonly Mind mind;
     private readonly Timer timer;
     private readonly ThoughtSpawner thoughtSpawner;
-    private readonly BossView bossView;
+    private readonly BossUIView bossUIView;
 
-    private BossView bossViewInstance;
+    private BossUIView bossViewInstance;
 
-    public BossFightPrepare(Mind mind, Timer timer, ThoughtSpawner thoughtSpawner, BossView bossView)
+    public BossFightPrepare(Mind mind, Timer timer, ThoughtSpawner thoughtSpawner, BossUIView bossUIView)
     {
         this.mind = mind;
         this.timer = timer;
         this.thoughtSpawner = thoughtSpawner;
-        this.bossView = bossView;
+        this.bossUIView = bossUIView;
     }
 
     public void Prepare()
     {
         thoughtSpawner.DestroyAll();
-        bossViewInstance = GameObject.Instantiate(bossView);
+        bossViewInstance = GameObject.Instantiate(bossUIView);
     }
 
     //TODO

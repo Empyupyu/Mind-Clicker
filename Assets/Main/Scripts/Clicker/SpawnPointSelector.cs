@@ -3,16 +3,26 @@ using System.Linq;
 
 public class SpawnPointSelector : ISpawnPointSelector
 {
-    private readonly List<SphereArcSpawner> original;
-    private readonly List<SphereArcSpawner> shuffled;
+    private readonly List<ThoughtSpawnPointData> thoughtSpawnPointDatas;
+    private readonly List<SpawnPoint> original;
+    private readonly List<SpawnPoint> shuffled;
 
-    public SpawnPointSelector(List<SphereArcSpawner> spawnPoints)
+    public SpawnPointSelector(List<ThoughtSpawnPointData> pointDatas)
     {
-        original = new List<SphereArcSpawner>(spawnPoints);
-        shuffled = new List<SphereArcSpawner>(spawnPoints);
+        original = new List<SpawnPoint>();
+        shuffled = new List<SpawnPoint>();
+
+        thoughtSpawnPointDatas = pointDatas;
+
+        for (int i = 0; i < thoughtSpawnPointDatas.Count; i++)
+        {
+            SpawnPoint sphereArcSpawner = new SpawnPoint(thoughtSpawnPointDatas[i]);
+            original.Add(sphereArcSpawner);
+            shuffled.Add(sphereArcSpawner);
+        }
     }
 
-    public SphereArcSpawner Select(SpawnPointDirection direction)
+    public SpawnPoint Select(SpawnPointDirection direction)
     {
         if (direction == SpawnPointDirection.Random)
         {

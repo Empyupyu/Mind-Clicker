@@ -14,7 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_GroupName: Default Local Group
   m_GUID: fbc6f920157c7ad4aa8915ca0914c31c
-  m_SerializeEntries: []
+  m_SerializeEntries:
+  - m_GUID: fcd7338d31273ea42978d0d8a79b3a37
+    m_Address: Cemetery Environment VIew
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 1a6ffd0609d7f4342b7b0fffab492e73, type: 2}
   m_SchemaSet:

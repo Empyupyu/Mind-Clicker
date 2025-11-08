@@ -1,6 +1,6 @@
-﻿public class BossBubbleThoughtLogic : BossThoughtLogicBase
+﻿public class BossBubbleThoughtHandler : BossThoughtHandlerBase
 {
-    public BossBubbleThoughtLogic(ThoughtType thoughtType, BossFightPrepare bossFightPrepare)
+    public BossBubbleThoughtHandler(ThoughtType thoughtType, BossFightPrepare bossFightPrepare)
         : base(thoughtType, bossFightPrepare) { }
 
 

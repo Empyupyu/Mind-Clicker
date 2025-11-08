@@ -1,13 +1,13 @@
 ﻿using System;
 
-public abstract class BossThoughtLogicBase : IThoughtLogic, IDisposable
+public abstract class BossThoughtHandlerBase : IThoughtHandler, IDisposable
 {
     public ThoughtType ThoughtType { get; }
 
     protected readonly BossFightPrepare bossFightPrepare;
     protected NegativeThought currentNegativeThought;
 
-    protected BossThoughtLogicBase(ThoughtType thoughtType, BossFightPrepare bossFightPrepare)
+    protected BossThoughtHandlerBase(ThoughtType thoughtType, BossFightPrepare bossFightPrepare)
     {
         ThoughtType = thoughtType;
         this.bossFightPrepare = bossFightPrepare;

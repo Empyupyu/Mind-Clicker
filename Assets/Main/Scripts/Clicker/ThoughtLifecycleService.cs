@@ -4,19 +4,19 @@ using System.Linq;
 
 public class ThoughtLifecycleService : IThoughtLifecycleService
 {
+    public event Action<NegativeThought> OnDestroy;
+
     private readonly IThoughtViewPool viewPool;
     private readonly List<NegativeThought> activeThoughts = new();
     private readonly Dictionary<NegativeThought, ThoughtUIView> viewMap = new();
 
-    public event Action<NegativeThought> OnDestroy;
+    public NegativeThought GetTarget() => activeThoughts.FirstOrDefault();
+    public ThoughtUIView GetRandomView() => activeThoughts.Count == 0 ? null : viewMap.Values.ElementAt(UnityEngine.Random.Range(0, viewMap.Count));
 
     public ThoughtLifecycleService(IThoughtViewPool viewPool)
     {
         this.viewPool = viewPool;
     }
-
-    public NegativeThought GetTarget() => activeThoughts.FirstOrDefault();
-    public ThoughtUIView GetRandomView() => activeThoughts.Count == 0 ? null : viewMap.Values.ElementAt(UnityEngine.Random.Range(0, viewMap.Count));
 
     public void Register(NegativeThought thought, ThoughtUIView view)
     {

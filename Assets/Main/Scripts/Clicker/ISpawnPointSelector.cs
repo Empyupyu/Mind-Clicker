@@ -1,4 +1,4 @@
 ﻿public interface ISpawnPointSelector
 {
-    SphereArcSpawner Select(SpawnPointDirection direction);
+    SpawnPoint Select(SpawnPointDirection direction);
 }

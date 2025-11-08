@@ -1,4 +1,5 @@
-﻿using Zenject;
+﻿using System.Collections.Generic;
+using Zenject;
 
 public class ThoughtInstaller : MonoInstaller
 {
@@ -11,10 +12,15 @@ public class ThoughtInstaller : MonoInstaller
         Container.Bind<IThoughtViewPool>().To<ThoughtViewPool>().AsSingle();
         Container.Bind<ISpawnPointSelector>().To<SpawnPointSelector>().AsSingle();
         Container.Bind<IThoughtFormSelector>().To<ThoughtFormSelector>().AsSingle();
-        Container.Bind<CemeteryEnvironmentController>().AsSingle();
-        Container.Bind<IThoughtLogic>().To<Tier1EnemyThoughtLogic>().AsTransient().WithArguments(ThoughtType.Tier1Enemy);
-        Container.Bind<IThoughtLogic>().To<BossBubbleThoughtLogic>().AsTransient().WithArguments(ThoughtType.Boss1);
-        Container.Bind<IThoughtLogic>().To<BossCemeteryThoughtLogic>().AsTransient().WithArguments(ThoughtType.BossCemetery);
+        Container.Bind<ISphereArcBuilder>().To<SphereArcBuilder>().AsSingle();
+        Container.Bind<ISphereArcAnimator>().To<SphereArcAnimator>().AsSingle();
+        Container.Bind<BossEnvironmentRegistry>().AsSingle();
+        Container.Bind<SphereArcSpawner>().AsSingle();
+        Container.BindInterfacesAndSelfTo<BossEnvironmentController>().AsSingle();
+
+        Container.Bind<IThoughtHandler>().To<Tier1EnemyThoughtHandler>().AsTransient().WithArguments(ThoughtType.Tier1Enemy);
+        Container.Bind<IThoughtHandler>().To<BossBubbleThoughtHandler>().AsTransient().WithArguments(ThoughtType.Boss1);
+        Container.Bind<IThoughtHandler>().To<BossCemeteryThoughtHandler>().AsTransient().WithArguments(ThoughtType.BossCemetery);
 
         Container.BindInterfacesAndSelfTo<ThoughtFactory>().AsSingle();
         Container.BindInterfacesAndSelfTo<ThoughtSpawner>().AsSingle().OnInstantiated<ThoughtSpawner>((ctx, spawner) =>

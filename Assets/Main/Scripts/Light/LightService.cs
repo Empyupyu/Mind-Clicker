@@ -1,7 +1,6 @@
 ﻿using DG.Tweening;
 using UnityEngine;
 
-//TODO
 public class LightService
 {
     private readonly Light directionLight;
@@ -47,30 +46,13 @@ public class LightService
 
     public void SetEnvironmentLighting(LightConfig config)
     {
-        skyTween?.Kill();
-        equatorTween?.Kill();
-        groundTween?.Kill();
+        KillTweens();
 
-        skyTween = DOTween.To(
-            () => RenderSettings.ambientSkyColor,
-            x => RenderSettings.ambientSkyColor = x,
-            config.SkyColor,
-            config.TransitionDuration
-        );
+        skyTween = AnimateAmbientColor(RenderSettings.ambientSkyColor, RenderSettings.ambientSkyColor, config.SkyColor, config.TransitionDuration);
 
-        equatorTween = DOTween.To(
-            () => RenderSettings.ambientEquatorColor,
-            x => RenderSettings.ambientEquatorColor = x,
-            config.EquatorColor,
-            config.TransitionDuration
-        );
+        equatorTween = AnimateAmbientColor(RenderSettings.ambientSkyColor, RenderSettings.ambientSkyColor, config.EquatorColor, config.TransitionDuration);
 
-        groundTween = DOTween.To(
-            () => RenderSettings.ambientGroundColor,
-            x => RenderSettings.ambientGroundColor = x,
-            config.GroundColor,
-            config.TransitionDuration
-        );
+        groundTween = AnimateAmbientColor(RenderSettings.ambientSkyColor, RenderSettings.ambientSkyColor, config.GroundColor, config.TransitionDuration);
     }
 
     public void SetSunRotate(Vector2 endValue, float duration)
@@ -103,5 +85,22 @@ public class LightService
         {
             RenderSettings.skybox = material;
         });
+    }
+
+    private void KillTweens()
+    {
+        skyTween?.Kill();
+        equatorTween?.Kill();
+        groundTween?.Kill();
+    }
+
+    private Tweener AnimateAmbientColor(Color getter, Color setter, Color target, float duration)
+    {
+        return DOTween.To(
+            () => getter,
+            x => setter = x,
+            target,
+            duration
+        );
     }
 }
