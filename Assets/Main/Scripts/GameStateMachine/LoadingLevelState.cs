@@ -3,19 +3,22 @@ using Main.Scripts.Views;
 using UnityEngine;
 using Zenject;
 
+//TODO
 public class LoadingLevelState : IGameState
 {
     private readonly IGameStateView _loadingView;
     private readonly GameFlowController flowController;
     private readonly GameData gameData;
     private readonly AddressableAssetLoader addressableAssetLoader;
+    private readonly DiContainer diContainer;
 
-    public LoadingLevelState(IGameStateView loadingView, GameFlowController flowController, GameData gameData, AddressableAssetLoader addressableAssetLoader)
+    public LoadingLevelState(IGameStateView loadingView, GameFlowController flowController, GameData gameData, AddressableAssetLoader addressableAssetLoader, DiContainer diContainer)
     {
         this._loadingView = loadingView;
         this.flowController = flowController;
         this.gameData = gameData;
         this.addressableAssetLoader = addressableAssetLoader;
+        this.diContainer = diContainer;
     }
 
     public async UniTask Enter()
@@ -26,12 +29,14 @@ public class LoadingLevelState : IGameState
 
         await UniTask.Delay(500);
 
-        var sceneContext = GameObject.FindObjectOfType<SceneContext>();
-        var level = sceneContext.Container.InstantiatePrefab(handle);
+        //var sceneContext = GameObject.FindObjectOfType<SceneContext>();
+        //var level = sceneContext.Container.InstantiatePrefab(handle);
+        var level = diContainer.InstantiatePrefab(handle);
 
         var gameContext = level.GetComponent<GameObjectContext>();
         gameData.Level = gameContext;
-        gameContext.Install(sceneContext.Container);
+        //gameContext.Install(sceneContext.Container);
+        gameContext.Install(diContainer);
         gameContext.Run();
 
         await UniTask.Delay(1500);

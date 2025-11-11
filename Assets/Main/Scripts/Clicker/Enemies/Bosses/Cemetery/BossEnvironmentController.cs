@@ -1,6 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
+using System;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
+using Zenject;
 
 public class BossEnvironmentController : IBossEnvironmentController
 {
@@ -12,54 +13,59 @@ public class BossEnvironmentController : IBossEnvironmentController
     protected GameObject instance;
     protected IBossEnvironmentView bossEnvironmentView;
 
-    public BossEnvironmentController(LightService lightService, AudioPlayer audioPlayer, BossEnvironmentManifest bossEnvironmentManifest, BossEnvironmentRegistry bossEnvironmentRegistry)
+    private readonly AddressableAssetLoader addressableAssetLoader;
+    private readonly DiContainer diContainer;
+    private string addressableKey;
+
+    public BossEnvironmentController(LightService lightService, AudioPlayer audioPlayer, BossEnvironmentManifest bossEnvironmentManifest, BossEnvironmentRegistry bossEnvironmentRegistry, AddressableAssetLoader addressableAssetLoader, DiContainer diContainer)
     {
         this.lightService = lightService;
         this.audioPlayer = audioPlayer;
         this.bossEnvironmentManifest = bossEnvironmentManifest;
         this.bossEnvironmentRegistry = bossEnvironmentRegistry;
+        this.addressableAssetLoader = addressableAssetLoader;
+        this.diContainer = diContainer;
     }
 
     public virtual async UniTask Initialize(ThoughtType bossType)
     {
         originalSkybox = RenderSettings.skybox;
+        addressableKey = bossEnvironmentRegistry.GetReference(bossType);
+        var result = await addressableAssetLoader.LoadAsset<GameObject>(addressableKey);
 
-        var handle = Addressables.LoadAssetAsync<GameObject>(bossEnvironmentRegistry.GetReference(bossType));
-        await handle.ToUniTask();
+        if (result == null)
+            throw new Exception($"Failed to load environment prefab for {bossType}");
 
-        var prefab = handle.Result;
-        instance = GameObject.Instantiate(prefab);
+        instance = diContainer.InstantiatePrefab(result);
+
         bossEnvironmentView = instance.GetComponent<IBossEnvironmentView>();
+        bossEnvironmentView.ApplySound(audioPlayer);
+        bossEnvironmentView.ApplyLighting(lightService);
 
-        ApplyLighting();
-        ApplySound();
-
-        await bossEnvironmentView.ApplyAnimation();
+        await bossEnvironmentView.PlayAnimationAsync();
     }
 
     public virtual void Cleanup()
     {
-        lightService.ToOriginEnvironmentLighting();
-        lightService.ToOriginSunRotate(GetTransitionDuration());
-        lightService.ChangeSkyBox(originalSkybox, GetTransitionDuration());
+        ApplyOriginLight();
+
+        bossEnvironmentView.StopAnimation();
         audioPlayer.PlayMainSoundTrack();
+
+        addressableAssetLoader.Unload(addressableKey).Forget();
 
         if (instance != null)
             GameObject.Destroy(instance);
+
+        instance = null;
+        bossEnvironmentView = null;
     }
 
-    protected void ApplySound()
+    private void ApplyOriginLight()
     {
-        audioPlayer.ForceStopAmbients();
-        audioPlayer.PlayMusic(bossEnvironmentView.AudioClip, 1f);
-    }
-
-    protected void ApplyLighting()
-    {
-        lightService.SetEnvironmentLighting(bossEnvironmentView.LightConfig);
-        lightService.SetLightIntensity(0.3f, GetTransitionDuration());
-        lightService.SetSunRotate(new Vector2(-4f, 200), GetTransitionDuration());
-        lightService.ChangeSkyBox(bossEnvironmentView.LightConfig.Skybox, GetTransitionDuration());
+        lightService.ToOriginEnvironmentLighting();
+        lightService.ToOriginSunRotate(GetTransitionDuration());
+        lightService.ChangeSkyBox(originalSkybox, GetTransitionDuration());
     }
 
     protected float GetTransitionDuration()

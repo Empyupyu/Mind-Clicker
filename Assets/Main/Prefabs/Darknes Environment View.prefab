@@ -225,6 +225,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3439825353979626907}
+  - component: {fileID: 8323328435121362078}
   m_Layer: 0
   m_Name: Darknes Environment View
   m_TagString: Untagged
@@ -248,6 +249,22 @@ Transform:
   - {fileID: 115229000879226849}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8323328435121362078
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8870393205133243185}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56c798e6b87e4f94c8299ca2bdee0107, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <LightConfig>k__BackingField: {fileID: 0}
+  <TransitionDuration>k__BackingField: 2
+  <AudioClip>k__BackingField: {fileID: 0}
+  <Dog>k__BackingField: {fileID: 0}
 --- !u!1001 &3363638087454292157
 PrefabInstance:
   m_ObjectHideFlags: 0

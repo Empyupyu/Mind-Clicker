@@ -14,18 +14,18 @@ public class MoneyWallet
 
     public bool HasEnough(float price)
     {
-        return playerData.Value.Money >= price;
+        return playerData.Value.SoftCurrency >= price;
     }
 
     public float GetAmount()
     {
-        return playerData.Value.Money;
+        return playerData.Value.SoftCurrency;
     }
 
     public void Put(float amount)
     {
-        playerData.Value.Money += amount;
-        OnPut?.Invoke(playerData.Value.Money);
+        playerData.Value.SoftCurrency += amount;
+        OnPut?.Invoke(playerData.Value.SoftCurrency);
     }
 
     public void Spend(float amount)
@@ -36,7 +36,7 @@ public class MoneyWallet
             return;
         }
 
-        playerData.Value.Money -= amount;
-        OnSpend?.Invoke(playerData.Value.Money);
+        playerData.Value.SoftCurrency -= amount;
+        OnSpend?.Invoke(playerData.Value.SoftCurrency);
     }
 }

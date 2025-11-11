@@ -1,9 +1,9 @@
 {
     "PlayerData": {
         "MindPoints": 0.0,
-        "MindLevel": 3,
+        "MindLevel": 1,
         "CurrentLevel": 0,
-        "Money": 10.0,
+        "Money": 0.0,
         "Upgrades": [
             {
                 "ID": "AddClickDamageEffect",
@@ -28,5 +28,5 @@
         false,
         false
     ],
-    "idSave": 61
+    "idSave": 62
 }

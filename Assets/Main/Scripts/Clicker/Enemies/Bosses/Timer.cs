@@ -5,21 +5,10 @@ using UnityEngine;
 public class Timer
 {
     public event Action OnFinished;
+    public event Action<float> OnTick;
 
-    private readonly TimerView timerViewPrefab;
-    private TimerView timerView;
     private float currentDuration;
     private bool isPaused;
-
-    public Timer(TimerView timerView)
-    {
-        this.timerViewPrefab = timerView;
-    }
-
-    public void Initialize()
-    {
-        timerView = GameObject.Instantiate(timerViewPrefab);
-    }
 
     public void Pause(bool enable)
     {
@@ -28,7 +17,6 @@ public class Timer
 
     public void Disable()
     {
-        GameObject.Destroy(timerView.gameObject);
         currentDuration = 0;
         OnFinished = null;
     }
@@ -45,7 +33,7 @@ public class Timer
 
             currentDuration -= Time.deltaTime;
             currentDuration = Math.Clamp(currentDuration, 0, float.MaxValue);
-            timerView.TimerText.text = string.Format("{0:0.0}", currentDuration);
+            OnTick?.Invoke(currentDuration);
         }
 
         OnFinished?.Invoke();

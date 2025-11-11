@@ -14,9 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <Environments>k__BackingField:
   - BossType: 2
-    EnvironmentPrefab:
-      m_AssetGUID: fcd7338d31273ea42978d0d8a79b3a37
-      m_SubObjectName: 
-      m_SubObjectType: 
-      m_SubObjectGUID: 
-      m_EditorAssetChanged: 0
+    Key: Cemetery Environment VIew
+  - BossType: 3
+    Key: Phone Environment View
+  - BossType: 5
+    Key: Darknes Environment View

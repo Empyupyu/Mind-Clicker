@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-public class ThoughtLifecycleService : IThoughtLifecycleService
+public class ThoughtLifecycleService : IThoughtLifecycleService, IDisposable
 {
     public event Action<NegativeThought> OnDestroy;
 
@@ -50,5 +50,10 @@ public class ThoughtLifecycleService : IThoughtLifecycleService
     {
         foreach (var thought in activeThoughts.ToList())
             Unregister(thought);
+    }
+
+    public void Dispose()
+    {
+        UnregisterAll();
     }
 }

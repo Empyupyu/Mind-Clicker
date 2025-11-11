@@ -9,7 +9,9 @@ public class PlayerData
 
     public int CurrentLevel;
 
-    public float Money;
+    public float SoftCurrency;
+    public float HardCurrency;
+    public bool AdvertisementIsDisabled;
 
     public List<UpgradeProgress> Upgrades;
     public List<MindLevel> MindLevelsProgress;

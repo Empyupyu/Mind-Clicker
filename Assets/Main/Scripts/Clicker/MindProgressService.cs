@@ -1,16 +1,17 @@
 ﻿using Cysharp.Threading.Tasks;
 using Main.Scripts.Views;
+using System;
 using System.Threading;
 using UnityEngine;
 
-public class MindProgressService : IMindProgressService
+public class MindProgressService : IMindProgressService, IDisposable
 {
     private readonly PlayerDataRef playerData;
     private readonly Mind mind;
     private readonly MindView view;
     private readonly ThoughtSpawner spawner;
 
-    private CancellationTokenSource cts;
+    private CancellationTokenSource farimngCts;
     private bool isFarming;
     private bool isBlockFarming;
 
@@ -27,14 +28,14 @@ public class MindProgressService : IMindProgressService
         if (isFarming || isBlockFarming) return;
         isFarming = true;
 
-        cts = new CancellationTokenSource();
-        FarmingLoop(cts.Token).Forget();
+        farimngCts = new CancellationTokenSource();
+        FarmingLoop(farimngCts.Token).Forget();
     }
 
     public void StopFarming()
     {
         isFarming = false;
-        cts?.Cancel();
+        farimngCts?.Cancel();
     }
 
     public void Redraw()
@@ -63,4 +64,9 @@ public class MindProgressService : IMindProgressService
     }
 
     private bool HasBadThoughts() => spawner.GetTarget() != null;
+
+    public void Dispose()
+    {
+        farimngCts?.Cancel();
+    }
 }

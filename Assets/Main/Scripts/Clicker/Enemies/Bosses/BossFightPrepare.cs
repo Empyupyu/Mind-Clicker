@@ -10,15 +10,17 @@ public class BossFightPrepare : IDisposable
     private readonly Timer timer;
     private readonly ThoughtSpawner thoughtSpawner;
     private readonly BossUIView bossUIView;
-
+    private readonly TimerView timerView;
+    private TimerView timerViewInstance;
     private BossUIView bossViewInstance;
 
-    public BossFightPrepare(Mind mind, Timer timer, ThoughtSpawner thoughtSpawner, BossUIView bossUIView)
+    public BossFightPrepare(Mind mind, Timer timer, ThoughtSpawner thoughtSpawner, BossUIView bossUIView, TimerView timerView)
     {
         this.mind = mind;
         this.timer = timer;
         this.thoughtSpawner = thoughtSpawner;
         this.bossUIView = bossUIView;
+        this.timerView = timerView;
     }
 
     public void Prepare()
@@ -27,13 +29,18 @@ public class BossFightPrepare : IDisposable
         bossViewInstance = GameObject.Instantiate(bossUIView);
     }
 
-    //TODO
     public void StartFight()
     {
-        timer.Initialize();
+        timerViewInstance = GameObject.Instantiate(timerView);
+        timer.OnTick += RedrawView;
         timer.StartTimer(60).Forget();
 
         timer.OnFinished += TimerFinished;
+    }
+
+    private void RedrawView(float time)
+    {
+        timerViewInstance.Redraw(string.Format("{0:0.0}", time));
     }
 
     private void TimerFinished()
@@ -57,6 +64,7 @@ public class BossFightPrepare : IDisposable
     private void RemoveBossView()
     {
         GameObject.Destroy(bossViewInstance.gameObject);
+        GameObject.Destroy(timerViewInstance.gameObject);
     }
 
     public void Dispose()

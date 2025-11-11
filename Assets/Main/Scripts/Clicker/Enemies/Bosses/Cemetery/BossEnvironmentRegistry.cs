@@ -1,19 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using UnityEngine.AddressableAssets;
 
 public class BossEnvironmentRegistry
 {
-    private readonly Dictionary<ThoughtType, AssetReferenceGameObject> references;
+    private readonly Dictionary<ThoughtType, string> references;
 
     public BossEnvironmentRegistry(BossEnvironmentManifest manifest)
     {
         references = manifest.Environments
-            .Where(e => e.EnvironmentPrefab != null)
-            .ToDictionary(e => e.BossType, e => e.EnvironmentPrefab);
+            .Where(e => e.Key != "")
+            .ToDictionary(e => e.BossType, e => e.Key);
     }
 
-    public AssetReferenceGameObject GetReference(ThoughtType bossType)
+    public string GetReference(ThoughtType bossType)
     {
         return references.TryGetValue(bossType, out var reference) ? reference : null;
     }

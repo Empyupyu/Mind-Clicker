@@ -7,5 +7,8 @@ public interface IBossEnvironmentView
     public float TransitionDuration { get;}
     public AudioClip AudioClip { get;}
 
-    public UniTask ApplyAnimation();
+    public UniTask PlayAnimationAsync();
+    public void StopAnimation();
+    public void ApplyLighting(LightService lightService);
+    public void ApplySound(AudioPlayer audioPlayer);
 }

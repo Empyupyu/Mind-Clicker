@@ -1,2 +1,5 @@
 Authorization v1.022
+InterstitialAdv v1.01
+RewardedAdv v1.011
+StickyAdv v1.0
 Storage v1.021

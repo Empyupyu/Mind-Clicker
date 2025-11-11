@@ -5,4 +5,5 @@
     BossCemetery,
     BossPhone,
     EliteEnemy,
+    BossDarkness,
 }
