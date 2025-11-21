@@ -7,13 +7,13 @@ public class GameServiceInstaller : MonoInstaller
         Container.Bind<PlayerData>().AsSingle();
         Container.Bind<PlayerDataRef>().AsSingle();
         Container.Bind<GameData>().AsSingle();
+        Container.BindInterfacesAndSelfTo<LevelMusicFlow>().AsSingle();
+        Container.Bind<IModuleInitializer>().To<ModuleInitializer>().AsSingle();
+        Container.Bind<ILevelLoader>().To<LevelLoader>().AsSingle();
+      
+        var priorities = Container.Resolve<ModulePrioritiesConfig>();
+        Container.BindInterfacesAndSelfTo<SaveLoadService>().AsSingle().WithArguments(priorities.SaveLoad);
 
-        Container.Bind<SaveLoadService>().AsSingle();
         Container.Bind<AddressableAssetLoader>().AsSingle();
-
-        Container.Bind<GameFlowController>().FromNewComponentOnNewGameObject()
-            .WithGameObjectName("GameFlowController")
-            .AsSingle()
-            .NonLazy();
     }
 }

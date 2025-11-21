@@ -3,8 +3,9 @@ using System.Threading;
 using System;
 using UnityEngine;
 using System.Collections.Generic;
+using Zenject;
 
-public class AudioPlayer : MonoBehaviour, IDisposable
+public class AudioPlayer : MonoBehaviour
 {
     public event Action<AudioClip> OnTrackFinished;
 
@@ -13,55 +14,23 @@ public class AudioPlayer : MonoBehaviour, IDisposable
     [SerializeField] private AudioSource ambiantSource;
     [SerializeField] private AudioSource sfxSource;
 
-    [SerializeField] private AudioClip[] musicClips;
-    [SerializeField] private AudioClip openingAmbiantClip;
-    [SerializeField] private AudioClip gameAmbiantClip;
-
-    [Header("Fade Settings")]
-    [SerializeField] private float fadeOutDuration = 1f;
-
+    private AudioConfig audioConfig;
     private CancellationTokenSource fadeToken;
     private CancellationTokenSource sequenceToken;
+    private SignalBus signalBus;
+    private const string VolumeParam = "MasterVolume";
 
-    public AudioClip[] GetMusicClips() 
+    [Inject]
+    public void Construct(SignalBus signalBus, AudioConfig audioConfig)
     {
-        return musicClips;
+        this.signalBus = signalBus;
+        this.audioConfig = audioConfig;
     }
 
-    public async UniTask Opening()
+    private void OnEnable()
     {
-        var sequence = new List<(AudioClip, float)>
-        {
-         (openingAmbiantClip, 0.04f),
-         (gameAmbiantClip, 1f),
-         (gameAmbiantClip, .7f),
-        };
-
-        await SequenceMusic(sequence, 7500);
-    }
-
-    public void LoopMusicInGame()
-    {
-        var sequence = new List<(AudioClip, float)>
-        {
-         (gameAmbiantClip, .01f),
-         (gameAmbiantClip, 1f),
-         (gameAmbiantClip, .7f),
-        };
-
-        SequenceMusic(sequence, 15000).Forget();
-    }
-
-    public void PlayMainSoundTrack()
-    {
-        var sequence = new List<(AudioClip, float)>
-        {
-         (gameAmbiantClip, .01f),
-         (gameAmbiantClip, 1f),
-         (gameAmbiantClip, .7f),
-        };
-
-        SequenceMusic(sequence, 0).Forget();
+        signalBus.Subscribe<SoundEffectSignal>(OnSoundSignal);
+        signalBus.Subscribe<MuteSoundsSignal>(MuteSounds);
     }
 
     public void SetMusicVolume(float volumePercent)
@@ -76,24 +45,19 @@ public class AudioPlayer : MonoBehaviour, IDisposable
         sfxSource.PlayOneShot(clip, Mathf.Clamp01(volume));
     }
 
-    public void Dispose()
-    {
-        OnTrackFinished = null;
-    }
-
     public void ForceStopAmbients()
     {
         sequenceToken?.Cancel();
         ambiantSource?.Stop();
     }
 
-    private async UniTask SequenceMusic(List<(AudioClip, float)> sequence, int delayBeforePlayMusic)
+    public async UniTask SequenceMusic(List<(AudioClip, float)> sequence, int delayBeforePlayMusic)
     {
         PlayAmbientSequence(sequence);
 
         await UniTask.Delay(delayBeforePlayMusic);
 
-        PlayMusic(musicClips[UnityEngine.Random.Range(0, musicClips.Length)], 1);
+        PlayMusic(audioConfig.MusicClips[UnityEngine.Random.Range(0, audioConfig.MusicClips.Length)], 1);
     }
 
     private void PlayAmbientSequence(List<(AudioClip clip, float durationPercent)> sequence)
@@ -104,6 +68,30 @@ public class AudioPlayer : MonoBehaviour, IDisposable
         sequenceToken = new CancellationTokenSource();
 
         PlaySequenceAsync(sequence, sequenceToken.Token).Forget();
+    }
+
+    private void MuteSounds(MuteSoundsSignal muteSoundsSignal)
+    {
+#if UNITY_EDITOR
+        Debug.Log("Muted sounds is [" + muteSoundsSignal.Muted + "]");
+#endif
+
+        if (muteSoundsSignal.Muted)
+        {
+            musicSource.Pause();
+            ambiantSource.Pause();
+            musicSource.outputAudioMixerGroup.audioMixer.SetFloat(VolumeParam, -80f);
+            return;
+        }
+
+        musicSource.UnPause();
+        ambiantSource.UnPause();
+        musicSource.outputAudioMixerGroup.audioMixer.SetFloat(VolumeParam, 0f);
+    }
+
+    private void OnSoundSignal(SoundEffectSignal signal)
+    {
+        PlaySFX(signal.AudioClip, signal.Volume);
     }
 
     private async UniTaskVoid PlaySequenceAsync(List<(AudioClip clip, float durationPercent)> sequence, CancellationToken token)
@@ -118,19 +106,19 @@ public class AudioPlayer : MonoBehaviour, IDisposable
             ambiantSource.Play();
 
             float playDuration = clip.length * durationPercent;
-            float waitTime = Mathf.Max(0f, playDuration - fadeOutDuration);
+            float waitTime = Mathf.Max(0f, playDuration - audioConfig.FadeOutDuration);
 
             await UniTask.Delay(TimeSpan.FromSeconds(waitTime), cancellationToken: token);
 
             float startVolume = ambiantSource.volume;
             float elapsed = 0f;
 
-            while (elapsed < fadeOutDuration)
+            while (elapsed < audioConfig.FadeOutDuration)
             {
                 if (token.IsCancellationRequested) return;
 
                 elapsed += Time.deltaTime;
-                float t = 1f - (elapsed / fadeOutDuration);
+                float t = 1f - (elapsed / audioConfig.FadeOutDuration);
                 ambiantSource.volume = Mathf.Lerp(0f, startVolume, t);
                 await UniTask.Yield();
             }
@@ -160,18 +148,18 @@ public class AudioPlayer : MonoBehaviour, IDisposable
 
     private async UniTaskVoid FadeOutAndStopAsync(float delay, CancellationToken token)
     {
-        float waitTime = Mathf.Max(0f, delay - fadeOutDuration);
+        float waitTime = Mathf.Max(0f, delay - audioConfig.FadeOutDuration);
         await UniTask.Delay(TimeSpan.FromSeconds(waitTime), cancellationToken: token);
 
         float startVolume = musicSource.volume;
         float elapsed = 0f;
 
-        while (elapsed < fadeOutDuration)
+        while (elapsed < audioConfig.FadeOutDuration)
         {
             if (token.IsCancellationRequested) return;
 
             elapsed += Time.deltaTime;
-            float t = 1f - (elapsed / fadeOutDuration);
+            float t = 1f - (elapsed / audioConfig.FadeOutDuration);
             musicSource.volume = Mathf.Lerp(0f, startVolume, t);
             await UniTask.Yield();
         }
@@ -180,5 +168,16 @@ public class AudioPlayer : MonoBehaviour, IDisposable
         musicSource.volume = 1f;
 
         OnTrackFinished?.Invoke(musicSource.clip);
+    }
+
+    private void OnDisable()
+    {
+        OnTrackFinished = null;
+        signalBus.Unsubscribe<SoundEffectSignal>(OnSoundSignal);
+        signalBus.Unsubscribe<MuteSoundsSignal>(MuteSounds);
+        fadeToken?.Cancel();
+        fadeToken?.Dispose();
+        sequenceToken?.Cancel();
+        sequenceToken?.Dispose();
     }
 }

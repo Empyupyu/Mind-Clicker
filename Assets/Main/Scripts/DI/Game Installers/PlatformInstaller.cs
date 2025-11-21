@@ -7,9 +7,20 @@ public class PlatformInstaller : MonoInstaller
     public override void InstallBindings()
     {
         var providerClass = PlayerDataProviderFactory.GetProviderType(projectSettingsConfig.PlayerDataProviderType);
-        var advertismentProvider = AdvertismentProviderFactory.GetProviderType(projectSettingsConfig.PlayerDataProviderType);
-
         Container.Bind(typeof(IPlayerDataProvider)).To(providerClass).AsSingle();
-        Container.BindInterfacesAndSelfTo(advertismentProvider).AsSingle();
+
+        switch (projectSettingsConfig.PlayerDataProviderType)
+        {
+            case PlayerDataProviderType.Yandex:
+                YandexInstaller.Install(Container);
+                break;
+
+            case PlayerDataProviderType.Steam:
+                break;
+
+            case PlayerDataProviderType.Local:
+                LocalInstaller.Install(Container);
+                break;
+        }
     }
 }

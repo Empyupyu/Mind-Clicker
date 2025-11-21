@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: NegativeThoughtForm 5
   m_EditorClassIdentifier: 
   <ThoughtType>k__BackingField: 0
-  <Id>k__BackingField: 1
+  <Id>k__BackingField: 5
   <Name>k__BackingField: 123
   <Icon>k__BackingField: {fileID: 21300000, guid: 817c5cbc269d2b344848a36aab84b6cf, type: 3}
   <Health>k__BackingField: 0
   <Money>k__BackingField: 5
+  <SpawnPointDirection>k__BackingField: -1
   <Head>k__BackingField: {fileID: 5574802840941641288, guid: 0bd3d8bf591a456479bcb6577984b0aa, type: 3}
   <Body>k__BackingField: {fileID: 5574802840941641288, guid: 0bd3d8bf591a456479bcb6577984b0aa, type: 3}

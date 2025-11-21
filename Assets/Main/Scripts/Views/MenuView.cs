@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Main.Scripts.Views
 {
-    public class MenuView : MonoBehaviour, IGameStateView
+    public class MenuView : MonoBehaviour, ILoadingView
     {
         public void Show()
         {

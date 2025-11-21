@@ -33,7 +33,7 @@ public class UpgradeController : IInitializable
             var upgradeData = upgrades[i];
             var effect = upgradeData.Effect;
 
-            bool isUnlocked = i < InitialUnlockedCount;
+            bool isUnlocked = i < InitialUnlockedCount || upgradeData.UpgradeProgress.Level > 0;
             var view = upgradeViewFactory.Create(effect, i, isUnlocked);
 
             if (isUnlocked)

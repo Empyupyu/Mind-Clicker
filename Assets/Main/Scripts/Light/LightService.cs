@@ -32,18 +32,6 @@ public class LightService
         intensityTween = directionLight.DOIntensity(endValue, duration);
     }
 
-    public void ToOriginLightIntesity(float duration)
-    {
-        intensityTween?.Kill();
-
-        intensityTween = directionLight.DOIntensity(originLightIntensity, duration);
-    }
-
-    public void ToOriginEnvironmentLighting()
-    {
-        SetEnvironmentLighting(originLightConfig);
-    }
-
     public void SetEnvironmentLighting(LightConfig config)
     {
         KillTweens();
@@ -61,15 +49,20 @@ public class LightService
         rotateTween = directionLight.transform.DOLocalRotate(endValue, duration);
     }
 
-    public void ToOriginSunRotate(float duration)
+    public void ToOrigin()
     {
-        rotateTween?.Kill();
-        rotateTween = directionLight.transform.DOLocalRotate(originSunRotate, duration);
+        ToOriginSunRotate();
+        ToOriginLightIntesity();
+        SetEnvironmentLighting(originLightConfig);
+        ChangeSkyBox(originLightConfig.Skybox, originLightConfig.TransitionDuration);
     }
 
     public void ChangeSkyBox(Material material, float duration)
     {
         Material targetMaterial = RenderSettings.skybox;
+
+        if (targetMaterial == material) return;
+
         transitionMaterial = new Material(RenderSettings.skybox);
         RenderSettings.skybox = transitionMaterial;
 
@@ -85,6 +78,23 @@ public class LightService
         {
             RenderSettings.skybox = material;
         });
+    }
+
+    private void ToOriginSunRotate()
+    {
+        SetSunRotate(originSunRotate, originLightConfig.TransitionDuration);
+    }
+
+    private void ToOriginLightIntesity()
+    {
+        intensityTween?.Kill();
+
+        intensityTween = directionLight.DOIntensity(originLightIntensity, originLightConfig.TransitionDuration);
+    }
+
+    private void ToOriginEnvironmentLighting()
+    {
+        SetEnvironmentLighting(originLightConfig);
     }
 
     private void KillTweens()

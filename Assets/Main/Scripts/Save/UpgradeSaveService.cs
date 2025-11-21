@@ -19,14 +19,13 @@ public class UpgradeSaveService : IInitializable, IDisposable
         upgrade.OnUpgrade += SaveUpgrade;
     }
 
-    private void SaveUpgrade(UpgradeData upgradeData)
-    {
-        saveLoadService.Save(playerData.Value);
-    }
-
     public void Dispose()
     {
         upgrade.OnUpgrade -= SaveUpgrade;
     }
-}
 
+    private void SaveUpgrade(UpgradeData upgradeData)
+    {
+        saveLoadService.Save(playerData.Value);
+    }
+}

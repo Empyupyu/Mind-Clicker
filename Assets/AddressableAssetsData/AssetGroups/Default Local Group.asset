@@ -15,8 +15,13 @@ MonoBehaviour:
   m_GroupName: Default Local Group
   m_GUID: fbc6f920157c7ad4aa8915ca0914c31c
   m_SerializeEntries:
+  - m_GUID: 563ed68617e1fa94fbb4014ba787d3e7
+    m_Address: Advertisement Timer View
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a02241ef3270e4b46b01cc47365cab9d
-    m_Address: Darknes Environment View
+    m_Address: Phone Environment View
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

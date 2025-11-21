@@ -3,7 +3,9 @@
         "MindPoints": 0.0,
         "MindLevel": 1,
         "CurrentLevel": 0,
-        "Money": 0.0,
+        "SoftCurrency": 0.0,
+        "HardCurrency": 0.0,
+        "AdvertisementIsDisabled": false,
         "Upgrades": [
             {
                 "ID": "AddClickDamageEffect",
@@ -28,5 +30,5 @@
         false,
         false
     ],
-    "idSave": 62
+    "idSave": 83
 }

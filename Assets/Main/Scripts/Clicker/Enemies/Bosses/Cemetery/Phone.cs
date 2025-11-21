@@ -17,11 +17,13 @@ public class Phone : MonoBehaviour
 
     public async UniTask PlayRoutine(CancellationToken token)
     {
+        await UniTask.Delay(2500, cancellationToken: token);
+
         while (!token.IsCancellationRequested)
         {
             audioPlayer.PlaySFX(ringClip);
             particles.Play();
-            await UniTask.Delay(2000, cancellationToken: token);
+            await UniTask.Delay(5000, cancellationToken: token);
         }
     }
 }

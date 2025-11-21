@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Main.Scripts.Views
 {
-    public class LoadingView : MonoBehaviour, IGameStateView
+    public class LoadingView : MonoBehaviour, ILoadingView
     {
         [SerializeField] private CutoutUIComponent cutoutUIComponent;
 

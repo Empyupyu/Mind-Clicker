@@ -9,7 +9,7 @@ public class GameViewInstaller : MonoInstaller
 
     public override void InstallBindings()
     {
-        Container.Bind<IGameStateView>().FromComponentInNewPrefab(loadingView).AsSingle();
+        Container.Bind<ILoadingView>().FromComponentInNewPrefab(loadingView).AsSingle();
         Container.Bind<AudioPlayer>().FromInstance(audioPlayer).AsSingle();
     }
 }

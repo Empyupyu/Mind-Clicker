@@ -1,7 +1,8 @@
 ﻿using Cysharp.Threading.Tasks;
 using System;
+using Zenject;
 
-public class ThoughtSpawner : IThoughtSpawner, IDisposable
+public class ThoughtSpawner : IInitializable, IThoughtSpawner, IDisposable
 {
     public event Action OnSpawn;
     public event Action<NegativeThought> OnDestroy;
@@ -40,7 +41,10 @@ public class ThoughtSpawner : IThoughtSpawner, IDisposable
         this.timing = timing;
         this.config = config;
         this.playerData = playerData;
+    }
 
+    public void Initialize()
+    {
         onThoughtDestroyedHandler = thought => OnDestroy?.Invoke(thought);
         lifecycle.OnDestroy += onThoughtDestroyedHandler;
     }

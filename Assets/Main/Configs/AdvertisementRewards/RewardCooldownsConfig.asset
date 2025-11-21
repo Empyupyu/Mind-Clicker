@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13123211168e6cf4cba18988e7bb9e49, type: 3}
+  m_Name: RewardCooldownsConfig
+  m_EditorClassIdentifier: 
+  <Cooldowns>k__BackingField:
+  - RewardId: 1
+    CooldownHours: 0.155
+    ResetNextDay: 0
+  - RewardId: 0
+    CooldownHours: 0
+    ResetNextDay: 1

@@ -3,7 +3,7 @@ using System;
 using UnityEngine;
 using Zenject;
 
-public class MindController : IInitializable, IDisposable, ITickable
+public class MindController : IInitializable, ITickable, IDisposable
 {
     private readonly Mind mind;
     private readonly ThoughtSpawner spawner;

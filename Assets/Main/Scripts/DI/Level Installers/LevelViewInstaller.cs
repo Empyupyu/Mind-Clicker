@@ -21,7 +21,6 @@ public class LevelViewInstaller : MonoInstaller
         Container.Bind<MoneyView>().FromInstance(moneyView).AsSingle();
         Container.Bind<CharacterView>().FromInstance(characterView).AsSingle();
         Container.Bind<ThoughtUIView>().FromInstance(thoughtViewPrefab).AsSingle();
-        //Container.Bind<CemeteryEnvironmentView>().FromInstance(cemeteryEnvironmentView).AsSingle();
         Container.Bind<Light>().FromInstance(directionLight).AsSingle();
         Container.Bind<MindView>().FromComponentInNewPrefab(mindView).AsSingle();
         Container.Bind<UpgradeShopView>().FromComponentInNewPrefab(upgradeShopView).AsSingle();

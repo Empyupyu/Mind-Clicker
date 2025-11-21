@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Zenject;
+﻿using Zenject;
 
 public class ThoughtInstaller : MonoInstaller
 {
@@ -21,6 +20,7 @@ public class ThoughtInstaller : MonoInstaller
         Container.Bind<IThoughtHandler>().To<Tier1EnemyThoughtHandler>().AsTransient().WithArguments(ThoughtType.Tier1Enemy);
         Container.Bind<IThoughtHandler>().To<BossBubbleThoughtHandler>().AsTransient().WithArguments(ThoughtType.Boss1);
         Container.Bind<IThoughtHandler>().To<BossCemeteryThoughtHandler>().AsTransient().WithArguments(ThoughtType.BossCemetery);
+        Container.Bind<IThoughtHandler>().To<BossPhoneThoughtHandler>().AsTransient().WithArguments(ThoughtType.BossPhone);
 
         Container.BindInterfacesAndSelfTo<ThoughtFactory>().AsSingle();
         Container.BindInterfacesAndSelfTo<ThoughtSpawner>().AsSingle().OnInstantiated<ThoughtSpawner>((ctx, spawner) =>

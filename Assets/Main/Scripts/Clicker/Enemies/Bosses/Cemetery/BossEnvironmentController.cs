@@ -9,6 +9,7 @@ public class BossEnvironmentController : IBossEnvironmentController
     protected readonly BossEnvironmentRegistry bossEnvironmentRegistry;
     protected readonly LightService lightService;
     protected readonly AudioPlayer audioPlayer;
+    private readonly LevelMusicFlow levelMusicFlow;
     protected Material originalSkybox;
     protected GameObject instance;
     protected IBossEnvironmentView bossEnvironmentView;
@@ -17,10 +18,18 @@ public class BossEnvironmentController : IBossEnvironmentController
     private readonly DiContainer diContainer;
     private string addressableKey;
 
-    public BossEnvironmentController(LightService lightService, AudioPlayer audioPlayer, BossEnvironmentManifest bossEnvironmentManifest, BossEnvironmentRegistry bossEnvironmentRegistry, AddressableAssetLoader addressableAssetLoader, DiContainer diContainer)
+    public BossEnvironmentController(
+        LightService lightService, 
+        AudioPlayer audioPlayer,
+        LevelMusicFlow levelMusicFlow,
+        BossEnvironmentManifest bossEnvironmentManifest,
+        BossEnvironmentRegistry bossEnvironmentRegistry,
+        AddressableAssetLoader addressableAssetLoader,
+        DiContainer diContainer)
     {
         this.lightService = lightService;
         this.audioPlayer = audioPlayer;
+        this.levelMusicFlow = levelMusicFlow;
         this.bossEnvironmentManifest = bossEnvironmentManifest;
         this.bossEnvironmentRegistry = bossEnvironmentRegistry;
         this.addressableAssetLoader = addressableAssetLoader;
@@ -50,7 +59,7 @@ public class BossEnvironmentController : IBossEnvironmentController
         ApplyOriginLight();
 
         bossEnvironmentView.StopAnimation();
-        audioPlayer.PlayMainSoundTrack();
+        levelMusicFlow.PlayMainSoundTrack();
 
         addressableAssetLoader.Unload(addressableKey).Forget();
 
@@ -63,13 +72,6 @@ public class BossEnvironmentController : IBossEnvironmentController
 
     private void ApplyOriginLight()
     {
-        lightService.ToOriginEnvironmentLighting();
-        lightService.ToOriginSunRotate(GetTransitionDuration());
-        lightService.ChangeSkyBox(originalSkybox, GetTransitionDuration());
-    }
-
-    protected float GetTransitionDuration()
-    {
-        return bossEnvironmentView.TransitionDuration;
+        lightService.ToOrigin();
     }
 }

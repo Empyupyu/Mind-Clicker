@@ -19,15 +19,12 @@ public class PhoneEnvironmentView : MonoBehaviour, IBossEnvironmentView
 
     public void ApplyLighting(LightService lightService)
     {
-        lightService.SetEnvironmentLighting(LightConfig);
-        lightService.SetLightIntensity(0.3f, TransitionDuration);
-        lightService.SetSunRotate(new Vector2(-4f, 200), TransitionDuration);
-        lightService.ChangeSkyBox(LightConfig.Skybox, TransitionDuration);
+   
     }
 
     public void ApplySound(AudioPlayer audioPlayer)
     {
-        audioPlayer.PlaySFX(AudioClip);
+
     }
 
     public void StopAnimation()

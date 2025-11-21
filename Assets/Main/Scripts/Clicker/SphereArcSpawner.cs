@@ -1,8 +1,10 @@
 ﻿using DG.Tweening;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//TODO
 public class SphereArcSpawner
 {
     public event Action<SpawnPoint> OnSpawnCompleted;
@@ -60,18 +62,25 @@ public class SphereArcSpawner
         view.transform.localPosition = Vector3.zero;
         view.transform.localScale = Vector3.zero;
 
-        view.transform.DOScale(.00053f, 1f)
-            .From(0)
-            .SetDelay((arcPoints.Count - 1) * spawnPoint.Data.DelayStep)
-            .OnComplete(() => OnSpawnCompleted?.Invoke(spawnPoint));
+        DOTween.Sequence()
+            .AppendInterval(1)
+            .AppendCallback(() =>
+            {
+                var cam = Camera.main;
+                var sphereWorldCenter = anchor.transform.position;
 
-        AlignCanvas(view.transform, anchor.transform, Camera.main);
-        view.gameObject.SetActive(true);
-    }
+                var screenPos = cam.WorldToScreenPoint(sphereWorldCenter);
+                screenPos.z = Mathf.Max(screenPos.z - 0.58f, 0.1f);
 
-    private void AlignCanvas(Transform canvas, Transform sphere, Camera cam, float offset = -0.55f)
-    {
-        canvas.rotation = Quaternion.LookRotation(cam.transform.forward, cam.transform.up);
-        canvas.localPosition = sphere.InverseTransformDirection(cam.transform.forward * offset);
+                var canvasWorldPos = cam.ScreenToWorldPoint(screenPos);
+
+                view.transform.position = canvasWorldPos;
+                view.transform.rotation = Quaternion.LookRotation(cam.transform.forward, cam.transform.up);
+                view.gameObject.SetActive(true);
+            })
+            .Append(view.transform.DOScale(.00053f, 1f)
+                .From(0)
+                .SetDelay((arcPoints.Count - 1) * spawnPoint.Data.DelayStep)
+                .OnComplete(() => OnSpawnCompleted?.Invoke(spawnPoint)));
     }
 }
