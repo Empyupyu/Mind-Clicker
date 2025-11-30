@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <NegativeThoughtLevels>k__BackingField:
   - {fileID: 11400000, guid: 31869703c04bab649ac053e11b91d50f, type: 2}
+  - {fileID: 11400000, guid: 72b4c5e2c7d0c7745bc469a2a2cf6446, type: 2}
   - {fileID: 11400000, guid: ec1a7cca682d3e24ea0ef6120c835389, type: 2}
+  - {fileID: 11400000, guid: d4535cb5874b1db4583991917c234e5e, type: 2}
   - {fileID: 11400000, guid: 0907757121c35fc43b8d8f1677831fe7, type: 2}
   - {fileID: 11400000, guid: 6c09c5ec57136ba499f4785fcc6e0aa0, type: 2}
   - {fileID: 11400000, guid: 82ef33d2b59f9ad48aaba8d59657a7d5, type: 2}
@@ -22,7 +24,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 9f6f0fbeae0d80348b516b29c0aa8a75, type: 2}
   - {fileID: 11400000, guid: 05d89daaa2880af47968d0101e60c12f, type: 2}
   - {fileID: 11400000, guid: 10de29266769de64ab0d82861a243e6c, type: 2}
-  - {fileID: 11400000, guid: d4535cb5874b1db4583991917c234e5e, type: 2}
   - {fileID: 11400000, guid: f8d1d9d0938c28742aa2ff96a7353bdf, type: 2}
   <MaxThoughtsInGame>k__BackingField: 5
   <BaseHP>k__BackingField: 5

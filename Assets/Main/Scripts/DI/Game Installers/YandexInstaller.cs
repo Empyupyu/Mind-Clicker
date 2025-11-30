@@ -1,5 +1,4 @@
-﻿using TMPro;
-using Zenject;
+﻿using Zenject;
 
 public class YandexInstaller : Installer<YandexInstaller>
 {
@@ -16,20 +15,21 @@ public class YandexInstaller : Installer<YandexInstaller>
     {
         Container.Bind<IEnvironmentProvider>().To<YandexEnvironmentProvider>().AsSingle();
 
-        BindAdvertisement();
         BindAuthorization();
-        BindGameModules();
+        BindAnalytics();
+        BindAdvertisement();
     }
 
     private void BindAdvertisement()
     {
         var advertismentProvider = AdvertismentProviderFactory.GetProviderType(projectSettingsConfig.PlayerDataProviderType);
         Container.BindInterfacesAndSelfTo(advertismentProvider).AsSingle();
-        
+
         Container.BindInterfacesAndSelfTo<AdvertisementService>().AsSingle();
         Container.Bind<AdvertisementRewardService>().AsSingle().WithArguments(modulePrioritiesConfig.AdvertisementReward);
         Container.Bind<AdvertisementRewardRegistry>().AsSingle();
         Container.Bind<AdvertisementRewardCooldownService>().AsSingle();
+        Container.BindInterfacesAndSelfTo<AdvertisementController>().AsSingle().WithArguments(modulePrioritiesConfig.Advertisement);
 
         BindRewardHandlers();
         BindInterstitialTriggers();
@@ -53,15 +53,18 @@ public class YandexInstaller : Installer<YandexInstaller>
             .AsTransient();
     }
 
-    private void BindGameModules()
+    private void BindAnalytics()
     {
-        Container.Bind<IGameModule>().To<AuthorizationModule>().AsSingle().WithArguments(modulePrioritiesConfig.Authorization);
-        Container.BindInterfacesAndSelfTo<AdvertisementController>().AsSingle().WithArguments(modulePrioritiesConfig.Advertisement);
+        Container.BindInterfacesAndSelfTo<AnalyticsMediator>().AsSingle();
+        Container.Bind<IAnalyticsProvider>().To<YandexMetricaAnalyticsProvider>().AsSingle();
+        Container.Bind<IAnalytics>().To<AnalyticsService>().AsSingle();
+        Container.Bind<IGameModule>().To<AnalyticsModule>().AsSingle().WithArguments(modulePrioritiesConfig.Analytics);
     }
 
     private void BindAuthorization()
     {
         Container.Bind<AuthorizationService>().AsSingle();
         Container.Bind<IAuthorizationProvider>().To<YandexAuthorizationProvider>().AsSingle();
+        Container.Bind<IGameModule>().To<AuthorizationModule>().AsSingle().WithArguments(modulePrioritiesConfig.Authorization);
     }
 }

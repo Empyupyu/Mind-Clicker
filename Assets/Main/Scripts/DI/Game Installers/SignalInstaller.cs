@@ -6,7 +6,7 @@ public class SignalInstaller : MonoInstaller
     {
         SignalBusInstaller.Install(Container);
 
-        Container.DeclareSignal<LevelLoadedSignal>();
+        Container.DeclareSignal<GameLoadedSignal>();
         Container.DeclareSignal<SoundEffectSignal>();
         Container.DeclareSignal<MuteSoundsSignal>();
         Container.DeclareSignal<AdvertisementRewardButtonClickedSignal>();

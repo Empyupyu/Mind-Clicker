@@ -10,13 +10,13 @@ public class UpgradeViewFactory : IUpgradeViewFactory
         this.shopView = shopView;
     }
 
-    public UpgradeStateView Create(IUpgradeEffect effect, int index, bool unlocked)
+    public UpgradeStateView Create(UpgradeConfig config, int index, bool unlocked)
     {
         var view = GameObject.Instantiate(shopView.UpgradeStateView, shopView.ContentContainer);
         view.GetComponent<RectTransform>().localPosition = new Vector3(0, -index * shopView.OffsetBetweenUpgradeView.y, 0);
 
         view.SetState(unlocked ? UpgradeViewState.Unlocked : UpgradeViewState.Locked);
-        view.SetIcon(effect.UpgradeConfig.Icon);
+        view.SetIcon(config.Icon);
 
         return view;
     }

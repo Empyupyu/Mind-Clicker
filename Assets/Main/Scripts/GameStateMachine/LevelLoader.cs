@@ -9,7 +9,11 @@ public class LevelLoader : ILevelLoader
     private readonly GameData gameData;
     private readonly SignalBus signalBus;
 
-    public LevelLoader(AddressableAssetLoader assetLoader, DiContainer diContainer, GameData gameData, SignalBus signalBus)
+    public LevelLoader(
+        AddressableAssetLoader assetLoader,
+        DiContainer diContainer,
+        GameData gameData,
+        SignalBus signalBus)
     {
         this.assetLoader = assetLoader;
         this.diContainer = diContainer;
@@ -30,6 +34,6 @@ public class LevelLoader : ILevelLoader
 
         await UniTask.Delay(1000);
 
-        signalBus.Fire(new LevelLoadedSignal());
+        signalBus.Fire(new GameLoadedSignal());
     }
 }

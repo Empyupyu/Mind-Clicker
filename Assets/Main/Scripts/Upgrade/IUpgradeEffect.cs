@@ -1,5 +1,5 @@
 ﻿public interface IUpgradeEffect
 {
-    UpgradeConfig UpgradeConfig { get; }
-    void Apply(int level);
+    public UpgradeType Type { get; }
+    void Apply(UpgradeConfig config, int level);
 }

@@ -1805,7 +1805,7 @@ MonoBehaviour:
   soundConfig: {fileID: 11400000, guid: 57bdcbab3a1a8564c85f1b84c5650e04, type: 2}
   audioConfig: {fileID: 11400000, guid: baf0246c88be2c24abe0ef8b6a4a6149, type: 2}
   projectSettingsConfig: {fileID: 11400000, guid: a1bf54402a0abce4e83aaf26b026e516, type: 2}
-  rewardCooldownsConfig: {fileID: 11400000, guid: bbdb4feb35d3a3e49b142b633817ae7b, type: 2}
+  rewardCooldownsConfig: {fileID: 11400000, guid: 24e60e21c7d8659438c661227630b3f9, type: 2}
   modulePrioritiesConfig: {fileID: 11400000, guid: 0c88ac369ece7694ca4391d42d81a795, type: 2}
 --- !u!4 &1876848995
 Transform:

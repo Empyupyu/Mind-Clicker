@@ -23,9 +23,10 @@ public class ThoughtInstaller : MonoInstaller
         Container.Bind<IThoughtHandler>().To<BossPhoneThoughtHandler>().AsTransient().WithArguments(ThoughtType.BossPhone);
 
         Container.BindInterfacesAndSelfTo<ThoughtFactory>().AsSingle();
-        Container.BindInterfacesAndSelfTo<ThoughtSpawner>().AsSingle().OnInstantiated<ThoughtSpawner>((ctx, spawner) =>
-        {
-            spawner.SetFactory(ctx.Container.Resolve<ThoughtFactory>());
-        });
+        Container.BindInterfacesAndSelfTo<ThoughtSpawner>().AsSingle();
+        //    .OnInstantiated<ThoughtSpawner>((ctx, spawner) =>
+        //{
+        //    spawner.SetFactory(ctx.Container.Resolve<ThoughtFactory>());
+        //});
     }
 }

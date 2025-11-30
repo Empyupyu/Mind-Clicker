@@ -21,6 +21,8 @@ public class PlatformInstaller : MonoInstaller
             case PlayerDataProviderType.Local:
                 LocalInstaller.Install(Container);
                 break;
+            default:
+                throw new System.NotSupportedException(projectSettingsConfig.PlayerDataProviderType.ToString());
         }
     }
 }

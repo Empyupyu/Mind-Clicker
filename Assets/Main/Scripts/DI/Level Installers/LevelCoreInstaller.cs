@@ -4,13 +4,15 @@ public class LevelCoreInstaller : MonoInstaller
 {
     public override void InstallBindings()
     {
-        Container.BindInterfacesAndSelfTo<GameLoop>().AsSingle().Lazy();
-        Container.Bind<Mind>().AsSingle();
+        Container.BindInterfacesAndSelfTo<LevelLoop>().AsSingle().Lazy();
+        Container.BindInterfacesAndSelfTo<PrestigeService>().AsSingle();
+        Container.Bind<MindProgress>().AsSingle();
         Container.Bind<LightService>().AsSingle();
-        Container.BindInterfacesAndSelfTo<DealDamage>().AsSingle();
+        Container.BindInterfacesAndSelfTo<ThoughtDamageService>().AsSingle();
         Container.BindInterfacesAndSelfTo<DamageFeedbackService>().AsSingle();
-        Container.Bind<IMindProgressService>().To<MindProgressService>().AsSingle();
-        Container.BindInterfacesAndSelfTo<MindLevelService>().AsSingle();
+        Container.Bind<IMindProgressUpdater>().To<MindProgressUpdater>().AsSingle();
+        Container.Bind<IMindLevelAnimator>().To<MindLevelAnimator>().AsSingle();
+        Container.BindInterfacesAndSelfTo<MindLevelPresentation>().AsSingle();
         Container.BindInterfacesAndSelfTo<MindController>().AsSingle();
         Container.Bind<Timer>().AsSingle();
         Container.Bind<MoneyWallet>().AsSingle();

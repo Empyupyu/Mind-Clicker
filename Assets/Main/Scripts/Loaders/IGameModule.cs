@@ -1,5 +1,7 @@
 ﻿using Cysharp.Threading.Tasks;
+using System;
 using YG;
+using Zenject;
 
 public interface IGameModule
 {
@@ -7,16 +9,43 @@ public interface IGameModule
     UniTask InitializeAsync();
 }
 
+//TODO
 public interface ILeaderboard
 {
 
 }
 
 
-public class YandexLeaderboard : ILeaderboard
+public class YandexLeaderboard : ILeaderboard, IInitializable, IDisposable
 {
-    public void SetNewRecord()
+    private readonly MindProgress mindProgress;
+    private readonly PlayerDataRef playerData;
+
+    public YandexLeaderboard(
+        MindProgress mindProgress,
+        PlayerDataRef playerData)
     {
-        YG2.SetLeaderboard("TechnoNameLB", 100);
+        this.mindProgress = mindProgress;
+        this.playerData = playerData;
+    }
+
+    public void Initialize()
+    {
+        mindProgress.OnLevelUp += UpdateRecord;
+    }
+
+    public void SetNewRecord(int score)
+    {
+        YG2.SetLeaderboard("LevelLeaderBoard", score);
+    }
+
+    public void Dispose()
+    {
+        mindProgress.OnLevelUp -= UpdateRecord;
+    }
+
+    private void UpdateRecord()
+    {
+        SetNewRecord(playerData.Value.TotalMindLevel);
     }
 }

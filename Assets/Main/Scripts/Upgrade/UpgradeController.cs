@@ -1,24 +1,35 @@
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using Zenject;
 
 //TODO
 public class UpgradeController : IInitializable
 {
-    private readonly Upgrade upgrade;
+    private readonly UpgradeService upgradeService;
     private readonly IUpgradeViewFactory upgradeViewFactory;
     private Dictionary<string, UpgradeStateView> upgradeViews;
     private const int InitialUnlockedCount = 1;
 
-    public UpgradeController(Upgrade upgrade, IUpgradeViewFactory upgradeViewFactory)
+    public UpgradeController(UpgradeService upgradeService, IUpgradeViewFactory upgradeViewFactory)
     {
-        this.upgrade = upgrade;
+        this.upgradeService = upgradeService;
         this.upgradeViewFactory = upgradeViewFactory;
     }
 
     public void Initialize()
     {
-        upgrade.OnUpgrade += OnUpgrade;
+        upgradeService.OnUpgrade += OnUpgrade;
+
+        CreateUpgradeViews();
+    }
+
+    public void RedrawViews()
+    {
+        foreach (var view in upgradeViews.Values)
+        {
+            GameObject.Destroy(view.gameObject);
+        }
 
         CreateUpgradeViews();
     }
@@ -26,59 +37,63 @@ public class UpgradeController : IInitializable
     private void CreateUpgradeViews()
     {
         upgradeViews = new Dictionary<string, UpgradeStateView>();
-        var upgrades = upgrade.EffectsData.Values.ToList();
+        var upgrades = upgradeService.EffectsData.Values.ToList();
 
         for (int i = 0; i < upgrades.Count; i++)
         {
-            var upgradeData = upgrades[i];
-            var effect = upgradeData.Effect;
+            var upgrade = upgrades[i];
+            var config = upgrade.Config;
 
-            bool isUnlocked = i < InitialUnlockedCount || upgradeData.UpgradeProgress.Level > 0;
-            var view = upgradeViewFactory.Create(effect, i, isUnlocked);
+            bool isUnlocked = i < InitialUnlockedCount || upgrade.UpgradeProgress.Level > 0;
+            var view = upgradeViewFactory.Create(config, i, isUnlocked);
 
             if (isUnlocked)
             {
-                InitializeBuyView(effect, view);
+                InitializeBuyView(config, view);
             }
 
-            upgradeViews.Add(effect.UpgradeConfig.Type.ToString(), view);
-            RedrawUpgradeView(upgradeData);
+            upgradeViews.Add(config.Title, view);
+            RedrawUpgradeView(upgrade);
         }
 
         upgradeViewFactory.CreateComingSoon(upgrades.Count);
     }
 
-    private void InitializeBuyView(IUpgradeEffect effect, UpgradeStateView view)
+    private void InitializeBuyView(UpgradeConfig config, UpgradeStateView view)
     {
-        view.SubscribeToBuy(() => Buy(effect.GetType().Name));
-        view.SetIcon(effect.UpgradeConfig.Icon);
+        view.SubscribeToBuy(() => Buy(config.Title));
+        view.SetIcon(config.Icon);
     }
 
-    private void OnUpgrade(UpgradeData data)
+    private void OnUpgrade(Upgrade data)
     {
         RedrawUpgradeView(data);
+        SetButtonState(data);
+    }
 
-        var upgrades = upgrade.EffectsData.Values.ToList();
-        int index = upgrades.FindIndex(u => u.Effect.UpgradeConfig.Type == data.Effect.UpgradeConfig.Type);
+    private void SetButtonState(Upgrade upgrade)
+    {
+        var upgrades = upgradeService.EffectsData.Values.ToList();
+        int index = upgrades.FindIndex(u => u.Config.Title == upgrade.Config.Title);
 
         int nextIndex = index + 1;
         if (nextIndex < upgrades.Count)
         {
-            var nextData = upgrades[nextIndex];
-            var nextView = upgradeViews[nextData.Effect.UpgradeConfig.Type.ToString()];
+            var nextUpgrade = upgrades[nextIndex];
+            var nextView = upgradeViews[nextUpgrade.Config.Title];
 
             if (nextView != null)
             {
                 nextView.SetState(UpgradeViewState.Unlocked);
-                InitializeBuyView(nextData.Effect, nextView);
-                RedrawUpgradeView(nextData);
+                InitializeBuyView(nextUpgrade.Config, nextView);
+                RedrawUpgradeView(nextUpgrade);
             }
         }
     }
 
-    private void RedrawUpgradeView(UpgradeData upgradeData)
+    private void RedrawUpgradeView(Upgrade upgrade)
     {
-        var view = upgradeViews[upgradeData.Effect.UpgradeConfig.Type.ToString()];
+        var view = upgradeViews[upgrade.Config.Title];
         var stateView = view;
 
         if (stateView == null)
@@ -87,22 +102,22 @@ public class UpgradeController : IInitializable
         if (stateView.CurrentState != UpgradeViewState.Unlocked)
             return;
 
-        float price = upgradeData.Price;
-        int level = upgradeData.UpgradeProgress.Level;
-        string desc = GetDescription(upgradeData);
+        float price = upgrade.Price;
+        int level = upgrade.UpgradeProgress.Level;
+        string desc = GetDescription(upgrade);
 
         stateView.UpdateContent(desc, level, price);
     }
 
-    private string GetDescription(UpgradeData upgradeData)
+    private string GetDescription(Upgrade upgrade)
     {
-        float currentEffect = upgradeData.CurrentLevelBonusEffect;
-        float nextLevelEffect = upgradeData.NextLevelBonusEffect;
-        UpgradeConfig upgradeConfig = upgradeData.Effect.UpgradeConfig;
+        float currentEffect = upgrade.CurrentLevelBonusEffect;
+        float nextLevelEffect = upgrade.NextLevelBonusEffect;
+        UpgradeConfig upgradeConfig = upgrade.Config;
 
         string description;
 
-        if (upgradeData.UpgradeProgress.Level == 0)
+        if (upgrade.UpgradeProgress.Level == 0)
         {
             description =
                 upgradeConfig.DescriptionPrefix +
@@ -125,51 +140,52 @@ public class UpgradeController : IInitializable
 
     private void Buy(string upgradeType)
     {
-        upgrade.Buy(upgradeType);
+        upgradeService.Buy(upgradeType);
     }
 }
 
 public class AddClickDamageEffect : IUpgradeEffect
 {
+    public UpgradeType Type { get; private set; }
+
     private readonly GameData gameData;
 
-    public UpgradeConfig UpgradeConfig {get; private set;}
-
-    public AddClickDamageEffect(UpgradeConfig upgradeConfig, GameData gameData)
+    public AddClickDamageEffect(GameData gameData, UpgradeType type)
     {
-        UpgradeConfig = upgradeConfig;
         this.gameData = gameData;
+        Type = type;
     }
 
-    public void Apply(int level)
+    public void Apply(UpgradeConfig config, int level)
     {
         if (level > 1)
         {
-            gameData.DamagePerClick -= UpgradeConfig.BaseEffect + (UpgradeConfig.BaseEffect * (UpgradeConfig.EffectMultiplier * (level - 1)));
+            gameData.DamagePerClick -= config.BaseEffect + (config.BaseEffect * (config.EffectMultiplier * (level - 1)));
         }
 
-        gameData.DamagePerClick += UpgradeConfig.BaseEffect + (UpgradeConfig.BaseEffect * (UpgradeConfig.EffectMultiplier * level));
+        gameData.DamagePerClick += config.BaseEffect + (config.BaseEffect * (config.EffectMultiplier * level));
     }
 }
 
-public class AddDamagePerSecondTiear1Effect : IUpgradeEffect
+public class AddDamagePerSecondEffect : IUpgradeEffect
 {
-    public UpgradeConfig UpgradeConfig { get; private set; }
+    public UpgradeType Type { get; private set; }
+
     private readonly GameData gameData;
 
-    public AddDamagePerSecondTiear1Effect(UpgradeConfig upgradeConfig, GameData gameData)
+    public AddDamagePerSecondEffect(GameData gameData, UpgradeType type)
     {
-        UpgradeConfig = upgradeConfig;
         this.gameData = gameData;
+        Type = type;
     }
 
-    public void Apply(int level)
+    public void Apply(UpgradeConfig config, int level)
     {
         if(level > 1)
         {
-            gameData.DamagePerSecond -= UpgradeConfig.BaseEffect + (UpgradeConfig.BaseEffect * (UpgradeConfig.EffectMultiplier * (level - 1)));
+            gameData.DamagePerSecond -= config.BaseEffect + (config.BaseEffect * (config.EffectMultiplier * (level - 1)));
         }
 
-        gameData.DamagePerSecond += UpgradeConfig.BaseEffect + (UpgradeConfig.BaseEffect * (UpgradeConfig.EffectMultiplier * level));
+        gameData.DamagePerSecond += config.BaseEffect + (config.BaseEffect * (config.EffectMultiplier * level));
     }
 }

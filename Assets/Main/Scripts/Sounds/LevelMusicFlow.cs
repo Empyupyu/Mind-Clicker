@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Zenject;
 using System;
 
-//TODO
 public class LevelMusicFlow : IInitializable, IDisposable
 {
     private readonly AudioPlayer audioPlayer;
@@ -25,19 +24,19 @@ public class LevelMusicFlow : IInitializable, IDisposable
     {
         var sequence = new List<(AudioClip, float)>
         {
-         (audioConfig.OpeningAmbiantClip, 0.04f),
-         (audioConfig.LevelAmbiantClip, 1f),
-         (audioConfig.LevelAmbiantClip, .7f),
+         (audioConfig.OpeningAmbiantClip, audioConfig.OpeningAmbiantClipStartTime),
+         (audioConfig.LevelAmbiantClip, audioConfig.LevelAmbiantStartFull),
+         (audioConfig.LevelAmbiantClip, audioConfig.LevelAmbiantStartMid),
         };
 
-        await audioPlayer.SequenceMusic(sequence, 7500);
+        await audioPlayer.SequenceMusic(sequence, audioConfig.OpeningDelay);
     }
 
     public void LoopMusicInGame()
     {
         var sequence = CreateMainAmbiantSequence();
 
-        audioPlayer.SequenceMusic(sequence, 15000).Forget();
+        audioPlayer.SequenceMusic(sequence, audioConfig.LoopMusicDelay).Forget();
     }
 
     public void PlayMainSoundTrack()
@@ -51,9 +50,9 @@ public class LevelMusicFlow : IInitializable, IDisposable
     {
         return new List<(AudioClip, float)>
         {
-            (audioConfig.LevelAmbiantClip, .01f),
-         (audioConfig.LevelAmbiantClip, 1f),
-         (audioConfig.LevelAmbiantClip, .7f),
+         (audioConfig.LevelAmbiantClip, audioConfig.LevelAmbiantStartEarly),
+         (audioConfig.LevelAmbiantClip, audioConfig.LevelAmbiantStartFull),
+         (audioConfig.LevelAmbiantClip, audioConfig.LevelAmbiantStartMid),
         };
     }
 

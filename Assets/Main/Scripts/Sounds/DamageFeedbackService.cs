@@ -3,14 +3,18 @@ using Zenject;
 
 public class DamageFeedbackService : IInitializable, IDisposable
 {
-    private readonly DealDamage dealDamage;
+    private readonly ThoughtDamageService thoughtDamageService;
     private readonly ThoughtSpawner thoughtSpawner;
     private readonly AudioPlayer audioPlayer;
     private readonly SoundConfig soundConfig;
 
-    public DamageFeedbackService(DealDamage dealDamage, ThoughtSpawner thoughtSpawner, AudioPlayer audioPlayer, SoundConfig soundConfig)
+    public DamageFeedbackService(
+        ThoughtDamageService thoughtDamageService,
+        ThoughtSpawner thoughtSpawner,
+        AudioPlayer audioPlayer,
+        SoundConfig soundConfig)
     {
-        this.dealDamage = dealDamage;
+        this.thoughtDamageService = thoughtDamageService;
         this.thoughtSpawner = thoughtSpawner;
         this.audioPlayer = audioPlayer;
         this.soundConfig = soundConfig;
@@ -18,7 +22,7 @@ public class DamageFeedbackService : IInitializable, IDisposable
 
     public void Initialize()
     {
-        dealDamage.OnClickDamage += PlayClickEffect;
+        thoughtDamageService.OnClickDamage += PlayClickEffect;
         thoughtSpawner.OnDestroy += PlayDestroyEffect;
     }
 
@@ -34,7 +38,7 @@ public class DamageFeedbackService : IInitializable, IDisposable
 
     public void Dispose()
     {
-        dealDamage.OnClickDamage -= PlayClickEffect;
+        thoughtDamageService.OnClickDamage -= PlayClickEffect;
         thoughtSpawner.OnDestroy -= PlayDestroyEffect;
     }
 }

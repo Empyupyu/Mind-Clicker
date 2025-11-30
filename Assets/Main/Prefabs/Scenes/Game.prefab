@@ -597,16 +597,19 @@ MonoBehaviour:
   upgradeConfigs:
   - {fileID: 11400000, guid: 8d55f8627b55a6141a203a2c5142ae69, type: 2}
   - {fileID: 11400000, guid: 71777e44127877348865148266ec19ff, type: 2}
+  - {fileID: 11400000, guid: 1fd3b4691b924164993a3ac38e9e3577, type: 2}
   thoughtConfigs: {fileID: 11400000, guid: 22c8ffba2060c754abd2da5783dacb5e, type: 2}
-  bossEnvironmentManifest: {fileID: 11400000, guid: 408e86f550bc9314699168846a2100f8, type: 2}
+  bossEnvironmentManifest: {fileID: 11400000, guid: bdb84689ce6de2c4d89ef6811e5022b8, type: 2}
   characterConfig: {fileID: 11400000, guid: c28dbace7516529478e61d6ee78249e9, type: 2}
   originLightConfig: {fileID: 11400000, guid: 465bb3987eaf7244d9397e89bf88e71b, type: 2}
+  sphereArcConfig: {fileID: 11400000, guid: 144ba6d95e204604d9a4ba44c553128f, type: 2}
+  bossFightData: {fileID: 11400000, guid: 9dfcdb68c3ba3454b826f9bc76bf3640, type: 2}
   thoughtSpawnPointDatas:
-  - {fileID: 11400000, guid: b00c950667ec9104fb4c1d8561a3662c, type: 2}
-  - {fileID: 11400000, guid: 866999d99f4ae704a87e2f53f02fa124, type: 2}
-  - {fileID: 11400000, guid: 0c4ac4b05ce862846be6f67309492343, type: 2}
-  - {fileID: 11400000, guid: d8047c914fc1d164684b164a887de1b3, type: 2}
-  - {fileID: 11400000, guid: 1e04078b56d63c04fa83044d099f948e, type: 2}
+  - {fileID: 11400000, guid: 6608347630c53ca40a8f4d95ae5cef72, type: 2}
+  - {fileID: 11400000, guid: 71b07a6fbace85242a48b58eb333ed00, type: 2}
+  - {fileID: 11400000, guid: f62c77d8de85824479a42dc7a57f6d68, type: 2}
+  - {fileID: 11400000, guid: 9713ead450d6c2b43adc7e07776c1fc1, type: 2}
+  - {fileID: 11400000, guid: 3ef0b21bb58d7f440b5acb6db54e4ee5, type: 2}
 --- !u!1 &9007977829059833187
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Mind Data
   m_EditorClassIdentifier: 
   <MindLevels>k__BackingField:
-  - MindPointsForLevelUp: 1
-  - MindPointsForLevelUp: 1
-  - MindPointsForLevelUp: 1
+  - MindPointsForLevelUp: 20
+  - MindPointsForLevelUp: 25
+  - MindPointsForLevelUp: 30
   - MindPointsForLevelUp: 1
   - MindPointsForLevelUp: 1
   - MindPointsForLevelUp: 1
@@ -44,3 +44,9 @@ MonoBehaviour:
   <BaseGainRate>k__BackingField: 1
   <UpgradeSound>k__BackingField: {fileID: 8300000, guid: 2d19a646393432948942baadabaccbe5, type: 3}
   <SoundVolume>k__BackingField: 1
+  <LevelUpProgressBarDuration>k__BackingField: 0.3
+  <LevelUpProgressBarTargetValue>k__BackingField: 1
+  <LevelUpProgressBarShakeDuration>k__BackingField: 0.3
+  <LevelUpProgressBarShakeStrength>k__BackingField: 10
+  <LevelUpProgressBarShakeVibrato>k__BackingField: 5
+  <LevelUpProgressBarShakeRandomness>k__BackingField: 15

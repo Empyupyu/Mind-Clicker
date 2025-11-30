@@ -1,26 +1,15 @@
 {
     "PlayerData": {
         "MindPoints": 0.0,
-        "MindLevel": 1,
+        "MindLevel": 0,
+        "TotalMindLevel": 0,
+        "PrestigePoints": 0,
         "CurrentLevel": 0,
         "SoftCurrency": 0.0,
         "HardCurrency": 0.0,
         "AdvertisementIsDisabled": false,
-        "Upgrades": [
-            {
-                "ID": "AddClickDamageEffect",
-                "Level": 1
-            },
-            {
-                "ID": "AddDamagePerSecondTiear1Effect",
-                "Level": 0
-            }
-        ],
-        "MindLevelsProgress": [
-            {
-                "MindPointsForLevelUp": 1.0
-            }
-        ]
+        "Upgrades": [],
+        "MindLevelsProgress": []
     },
     "intExample": 5,
     "strExample": "Hello!",
@@ -30,5 +19,5 @@
         false,
         false
     ],
-    "idSave": 83
+    "idSave": 144
 }

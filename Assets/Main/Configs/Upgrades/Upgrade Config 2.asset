@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Upgrade Config 2
   m_EditorClassIdentifier: 
   <Type>k__BackingField: 1
-  <BasePrice>k__BackingField: 50
+  <BasePrice>k__BackingField: 2
   <PriceMultiplier>k__BackingField: 1.19
   <BaseEffect>k__BackingField: 2
   <EffectMultiplier>k__BackingField: 1.17

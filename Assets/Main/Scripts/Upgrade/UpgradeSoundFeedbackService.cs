@@ -3,29 +3,29 @@ using Zenject;
 
 public class UpgradeSoundFeedbackService : IInitializable, IDisposable
 {
-    private readonly Upgrade upgrade;
+    private readonly UpgradeService upgradeService;
     private readonly AudioPlayer audioPlayer;
     private readonly SoundConfig soundConfig;
 
-    public UpgradeSoundFeedbackService(Upgrade upgrade, AudioPlayer audioPlayer, SoundConfig soundConfig)
+    public UpgradeSoundFeedbackService(UpgradeService upgradeService, AudioPlayer audioPlayer, SoundConfig soundConfig)
     {
-        this.upgrade = upgrade;
+        this.upgradeService = upgradeService;
         this.audioPlayer = audioPlayer;
         this.soundConfig = soundConfig;
     }
 
     public void Initialize()
     {
-        upgrade.OnUpgrade += PlayUpgradeEffect;
+        upgradeService.OnUpgrade += PlayUpgradeEffect;
     }
 
-    private void PlayUpgradeEffect(UpgradeData upgradeData)
+    private void PlayUpgradeEffect(Upgrade upgrade)
     {
         audioPlayer.PlaySFX(soundConfig.BuyUpgradeSound, soundConfig.BuyUpgradeVolume);
     }
 
     public void Dispose()
     {
-        upgrade.OnUpgrade -= PlayUpgradeEffect;
+        upgradeService.OnUpgrade -= PlayUpgradeEffect;
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Zenject;
 
 public class GameConfigInstaller : MonoInstaller
@@ -11,6 +10,7 @@ public class GameConfigInstaller : MonoInstaller
     [SerializeField] private ProjectSettingsConfig projectSettingsConfig;
     [SerializeField] private RewardCooldownsConfig rewardCooldownsConfig;
     [SerializeField] private ModulePrioritiesConfig modulePrioritiesConfig;
+
     public override void InstallBindings()
     {
         Container.Bind<MindData>().FromScriptableObject(mindData).AsSingle();
@@ -18,7 +18,6 @@ public class GameConfigInstaller : MonoInstaller
         Container.Bind<SoundConfig>().FromScriptableObject(soundConfig).AsSingle();
         Container.Bind<AudioConfig>().FromScriptableObject(audioConfig).AsSingle();
         Container.Bind<ProjectSettingsConfig>().FromScriptableObject(projectSettingsConfig).AsSingle();
-
         Container.Bind<DefaultPlayerDataProvider>().AsSingle().WithArguments(playerDefaultSettings);
         Container.Bind<RewardCooldownsConfig>().FromInstance(rewardCooldownsConfig).AsSingle();
         Container.Bind<ModulePrioritiesConfig>().FromInstance(modulePrioritiesConfig).AsSingle();

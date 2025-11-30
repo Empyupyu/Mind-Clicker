@@ -4,14 +4,13 @@ using Zenject;
 
 public class UpgradeInstaller : MonoInstaller
 {
-    [Inject] private List<UpgradeConfig> upgradeConfigs;
-
     public override void InstallBindings()
     {
         BindUpgradeEffects();
-        Container.Bind<UpgradeMaterialAnimation>().AsSingle();
+        Container.Bind<MindLevelUpAnimation>().AsSingle();
         Container.Bind<IUpgradeViewFactory>().To<UpgradeViewFactory>().AsSingle();
-        Container.BindInterfacesAndSelfTo<Upgrade>().AsSingle();
+        Container.Bind<IUpgradeCalculator>().To<UpgradeCalculator>().AsSingle();
+        Container.BindInterfacesAndSelfTo<UpgradeService>().AsSingle();
         Container.BindInterfacesAndSelfTo<UpgradeController>().AsSingle();
         Container.BindInterfacesAndSelfTo<UpgradeSaveService>().AsSingle();
         Container.BindInterfacesAndSelfTo<UpgradeSoundFeedbackService>().AsSingle();
@@ -19,12 +18,10 @@ public class UpgradeInstaller : MonoInstaller
 
     private void BindUpgradeEffects()
     {
-        var configMap = upgradeConfigs.ToDictionary(c => c.Type, c => c);
-
         Container.Bind<IUpgradeEffect>().To<AddClickDamageEffect>().AsSingle()
-       .WithArguments(configMap[UpgradeType.AddClickDamageEffect]);
+       .WithArguments(UpgradeType.AddClickDamageEffect);
 
-        Container.Bind<IUpgradeEffect>().To<AddDamagePerSecondTiear1Effect>().AsSingle()
-            .WithArguments(configMap[UpgradeType.AddDamagePerSecondTiear1Effect]);
+        Container.Bind<IUpgradeEffect>().To<AddDamagePerSecondEffect>().AsSingle()
+            .WithArguments(UpgradeType.AddDamagePerSecondEffect);
     }
 }

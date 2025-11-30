@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: NegativeThoughtLevel 10
   m_EditorClassIdentifier: 
   <NegativeThoughtForms>k__BackingField:
-  - {fileID: 11400000, guid: 24efe5649efdb5d4f878d1bbe87562ad, type: 2}
+  - {fileID: 11400000, guid: ba4c898a1624bd742adafcba6d4bbd90, type: 2}
