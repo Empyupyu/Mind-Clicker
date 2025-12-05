@@ -6,9 +6,7 @@ public class BossFightPrepare : IDisposable
 {
     public event Action OnTimerFinished;
 
-    private readonly MindProgress mindProgress;
     private readonly Timer timer;
-    private readonly ThoughtSpawner thoughtSpawner;
     private readonly BossUIView bossUIView;
     private readonly TimerView timerView;
     private readonly BossFightData bossFightData;
@@ -16,16 +14,12 @@ public class BossFightPrepare : IDisposable
     private BossUIView bossViewInstance;
 
     public BossFightPrepare(
-        MindProgress mindProgress,
         Timer timer,
-        ThoughtSpawner thoughtSpawner,
         BossUIView bossUIView,
         TimerView timerView,
         BossFightData bossFightData)
     {
-        this.mindProgress = mindProgress;
         this.timer = timer;
-        this.thoughtSpawner = thoughtSpawner;
         this.bossUIView = bossUIView;
         this.timerView = timerView;
         this.bossFightData = bossFightData;
@@ -33,7 +27,6 @@ public class BossFightPrepare : IDisposable
 
     public void Prepare()
     {
-        thoughtSpawner.DestroyAll();
         bossViewInstance = GameObject.Instantiate(bossUIView);
     }
 
@@ -53,11 +46,8 @@ public class BossFightPrepare : IDisposable
 
     private void TimerFinished()
     {
-        mindProgress.ReduceLevel();
-        thoughtSpawner.DestroyAll();
-        thoughtSpawner.Spawn();
         timer.Disable();
-        RemoveBossView();
+        RemoveBossUIView();
 
         OnTimerFinished?.Invoke();
     }
@@ -65,11 +55,10 @@ public class BossFightPrepare : IDisposable
     public void OnBossDeath(NegativeThought negativeThought)
     {
         timer.Disable();
-        mindProgress.LevelUp();
-        RemoveBossView();
+        RemoveBossUIView();
     }
 
-    private void RemoveBossView()
+    private void RemoveBossUIView()
     {
         GameObject.Destroy(bossViewInstance.gameObject);
         GameObject.Destroy(timerViewInstance.gameObject);

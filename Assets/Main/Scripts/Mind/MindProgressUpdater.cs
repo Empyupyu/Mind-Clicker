@@ -41,8 +41,8 @@ public class MindProgressUpdater : IMindProgressUpdater, IDisposable
 
     public void Redraw()
     {
-        float progress = playerData.Value.MindPoints / mindProgress.PointForLevelUp;
-        view.ProgressBar.fillAmount = progress;
+        float percent = playerData.Value.MindPoints / mindProgress.PointForLevelUp;
+        view.ProgressBar.fillAmount = percent;
 
         view.ProgressText.text = $"{playerData.Value.MindPoints.ToAbbreviatedString()}/" +
                                  $"{mindProgress.PointForLevelUp.ToAbbreviatedString()}";

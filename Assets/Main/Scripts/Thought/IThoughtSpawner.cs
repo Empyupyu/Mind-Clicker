@@ -2,8 +2,7 @@
 
 public interface IThoughtSpawner
 {
-    void Spawn();
-    UniTask SpawnWithDelay();
+    void Spawn(NegativeThoughtForm form);
     void DestroyAll();
     NegativeThought GetTarget();
     ThoughtUIView GetRandomView();

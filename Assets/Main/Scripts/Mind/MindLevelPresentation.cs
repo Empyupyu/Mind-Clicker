@@ -6,6 +6,7 @@ using Zenject;
 public class MindLevelPresentation : IInitializable, IMindLevelPresentation
 {
     public event Action OnLevelUpAnimationEnded;
+    public event Action OnLevelReduceAnimationEnded;
 
     private readonly MindView view;
     private readonly MindProgress mindProgress;
@@ -13,7 +14,6 @@ public class MindLevelPresentation : IInitializable, IMindLevelPresentation
     private readonly AudioPlayer audio;
     private readonly MindLevelUpAnimation animation;
     private readonly IMindProgressUpdater progress;
-    private readonly ThoughtSpawner spawner;
     private readonly IMindLevelAnimator mindLevelAnimator;
 
     private string DisplayLevel () => (mindProgress.Level + 1).ToString();
@@ -25,7 +25,6 @@ public class MindLevelPresentation : IInitializable, IMindLevelPresentation
         AudioPlayer audio,
         MindLevelUpAnimation animation,
         IMindProgressUpdater progress,
-        ThoughtSpawner spawner,
         IMindLevelAnimator mindLevelAnimator)
     {
         this.view = view;
@@ -34,7 +33,6 @@ public class MindLevelPresentation : IInitializable, IMindLevelPresentation
         this.audio = audio;
         this.animation = animation;
         this.progress = progress;
-        this.spawner = spawner;
         this.mindLevelAnimator = mindLevelAnimator;
     }
 
@@ -72,6 +70,7 @@ public class MindLevelPresentation : IInitializable, IMindLevelPresentation
 
         await mindLevelAnimator.PlayLevelReduceAnimation(view, animation);
 
+        OnLevelReduceAnimationEnded?.Invoke();
         UnblockProgress();
     }
 

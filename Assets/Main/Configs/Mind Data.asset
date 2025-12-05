@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Mind Data
   m_EditorClassIdentifier: 
   <MindLevels>k__BackingField:
-  - MindPointsForLevelUp: 20
-  - MindPointsForLevelUp: 25
+  - MindPointsForLevelUp: 1
+  - MindPointsForLevelUp: 1
   - MindPointsForLevelUp: 30
   - MindPointsForLevelUp: 1
   - MindPointsForLevelUp: 1

@@ -12,8 +12,6 @@ public class GameBootstrap : MonoBehaviour
     private SaveLoadService saveLoadService;
     private PlayerDataRef playerDataRef;
 
-    private const string LevelKey = "Game";
-
     [Inject]
     public void Construct(
         IModuleInitializer moduleInitializer,
@@ -39,7 +37,7 @@ public class GameBootstrap : MonoBehaviour
         loadingView.Show();
 
         await moduleInitializer.InitializeModulesAsync();
-        await levelLoader.LoadLevelAsync(LevelKey);
+        await levelLoader.LoadLevelAsync(GameConstants.LevelKey);
 
         loadingView.Hide().Forget();
     }
@@ -50,7 +48,6 @@ public class GameBootstrap : MonoBehaviour
         DOTween.Clear();
     }
 
-    //TODO
     private void OnApplicationQuit()
     {
         saveLoadService.Save(playerDataRef.Value);

@@ -6,7 +6,6 @@ public class AuthorizationModule : IGameModule
 {
     public int Priority { get; }
 
-    private const int Timeout = 90;
     private readonly AuthorizationService authorizationService;
 
     public AuthorizationModule(AuthorizationService authorizationService, int priority)
@@ -22,7 +21,7 @@ public class AuthorizationModule : IGameModule
         try
         {
             await UniTask.WaitUntil(() => authorizationService.HasAuthorization())
-                .Timeout(TimeSpan.FromSeconds(Timeout));
+                .Timeout(TimeSpan.FromSeconds(GameConstants.AuthorizationTimeout));
         }
         catch (TimeoutException)
         {

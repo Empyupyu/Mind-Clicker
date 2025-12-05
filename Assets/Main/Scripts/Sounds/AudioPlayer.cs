@@ -18,7 +18,6 @@ public class AudioPlayer : MonoBehaviour
     private CancellationTokenSource fadeToken;
     private CancellationTokenSource sequenceToken;
     private SignalBus signalBus;
-    private const string VolumeParam = "MasterVolume";
 
     [Inject]
     public void Construct(SignalBus signalBus, AudioConfig audioConfig)
@@ -80,13 +79,13 @@ public class AudioPlayer : MonoBehaviour
         {
             musicSource.Pause();
             ambiantSource.Pause();
-            musicSource.outputAudioMixerGroup.audioMixer.SetFloat(VolumeParam, -80f);
+            musicSource.outputAudioMixerGroup.audioMixer.SetFloat(GameConstants.VolumeParam, -80f);
             return;
         }
 
         musicSource.UnPause();
         ambiantSource.UnPause();
-        musicSource.outputAudioMixerGroup.audioMixer.SetFloat(VolumeParam, 0f);
+        musicSource.outputAudioMixerGroup.audioMixer.SetFloat(GameConstants.VolumeParam, 0f);
     }
 
     private void OnSoundSignal(SoundEffectSignal signal)

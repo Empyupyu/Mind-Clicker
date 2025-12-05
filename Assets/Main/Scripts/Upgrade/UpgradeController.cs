@@ -3,13 +3,11 @@ using System.Linq;
 using UnityEngine;
 using Zenject;
 
-//TODO
 public class UpgradeController : IInitializable
 {
     private readonly UpgradeService upgradeService;
     private readonly IUpgradeViewFactory upgradeViewFactory;
     private Dictionary<string, UpgradeStateView> upgradeViews;
-    private const int InitialUnlockedCount = 1;
 
     public UpgradeController(UpgradeService upgradeService, IUpgradeViewFactory upgradeViewFactory)
     {
@@ -44,7 +42,7 @@ public class UpgradeController : IInitializable
             var upgrade = upgrades[i];
             var config = upgrade.Config;
 
-            bool isUnlocked = i < InitialUnlockedCount || upgrade.UpgradeProgress.Level > 0;
+            bool isUnlocked = i < GameConstants.InitialUnlockedCount || upgrade.UpgradeProgress.Level > 0;
             var view = upgradeViewFactory.Create(config, i, isUnlocked);
 
             if (isUnlocked)
@@ -141,51 +139,5 @@ public class UpgradeController : IInitializable
     private void Buy(string upgradeType)
     {
         upgradeService.Buy(upgradeType);
-    }
-}
-
-public class AddClickDamageEffect : IUpgradeEffect
-{
-    public UpgradeType Type { get; private set; }
-
-    private readonly GameData gameData;
-
-    public AddClickDamageEffect(GameData gameData, UpgradeType type)
-    {
-        this.gameData = gameData;
-        Type = type;
-    }
-
-    public void Apply(UpgradeConfig config, int level)
-    {
-        if (level > 1)
-        {
-            gameData.DamagePerClick -= config.BaseEffect + (config.BaseEffect * (config.EffectMultiplier * (level - 1)));
-        }
-
-        gameData.DamagePerClick += config.BaseEffect + (config.BaseEffect * (config.EffectMultiplier * level));
-    }
-}
-
-public class AddDamagePerSecondEffect : IUpgradeEffect
-{
-    public UpgradeType Type { get; private set; }
-
-    private readonly GameData gameData;
-
-    public AddDamagePerSecondEffect(GameData gameData, UpgradeType type)
-    {
-        this.gameData = gameData;
-        Type = type;
-    }
-
-    public void Apply(UpgradeConfig config, int level)
-    {
-        if(level > 1)
-        {
-            gameData.DamagePerSecond -= config.BaseEffect + (config.BaseEffect * (config.EffectMultiplier * (level - 1)));
-        }
-
-        gameData.DamagePerSecond += config.BaseEffect + (config.BaseEffect * (config.EffectMultiplier * level));
     }
 }

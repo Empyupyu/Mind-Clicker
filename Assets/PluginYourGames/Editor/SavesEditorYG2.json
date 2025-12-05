@@ -1,15 +1,32 @@
 {
     "PlayerData": {
         "MindPoints": 0.0,
-        "MindLevel": 0,
-        "TotalMindLevel": 0,
+        "MindLevel": 2,
+        "TotalMindLevel": 2,
         "PrestigePoints": 0,
         "CurrentLevel": 0,
-        "SoftCurrency": 0.0,
+        "SoftCurrency": 9.0,
         "HardCurrency": 0.0,
         "AdvertisementIsDisabled": false,
-        "Upgrades": [],
-        "MindLevelsProgress": []
+        "Upgrades": [
+            {
+                "ID": "ff",
+                "Level": 1
+            },
+            {
+                "ID": "qwe",
+                "Level": 0
+            },
+            {
+                "ID": "yyyyy",
+                "Level": 0
+            }
+        ],
+        "MindLevelsProgress": [
+            {
+                "MindPointsForLevelUp": 1.0
+            }
+        ]
     },
     "intExample": 5,
     "strExample": "Hello!",
@@ -19,5 +36,5 @@
         false,
         false
     ],
-    "idSave": 144
+    "idSave": 190
 }

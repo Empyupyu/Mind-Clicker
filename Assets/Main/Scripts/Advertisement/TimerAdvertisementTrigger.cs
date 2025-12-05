@@ -8,8 +8,7 @@ public class TimerAdvertisementTrigger : IAdvertisementTrigger
     private readonly AddressableAssetLoader addressableAssetLoader;
     private readonly DiContainer diContainer;
     private AdvertisementTimerView advertisementTimerViewInstance;
-    private const string TimerViewKey = "Advertisement Timer View";
-
+   
     public TimerAdvertisementTrigger(AddressableAssetLoader addressableAssetLoader, DiContainer diContainer) 
     {
         this.addressableAssetLoader = addressableAssetLoader;
@@ -49,8 +48,19 @@ public class TimerAdvertisementTrigger : IAdvertisementTrigger
     {
         if (advertisementTimerViewInstance == null)
         {
-            var asset = await addressableAssetLoader.LoadAsset<GameObject>(TimerViewKey);
+            var asset = await addressableAssetLoader.LoadAsset<GameObject>(GameConstants.TimerViewKey);
             advertisementTimerViewInstance = diContainer.InstantiatePrefab(asset.gameObject).GetComponent<AdvertisementTimerView>();
         }
     }
+}
+
+public static class GameConstants
+{
+    public const string LevelKey = "Game";
+    public const string VolumeParam = "MasterVolume";
+    public const string SaveKey = "PlayerDataSaveKey";
+    public const string TimerViewKey = "Advertisement Timer View";
+    public const int AuthorizationTimeout = 90;
+    public const int FakeLoadingDelay = 1000;
+    public const int InitialUnlockedCount = 1;
 }

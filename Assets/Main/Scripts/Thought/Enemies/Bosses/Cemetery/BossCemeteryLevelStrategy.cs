@@ -1,21 +1,24 @@
 ﻿using Cysharp.Threading.Tasks;
 
-public class BossCemeteryThoughtHandler : BossThoughtHandlerBase
+public class BossCemeteryLevelStrategy : BossLevelStrategyBase
 {
     private readonly BossEnvironmentController bossEnvironmentController;
 
-    public BossCemeteryThoughtHandler(
+    public BossCemeteryLevelStrategy(
         ThoughtType thoughtType,
         BossFightPrepare bossFightPrepare,
-        BossEnvironmentController bossEnvironmentController)
-        : base(thoughtType, bossFightPrepare)
+        IThoughtLifecycleService thoughtLifecycleService,
+        ThoughtSpawner thoughtSpawner,
+        MindProgress mindProgress,
+        BossEnvironmentController bossEnvironmentController) :
+        base(thoughtType, bossFightPrepare, thoughtLifecycleService, thoughtSpawner, mindProgress)
     {
         this.bossEnvironmentController = bossEnvironmentController;
     }
 
-    public override void AttachTo(NegativeThought thought)
+    public override void Run(NegativeThoughtForm form)
     {
-        base.AttachTo(thought);
+        base.Run(form);
 
         InitializeEnvironment().Forget();
     }
@@ -25,10 +28,13 @@ public class BossCemeteryThoughtHandler : BossThoughtHandlerBase
         await bossEnvironmentController.Initialize(ThoughtType);
 
         bossFightPrepare.StartFight();
+        thoughtSpawner.Spawn(form);
     }
 
     protected override void OnTimerFinished()
     {
+        base.OnTimerFinished();
+
         bossEnvironmentController.Cleanup();
     }
 
@@ -38,22 +44,25 @@ public class BossCemeteryThoughtHandler : BossThoughtHandlerBase
         bossEnvironmentController.Cleanup();
     }
 }
-public class BossPhoneThoughtHandler : BossThoughtHandlerBase
+public class BossPhoneLevelStrategy : BossLevelStrategyBase
 {
     private readonly BossEnvironmentController bossEnvironmentController;
 
-    public BossPhoneThoughtHandler(
+    public BossPhoneLevelStrategy(
         ThoughtType thoughtType,
         BossFightPrepare bossFightPrepare,
-        BossEnvironmentController bossEnvironmentController)
-        : base(thoughtType, bossFightPrepare)
+        IThoughtLifecycleService thoughtLifecycleService,
+        ThoughtSpawner thoughtSpawner,
+        MindProgress mindProgress,
+        BossEnvironmentController bossEnvironmentController) : 
+        base(thoughtType, bossFightPrepare, thoughtLifecycleService, thoughtSpawner, mindProgress)
     {
         this.bossEnvironmentController = bossEnvironmentController;
     }
 
-    public override void AttachTo(NegativeThought thought)
+    public override void Run(NegativeThoughtForm form)
     {
-        base.AttachTo(thought);
+        base.Run(form);
 
         InitializeEnvironment().Forget();
     }
@@ -63,10 +72,13 @@ public class BossPhoneThoughtHandler : BossThoughtHandlerBase
         await bossEnvironmentController.Initialize(ThoughtType);
 
         bossFightPrepare.StartFight();
+        thoughtSpawner.Spawn(form);
     }
 
     protected override void OnTimerFinished()
     {
+        base.OnTimerFinished();
+
         bossEnvironmentController.Cleanup();
     }
 

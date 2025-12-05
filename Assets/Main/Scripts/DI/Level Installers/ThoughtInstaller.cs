@@ -17,16 +17,12 @@ public class ThoughtInstaller : MonoInstaller
         Container.Bind<SphereArcSpawner>().AsSingle();
         Container.BindInterfacesAndSelfTo<BossEnvironmentController>().AsSingle();
 
-        Container.Bind<IThoughtHandler>().To<Tier1EnemyThoughtHandler>().AsTransient().WithArguments(ThoughtType.Tier1Enemy);
-        Container.Bind<IThoughtHandler>().To<BossBubbleThoughtHandler>().AsTransient().WithArguments(ThoughtType.Boss1);
-        Container.Bind<IThoughtHandler>().To<BossCemeteryThoughtHandler>().AsTransient().WithArguments(ThoughtType.BossCemetery);
-        Container.Bind<IThoughtHandler>().To<BossPhoneThoughtHandler>().AsTransient().WithArguments(ThoughtType.BossPhone);
+        Container.Bind<ILevelStrategy>().To<Tier1EnemyLevelStrategy>().AsTransient().WithArguments(ThoughtType.Tier1Enemy);
+        Container.Bind<ILevelStrategy>().To<BossBubbleLevelStrategy>().AsTransient().WithArguments(ThoughtType.Boss1);
+        Container.Bind<ILevelStrategy>().To<BossCemeteryLevelStrategy>().AsTransient().WithArguments(ThoughtType.BossCemetery);
+        Container.Bind<ILevelStrategy>().To<BossPhoneLevelStrategy>().AsTransient().WithArguments(ThoughtType.BossPhone);
 
         Container.BindInterfacesAndSelfTo<ThoughtFactory>().AsSingle();
         Container.BindInterfacesAndSelfTo<ThoughtSpawner>().AsSingle();
-        //    .OnInstantiated<ThoughtSpawner>((ctx, spawner) =>
-        //{
-        //    spawner.SetFactory(ctx.Container.Resolve<ThoughtFactory>());
-        //});
     }
 }
