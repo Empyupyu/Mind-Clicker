@@ -15,11 +15,3 @@ public class MindData : ScriptableObject
     [field: SerializeField] public int LevelUpProgressBarShakeVibrato { get; private set; } = 5;
     [field: SerializeField] public float LevelUpProgressBarShakeRandomness { get; private set; } = 15f;
 }
-
-[CreateAssetMenu(fileName = "AdvertisementData", menuName = "Create Game Datas/Advertisement Data")]
-public class AdvertisementData : ScriptableObject
-{
-    [field: SerializeField] public float InterstitialColdown { get; private set; } = 90f;
-    [field: SerializeField] public bool ShowPreInterstitialView { get; private set; }
-    [field: SerializeField] public float PreInterstitialViewDuration { get; private set; } = 4f;
-}

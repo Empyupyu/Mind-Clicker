@@ -8,9 +8,6 @@ public class SignalInstaller : MonoInstaller
 
         Container.DeclareSignal<GameLoadedSignal>();
         Container.DeclareSignal<SoundEffectSignal>();
-        Container.DeclareSignal<MuteSoundsSignal>();
-        Container.DeclareSignal<AdvertisementRewardButtonClickedSignal>();
-        Container.DeclareSignal<RewardButtonInitializedSignal>();
-        Container.DeclareSignal<RewardCooldownUpdatedSignal>();
+        Container.DeclareSignal<PrestigeSignal>();
     }
 }

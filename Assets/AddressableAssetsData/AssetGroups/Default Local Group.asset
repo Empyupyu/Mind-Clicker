@@ -25,6 +25,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c99114c9fb480d743be48667c75c0481
+    m_Address: ShopView
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: fcd7338d31273ea42978d0d8a79b3a37
     m_Address: Cemetery Environment VIew
     m_ReadOnly: 0

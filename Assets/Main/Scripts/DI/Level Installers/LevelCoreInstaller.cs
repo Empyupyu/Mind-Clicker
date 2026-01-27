@@ -12,6 +12,7 @@ public class LevelCoreInstaller : MonoInstaller
         Container.BindInterfacesAndSelfTo<DamageFeedbackService>().AsSingle();
         Container.Bind<IMindProgressUpdater>().To<MindProgressUpdater>().AsSingle();
         Container.Bind<IMindLevelAnimator>().To<MindLevelAnimator>().AsSingle();
+        Container.Bind<IPristigeCalculate>().To<SqrtPristigeCalculate>().AsSingle();
         Container.BindInterfacesAndSelfTo<MindLevelPresentation>().AsSingle();
         Container.BindInterfacesAndSelfTo<MindController>().AsSingle();
         Container.Bind<Timer>().AsSingle();

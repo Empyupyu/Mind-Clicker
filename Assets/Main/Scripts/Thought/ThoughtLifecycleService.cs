@@ -11,7 +11,8 @@ public class ThoughtLifecycleService : IThoughtLifecycleService, IDisposable
     private readonly Dictionary<NegativeThought, ThoughtUIView> viewMap = new();
 
     public NegativeThought GetTarget() => activeThoughts.FirstOrDefault();
-    public ThoughtUIView GetRandomView() => activeThoughts.Count == 0 ? null : viewMap.Values.ElementAt(UnityEngine.Random.Range(0, viewMap.Count));
+    public ThoughtUIView GetRandomView() => activeThoughts.Count == 0 ? null :
+        viewMap.Values.ElementAt(UnityEngine.Random.Range(0, viewMap.Count));
 
     public ThoughtLifecycleService(IThoughtViewPool viewPool)
     {

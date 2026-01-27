@@ -5,7 +5,9 @@ public class YandexInstaller : Installer<YandexInstaller>
     private ProjectSettingsConfig projectSettingsConfig;
     private ModulePrioritiesConfig modulePrioritiesConfig;
 
-    public YandexInstaller(ProjectSettingsConfig config, ModulePrioritiesConfig modulePrioritiesConfig)
+    public YandexInstaller(ProjectSettingsConfig config,
+        ModulePrioritiesConfig modulePrioritiesConfig,
+        RewardSettings rewardSettings)
     {
         this.projectSettingsConfig = config;
         this.modulePrioritiesConfig = modulePrioritiesConfig;
@@ -28,8 +30,10 @@ public class YandexInstaller : Installer<YandexInstaller>
         Container.BindInterfacesAndSelfTo<AdvertisementService>().AsSingle();
         Container.Bind<AdvertisementRewardService>().AsSingle().WithArguments(modulePrioritiesConfig.AdvertisementReward);
         Container.Bind<AdvertisementRewardRegistry>().AsSingle();
+        Container.Bind<RewardButtonsController>().AsSingle();
+        Container.BindInterfacesAndSelfTo<ShopController>().AsSingle();
         Container.Bind<AdvertisementRewardCooldownService>().AsSingle();
-        Container.BindInterfacesAndSelfTo<AdvertisementController>().AsSingle().WithArguments(modulePrioritiesConfig.Advertisement);
+        Container.BindInterfacesAndSelfTo<InterstitialAdvertisementController>().AsSingle().WithArguments(modulePrioritiesConfig.Advertisement);
 
         BindRewardHandlers();
         BindInterstitialTriggers();

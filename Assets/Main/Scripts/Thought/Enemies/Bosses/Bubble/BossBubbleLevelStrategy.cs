@@ -1,4 +1,6 @@
-﻿public class BossBubbleLevelStrategy : BossLevelStrategyBase
+﻿using Zenject;
+
+public class BossBubbleLevelStrategy : BossLevelStrategyBase
 {
     public BossBubbleLevelStrategy(
         ThoughtType thoughtType,
@@ -6,10 +8,11 @@
         IThoughtLifecycleService thoughtLifecycleService,
         ThoughtSpawner thoughtSpawner,
         MindProgress mindProgress,
-        BossEnvironmentController bossEnvironmentController) :
-        base(thoughtType, bossFightPrepare, thoughtLifecycleService, thoughtSpawner, mindProgress)
+        BossEnvironmentController bossEnvironmentController,
+        SignalBus signalBus) :
+        base(thoughtType, bossFightPrepare, thoughtLifecycleService, 
+            thoughtSpawner, mindProgress, signalBus, bossEnvironmentController)
     {
-
     }
 
     public override void Run(NegativeThoughtForm form)

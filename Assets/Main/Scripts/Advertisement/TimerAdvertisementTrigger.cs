@@ -7,12 +7,17 @@ public class TimerAdvertisementTrigger : IAdvertisementTrigger
 {
     private readonly AddressableAssetLoader addressableAssetLoader;
     private readonly DiContainer diContainer;
+    private readonly AdvertisementData advertisementData;
     private AdvertisementTimerView advertisementTimerViewInstance;
    
-    public TimerAdvertisementTrigger(AddressableAssetLoader addressableAssetLoader, DiContainer diContainer) 
+    public TimerAdvertisementTrigger(
+        AddressableAssetLoader addressableAssetLoader,
+        DiContainer diContainer,
+        AdvertisementData advertisementData) 
     {
         this.addressableAssetLoader = addressableAssetLoader;
         this.diContainer = diContainer;
+        this.advertisementData = advertisementData;
     }
 
     public void Initialize(Action showInterstitial)
@@ -22,7 +27,7 @@ public class TimerAdvertisementTrigger : IAdvertisementTrigger
         {
             ShowTimerBeforeAdvertisement(showInterstitial).Forget();
         };
-        timer.StartTimer(90).Forget();
+        timer.StartTimer(advertisementData.InterstitialColdown).Forget();
     }
 
     private async UniTask ShowTimerBeforeAdvertisement(Action showInterstitial)
@@ -34,7 +39,7 @@ public class TimerAdvertisementTrigger : IAdvertisementTrigger
 
         Timer timer = new Timer();
         timer.OnTick += (x) => advertisementTimerViewInstance.Redraw(((int)x).ToString());
-        timer.StartTimer(4).Forget();
+        timer.StartTimer(advertisementData.PreInterstitialViewDuration).Forget();
 
         timer.OnFinished += () =>
         {
@@ -52,15 +57,4 @@ public class TimerAdvertisementTrigger : IAdvertisementTrigger
             advertisementTimerViewInstance = diContainer.InstantiatePrefab(asset.gameObject).GetComponent<AdvertisementTimerView>();
         }
     }
-}
-
-public static class GameConstants
-{
-    public const string LevelKey = "Game";
-    public const string VolumeParam = "MasterVolume";
-    public const string SaveKey = "PlayerDataSaveKey";
-    public const string TimerViewKey = "Advertisement Timer View";
-    public const int AuthorizationTimeout = 90;
-    public const int FakeLoadingDelay = 1000;
-    public const int InitialUnlockedCount = 1;
 }

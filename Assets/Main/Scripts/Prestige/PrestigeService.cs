@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
+using static YG.YG2;
 
 public class PrestigeService : ITickable
 {
@@ -11,6 +12,7 @@ public class PrestigeService : ITickable
     private readonly LightService lightService;
     private readonly UpgradeService upgradeService;
     private readonly UpgradeController upgradeController;
+    private readonly IPristigeCalculate pristigeCalculate;
 
     public PrestigeService(
         PlayerDataRef playerDataRef,
@@ -19,7 +21,10 @@ public class PrestigeService : ITickable
         SignalBus signalBus,
         LightService lightService,
         UpgradeService upgradeService,
-        UpgradeController upgradeController)
+        UpgradeController upgradeController,
+        IPristigeCalculate pristigeCalculate,
+        BossEnvironmentController bossEnvironmentController,
+        BossFightPrepare bossFightPrepare)
     {
         this.playerDataRef = playerDataRef;
         this.moneyWallet = moneyWallet;
@@ -28,41 +33,63 @@ public class PrestigeService : ITickable
         this.lightService = lightService;
         this.upgradeService = upgradeService;
         this.upgradeController = upgradeController;
+        this.pristigeCalculate = pristigeCalculate;
     }
 
-    public void DoPrestige()
+    public void ResetProgress()
     {
-        playerDataRef.Value.PrestigePoints += CalculatePrestigeGain();
+        AddPristige();
+        ResetPlayerData();
+        ResetWallet();
+        Debug.Log("Presitge points: " + playerDataRef.Value.PrestigePoints);
+        ResetLevel();
+        ResetSystems();
+    }
 
+    private void AddPristige()
+    {
+        playerDataRef.Value.PrestigePoints += Calculate();
+    }
+
+    private void ResetSystems()
+    {
+        upgradeService.Initialize();
+        upgradeController.Initialize();
+
+        signalBus.Fire(new PrestigeSignal());
+        signalBus.Fire(new GameLoadedSignal());
+    }
+
+    private void ResetLevel()
+    {
+        thoughtSpawner.DestroyAll();
+        lightService.ToOrigin();
+    }
+
+    private void ResetWallet()
+    {
+        moneyWallet.Spend(moneyWallet.GetAmount());
+    }
+
+    private void ResetPlayerData()
+    {
         playerDataRef.Value.MindLevel = 0;
+        playerDataRef.Value.MindPoints = 0;
         playerDataRef.Value.MindLevelsProgress = new List<MindLevel>();
         playerDataRef.Value.Upgrades = new List<UpgradeProgress>();
         playerDataRef.Value.CurrentLevel = 0;
-
-        moneyWallet.Spend(moneyWallet.GetAmount());
-
-        Debug.Log("Presitge points: " + playerDataRef.Value.PrestigePoints);
-
-        thoughtSpawner.DestroyAll();
-
-        lightService.ToOrigin();
-
-        upgradeService.Initialize();
-        upgradeController.RedrawViews();
-
-        signalBus.Fire(new GameLoadedSignal());
     }
 
     public void Tick()
     {
         if(Input.GetKeyDown(KeyCode.P))
         {
-            DoPrestige();
+            ResetProgress();
         }
     }
 
-    private int CalculatePrestigeGain()
+    private int Calculate()
     {
-        return Mathf.FloorToInt(Mathf.Sqrt(playerDataRef.Value.MindLevel));
+        return pristigeCalculate.Calculate(playerDataRef.Value.MindLevel);
     }
 }

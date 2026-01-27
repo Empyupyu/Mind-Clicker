@@ -5,18 +5,20 @@ using Zenject;
 
 public class BossEnvironmentController : IBossEnvironmentController
 {
-    protected readonly BossEnvironmentManifest bossEnvironmentManifest;
-    protected readonly BossEnvironmentRegistry bossEnvironmentRegistry;
-    protected readonly LightService lightService;
-    protected readonly AudioPlayer audioPlayer;
-    private readonly LevelMusicFlow levelMusicFlow;
     protected Material originalSkybox;
     protected GameObject instance;
     protected IBossEnvironmentView bossEnvironmentView;
 
+    protected readonly BossEnvironmentManifest bossEnvironmentManifest;
+    protected readonly BossEnvironmentRegistry bossEnvironmentRegistry;
+    protected readonly LightService lightService;
+    protected readonly AudioPlayer audioPlayer;
+
+    private string addressableKey;
+
+    private readonly LevelMusicFlow levelMusicFlow;
     private readonly AddressableAssetLoader addressableAssetLoader;
     private readonly DiContainer diContainer;
-    private string addressableKey;
 
     public BossEnvironmentController(
         LightService lightService, 
@@ -58,7 +60,7 @@ public class BossEnvironmentController : IBossEnvironmentController
     {
         ApplyOriginLight();
 
-        bossEnvironmentView.StopAnimation();
+        bossEnvironmentView?.StopAnimation();
         levelMusicFlow.PlayMainSoundTrack();
 
         addressableAssetLoader.Unload(addressableKey).Forget();

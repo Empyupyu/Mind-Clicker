@@ -1,28 +1,33 @@
 ﻿using Cysharp.Threading.Tasks;
 using System;
 using UnityEngine;
+using Zenject;
 
 public class BossFightPrepare : IDisposable
 {
     public event Action OnTimerFinished;
 
+    private TimerView timerViewInstance;
+    private BossUIView bossViewInstance;
+
     private readonly Timer timer;
     private readonly BossUIView bossUIView;
     private readonly TimerView timerView;
     private readonly BossFightData bossFightData;
-    private TimerView timerViewInstance;
-    private BossUIView bossViewInstance;
+    private readonly SignalBus signalBus;
 
     public BossFightPrepare(
         Timer timer,
         BossUIView bossUIView,
         TimerView timerView,
-        BossFightData bossFightData)
+        BossFightData bossFightData,
+        SignalBus signalBus)
     {
         this.timer = timer;
         this.bossUIView = bossUIView;
         this.timerView = timerView;
         this.bossFightData = bossFightData;
+        this.signalBus = signalBus;
     }
 
     public void Prepare()
@@ -36,6 +41,7 @@ public class BossFightPrepare : IDisposable
         timer.OnTick += RedrawView;
         timer.StartTimer(bossFightData.Duration).Forget();
 
+        signalBus.Subscribe<PrestigeSignal>(CleanUp);
         timer.OnFinished += TimerFinished;
     }
 
@@ -52,6 +58,12 @@ public class BossFightPrepare : IDisposable
         OnTimerFinished?.Invoke();
     }
 
+    private void CleanUp()
+    {
+        timer.Disable();
+        RemoveBossUIView();
+    }
+
     public void OnBossDeath(NegativeThought negativeThought)
     {
         timer.Disable();
@@ -62,10 +74,12 @@ public class BossFightPrepare : IDisposable
     {
         GameObject.Destroy(bossViewInstance.gameObject);
         GameObject.Destroy(timerViewInstance.gameObject);
+        signalBus.Unsubscribe<PrestigeSignal>(CleanUp);
     }
 
     public void Dispose()
     {
         timer.OnFinished -= OnTimerFinished;
+        signalBus.TryUnsubscribe<PrestigeSignal>(CleanUp);
     }
 }

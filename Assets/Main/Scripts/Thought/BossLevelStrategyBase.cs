@@ -1,13 +1,17 @@
 ﻿using System;
+using Zenject;
 
 public abstract class BossLevelStrategyBase : ILevelStrategy, IDisposable
 {
     public ThoughtType ThoughtType { get; }
 
-    protected readonly BossFightPrepare bossFightPrepare;
     private readonly IThoughtLifecycleService thoughtLifecycleService;
-    protected readonly ThoughtSpawner thoughtSpawner;
     private readonly MindProgress mindProgress;
+    private readonly SignalBus signalBus;
+
+    protected readonly ThoughtSpawner thoughtSpawner;
+    protected readonly BossFightPrepare bossFightPrepare;
+    protected readonly BossEnvironmentController bossEnvironmentController;
     protected NegativeThoughtForm form;
 
     protected BossLevelStrategyBase(
@@ -15,13 +19,22 @@ public abstract class BossLevelStrategyBase : ILevelStrategy, IDisposable
         BossFightPrepare bossFightPrepare,
         IThoughtLifecycleService thoughtLifecycleService,
         ThoughtSpawner thoughtSpawner,
-        MindProgress mindProgress)
+        MindProgress mindProgress,
+        SignalBus signalBus,
+        BossEnvironmentController bossEnvironmentController)
     {
         ThoughtType = thoughtType;
         this.bossFightPrepare = bossFightPrepare;
         this.thoughtLifecycleService = thoughtLifecycleService;
         this.thoughtSpawner = thoughtSpawner;
         this.mindProgress = mindProgress;
+        this.signalBus = signalBus;
+        this.bossEnvironmentController = bossEnvironmentController;
+    }
+
+    protected virtual void CleanUp() 
+    {
+        bossEnvironmentController.Cleanup();
     }
 
     public virtual void Run(NegativeThoughtForm form)
@@ -29,6 +42,8 @@ public abstract class BossLevelStrategyBase : ILevelStrategy, IDisposable
         this.form = form;
         thoughtSpawner.DestroyAll();
         bossFightPrepare.Prepare();
+
+        signalBus.Subscribe<PrestigeSignal>(CleanUp);
 
         bossFightPrepare.OnTimerFinished += OnTimerFinished;
         thoughtLifecycleService.OnDestroy += OnBossDeath;
@@ -47,12 +62,16 @@ public abstract class BossLevelStrategyBase : ILevelStrategy, IDisposable
 
     public virtual void Dispose()
     {
+        signalBus.TryUnsubscribe<PrestigeSignal>(CleanUp);
+
         bossFightPrepare.OnTimerFinished -= OnTimerFinished;
         thoughtLifecycleService.OnDestroy -= OnBossDeath;
     }
 
     public void Exit()
     {
+        signalBus.TryUnsubscribe<PrestigeSignal>(CleanUp);
+
         bossFightPrepare.OnTimerFinished -= OnTimerFinished;
         thoughtLifecycleService.OnDestroy -= OnBossDeath;
     }

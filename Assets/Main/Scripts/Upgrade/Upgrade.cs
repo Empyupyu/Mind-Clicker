@@ -3,6 +3,7 @@
     public float Price { get; private set; }
     public float CurrentLevelBonusEffect { get; private set; }
     public float NextLevelBonusEffect { get; private set; }
+    public bool IsUnlock { get; private set; }
 
     public readonly UpgradeProgress UpgradeProgress;
     public readonly UpgradeConfig Config;
@@ -32,5 +33,10 @@
     public void SetNextLevelBonuseEffect(float effect)
     {
         NextLevelBonusEffect = effect;
+    }
+
+    public void SetAvailable(bool available)
+    {
+        IsUnlock = available;
     }
 }

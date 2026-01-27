@@ -29,7 +29,6 @@ public class AudioPlayer : MonoBehaviour
     private void OnEnable()
     {
         signalBus.Subscribe<SoundEffectSignal>(OnSoundSignal);
-        signalBus.Subscribe<MuteSoundsSignal>(MuteSounds);
     }
 
     public void SetMusicVolume(float volumePercent)
@@ -50,12 +49,11 @@ public class AudioPlayer : MonoBehaviour
         ambiantSource?.Stop();
     }
 
-    public async UniTask SequenceMusic(List<(AudioClip, float)> sequence, int delayBeforePlayMusic)
+    public async UniTask SequenceMusic(List<(AudioClip, float)> sequence, int delayBeforePlayMusic, CancellationToken token)
     {
         PlayAmbientSequence(sequence);
 
-        await UniTask.Delay(delayBeforePlayMusic);
-
+        await UniTask.Delay(delayBeforePlayMusic, cancellationToken: token);
         PlayMusic(audioConfig.MusicClips[UnityEngine.Random.Range(0, audioConfig.MusicClips.Length)], 1);
     }
 
@@ -69,13 +67,13 @@ public class AudioPlayer : MonoBehaviour
         PlaySequenceAsync(sequence, sequenceToken.Token).Forget();
     }
 
-    private void MuteSounds(MuteSoundsSignal muteSoundsSignal)
+    public void MuteSounds(bool mute)
     {
 #if UNITY_EDITOR
-        Debug.Log("Muted sounds is [" + muteSoundsSignal.Muted + "]");
+        Debug.Log("Muted sounds is [" + mute + "]");
 #endif
 
-        if (muteSoundsSignal.Muted)
+        if (mute)
         {
             musicSource.Pause();
             ambiantSource.Pause();
@@ -169,14 +167,20 @@ public class AudioPlayer : MonoBehaviour
         OnTrackFinished?.Invoke(musicSource.clip);
     }
 
+    public void Stop()
+    {
+        musicSource.Stop();
+        ambiantSource.Stop();
+    }
+
     private void OnDisable()
     {
         OnTrackFinished = null;
-        signalBus.Unsubscribe<SoundEffectSignal>(OnSoundSignal);
-        signalBus.Unsubscribe<MuteSoundsSignal>(MuteSounds);
         fadeToken?.Cancel();
         fadeToken?.Dispose();
         sequenceToken?.Cancel();
         sequenceToken?.Dispose();
+
+        signalBus.Unsubscribe<SoundEffectSignal>(OnSoundSignal);
     }
 }

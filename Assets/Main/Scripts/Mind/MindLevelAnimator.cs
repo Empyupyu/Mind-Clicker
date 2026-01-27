@@ -4,7 +4,8 @@ using Main.Scripts.Views;
 
 public class MindLevelAnimator : IMindLevelAnimator
 {
-    public async UniTask PlayLevelUpAnimation(MindView view, AudioPlayer audio, MindData data, MindLevelUpAnimation animation)
+    public async UniTask PlayLevelUpAnimation(MindView view, AudioPlayer audio,
+        MindData data, MindLevelUpAnimation animation)
     {
         await view.ProgressBar.DOFillAmount(data.LevelUpProgressBarTargetValue, data.LevelUpProgressBarDuration).AsyncWaitForCompletion().AsUniTask();
         await view.ProgressBar.transform.DOShakeRotation(
@@ -23,5 +24,10 @@ public class MindLevelAnimator : IMindLevelAnimator
     public async UniTask PlayLevelReduceAnimation(MindView view, MindLevelUpAnimation animation)
     {
         await animation.Reduce();
+    }
+
+    public void KillAnimation(MindView view)
+    {
+        view.ProgressBar.DOKill();
     }
 }

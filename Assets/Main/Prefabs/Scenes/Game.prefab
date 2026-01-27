@@ -598,6 +598,15 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 8d55f8627b55a6141a203a2c5142ae69, type: 2}
   - {fileID: 11400000, guid: 71777e44127877348865148266ec19ff, type: 2}
   - {fileID: 11400000, guid: 1fd3b4691b924164993a3ac38e9e3577, type: 2}
+  - {fileID: 11400000, guid: 1cd5b9f3ac50f3e498427cc920c34ba0, type: 2}
+  - {fileID: 11400000, guid: d817085ddaddce24bb58b926544347e7, type: 2}
+  - {fileID: 11400000, guid: cbedad00863292f4482faed910e999fd, type: 2}
+  - {fileID: 11400000, guid: 6eee55cb0173d3343b628ccf732737d1, type: 2}
+  - {fileID: 11400000, guid: 1c04f4087a7b6594daa0901b8d14c671, type: 2}
+  - {fileID: 11400000, guid: 759b5513d6ba54243936907b1e3a88aa, type: 2}
+  - {fileID: 11400000, guid: 451d381ae6cfedb43856e4790b2c099a, type: 2}
+  - {fileID: 11400000, guid: af836887312060a4f993aefbf250ac31, type: 2}
+  - {fileID: 11400000, guid: f40fe0aca47b8ca4688477af196d35b1, type: 2}
   thoughtConfigs: {fileID: 11400000, guid: 22c8ffba2060c754abd2da5783dacb5e, type: 2}
   bossEnvironmentManifest: {fileID: 11400000, guid: bdb84689ce6de2c4d89ef6811e5022b8, type: 2}
   characterConfig: {fileID: 11400000, guid: c28dbace7516529478e61d6ee78249e9, type: 2}

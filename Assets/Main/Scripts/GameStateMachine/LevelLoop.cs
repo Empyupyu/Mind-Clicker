@@ -2,9 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Zenject;
 
-public class LevelLoop : ILevelLoop, IInitializable
+public class LevelLoop : ILevelLoop, IInitializable, IDisposable
 {
     private readonly IThoughtFormSelector formSelector;
     private readonly LevelMusicFlow levelMusicFlow;
@@ -14,6 +15,7 @@ public class LevelLoop : ILevelLoop, IInitializable
 
     private Dictionary<ThoughtType, ILevelStrategy> levelStrategies;
     private ILevelStrategy currentLevelStrategy;
+    private CancellationTokenSource startGameCts;
 
     public LevelLoop(
         List<ILevelStrategy> levelStrategies,
@@ -54,14 +56,28 @@ public class LevelLoop : ILevelLoop, IInitializable
 
     private void OnGameLoaded(GameLoadedSignal gameLoadedSignal)
     {
-        StartGameAsync().Forget();
+        levelMusicFlow.StopMainSoundTrack();
+        startGameCts?.Cancel();
+        startGameCts = new CancellationTokenSource();
+        StartGameAsync(startGameCts.Token).Forget();
     }
 
-    public async UniTask StartGameAsync()
+    public async UniTask StartGameAsync(CancellationToken token)
     {
-        await levelMusicFlow.Opening();
-        await UniTask.Delay(GameConstants.FakeLoadingDelay);
+        await levelMusicFlow.Opening().AttachExternalCancellation(token);
+        await UniTask.Delay(GameConstants.FakeLoadingDelay, cancellationToken: token);
 
         LoadLevelStrategy();
+    }
+
+    public void Dispose()
+    {     
+        signalBus.TryUnsubscribe<GameLoadedSignal>(OnGameLoaded);
+
+        mindLevelPresentation.OnLevelUpAnimationEnded -= LoadLevelStrategy;
+        mindLevelPresentation.OnLevelReduceAnimationEnded -= LoadLevelStrategy;
+
+        startGameCts?.Cancel();
+        startGameCts?.Dispose();
     }
 }

@@ -15,9 +15,9 @@ MonoBehaviour:
   <ThoughtType>k__BackingField: 2
   <Id>k__BackingField: 10
   <Name>k__BackingField: 123
-  <Icon>k__BackingField: {fileID: 21300000, guid: 9b123c465d52f474882d09bd71649f3b, type: 3}
+  <Icon>k__BackingField: {fileID: 21300000, guid: 5be62d006f2a1344e8033e4b8abeb9be, type: 3}
   <Health>k__BackingField: 0
   <Money>k__BackingField: 5
   <SpawnPointDirection>k__BackingField: 1
-  <Head>k__BackingField: {fileID: 5574802840941641288, guid: 13908a82493365444b6b59ea404b1897, type: 3}
-  <Body>k__BackingField: {fileID: 5574802840941641288, guid: 13908a82493365444b6b59ea404b1897, type: 3}
+  <Head>k__BackingField: {fileID: 5574802840941641288, guid: 0bd3d8bf591a456479bcb6577984b0aa, type: 3}
+  <Body>k__BackingField: {fileID: 5574802840941641288, guid: 0bd3d8bf591a456479bcb6577984b0aa, type: 3}

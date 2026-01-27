@@ -1,3 +1,4 @@
+using Main.Scripts.Views;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -7,104 +8,128 @@ public class UpgradeController : IInitializable
 {
     private readonly UpgradeService upgradeService;
     private readonly IUpgradeViewFactory upgradeViewFactory;
-    private Dictionary<string, UpgradeStateView> upgradeViews;
+    private readonly UpgradeShopView upgradeShopView;
 
-    public UpgradeController(UpgradeService upgradeService, IUpgradeViewFactory upgradeViewFactory)
+    private List<Upgrade> upgrades;
+    private List<UpgradeStateView> views = new();
+    private int visibleCount = 7;
+    private int firstVisibleIndex;
+    private float itemHeight = 200f;
+    public UpgradeController(
+    UpgradeService upgradeService,
+    IUpgradeViewFactory upgradeViewFactory,
+    UpgradeShopView upgradeShopView)
     {
         this.upgradeService = upgradeService;
         this.upgradeViewFactory = upgradeViewFactory;
+        this.upgradeShopView = upgradeShopView;
     }
 
     public void Initialize()
     {
-        upgradeService.OnUpgrade += OnUpgrade;
+        upgrades = upgradeService.EffectsData.Values.ToList();
+        upgradeService.OnUpgrade += UnlockNextUpgrade;
 
-        CreateUpgradeViews();
+        upgradeShopView.ContentContainer.sizeDelta = new Vector2(upgradeShopView.ContentContainer.sizeDelta.x, upgrades.Count * itemHeight);
+
+        upgradeShopView.ScrollRect.onValueChanged.AddListener(_ => OnScrollChanged());
+
+        InitializeUpgrades();
+
+        CreateViews();
     }
 
-    public void RedrawViews()
+    private void InitializeUpgrades()
     {
-        foreach (var view in upgradeViews.Values)
-        {
-            GameObject.Destroy(view.gameObject);
-        }
-
-        CreateUpgradeViews();
-    }
-
-    private void CreateUpgradeViews()
-    {
-        upgradeViews = new Dictionary<string, UpgradeStateView>();
-        var upgrades = upgradeService.EffectsData.Values.ToList();
-
         for (int i = 0; i < upgrades.Count; i++)
         {
             var upgrade = upgrades[i];
-            var config = upgrade.Config;
 
-            bool isUnlocked = i < GameConstants.InitialUnlockedCount || upgrade.UpgradeProgress.Level > 0;
-            var view = upgradeViewFactory.Create(config, i, isUnlocked);
-
-            if (isUnlocked)
+            if (i < GameConstants.InitialUnlockedCount || upgrade.UpgradeProgress.Level > 0)
             {
-                InitializeBuyView(config, view);
+                upgrade.SetAvailable(true);
             }
-
-            upgradeViews.Add(config.Title, view);
-            RedrawUpgradeView(upgrade);
         }
-
-        upgradeViewFactory.CreateComingSoon(upgrades.Count);
     }
 
-    private void InitializeBuyView(UpgradeConfig config, UpgradeStateView view)
+    private void CreateViews()
     {
-        view.SubscribeToBuy(() => Buy(config.Title));
-        view.SetIcon(config.Icon);
-    }
-
-    private void OnUpgrade(Upgrade data)
-    {
-        RedrawUpgradeView(data);
-        SetButtonState(data);
-    }
-
-    private void SetButtonState(Upgrade upgrade)
-    {
-        var upgrades = upgradeService.EffectsData.Values.ToList();
-        int index = upgrades.FindIndex(u => u.Config.Title == upgrade.Config.Title);
-
-        int nextIndex = index + 1;
-        if (nextIndex < upgrades.Count)
+        if(views.Count == 0)
         {
-            var nextUpgrade = upgrades[nextIndex];
-            var nextView = upgradeViews[nextUpgrade.Config.Title];
-
-            if (nextView != null)
+            for (int i = 0; i < visibleCount; i++)
             {
-                nextView.SetState(UpgradeViewState.Unlocked);
-                InitializeBuyView(nextUpgrade.Config, nextView);
-                RedrawUpgradeView(nextUpgrade);
+                var view = upgradeViewFactory.Create();
+                views.Add(view);
             }
+        }
+     
+        Redraw();
+    }
+
+    private void UnlockNextUpgrade(Upgrade upgrade)
+    {
+        int index = upgrades.IndexOf(upgrade);
+        index++;
+
+        if(index < upgrades.Count)
+        {
+            var nextUpgrade = upgrades[index];
+
+            if(nextUpgrade.IsUnlock == false)
+            {
+                nextUpgrade.SetAvailable(true);
+            }
+        }
+
+        Redraw();
+    }
+
+    private void OnScrollChanged()
+    {
+        int newFirstIndex = Mathf.Clamp(
+            Mathf.FloorToInt(upgradeShopView.ContentContainer.anchoredPosition.y / itemHeight),
+            0,
+            Mathf.Max(0, upgrades.Count - visibleCount)
+        );
+
+        if (newFirstIndex != firstVisibleIndex)
+        {
+            firstVisibleIndex = newFirstIndex;
+            Redraw();
         }
     }
 
-    private void RedrawUpgradeView(Upgrade upgrade)
+    private void Redraw()
     {
-        var view = upgradeViews[upgrade.Config.Title];
-        var stateView = view;
+        for (int i = 0; i < views.Count; i++)
+        {
+            int dataIndex = firstVisibleIndex + i;
+            if (dataIndex >= upgrades.Count)
+            {
+                continue;
+            }
 
-        if (stateView == null)
-            return;
+            var view = (RectTransform)views[i].transform;
+            view.anchoredPosition = new Vector2(0, -dataIndex * itemHeight);
 
-        if (stateView.CurrentState != UpgradeViewState.Unlocked)
-            return;
+            BindView(views[i], upgrades[dataIndex]);
+        }
+    }
 
-        float price = upgrade.Price;
-        int level = upgrade.UpgradeProgress.Level;
-        string desc = GetDescription(upgrade);
+    private void BindView(UpgradeStateView view, Upgrade upgrade)
+    {
+        view.SetState(upgrade.IsUnlock ? UpgradeViewState.Unlocked : UpgradeViewState.Locked);
 
-        stateView.UpdateContent(desc, level, price);
+        if (upgrade.IsUnlock)
+            view.SubscribeToBuy(() => Buy(upgrade.Config.Title));
+
+        view.UpdateContent(
+            GetDescription(upgrade),
+            upgrade.UpgradeProgress.Level,
+            upgrade.Price
+        );
+
+        view.SetIcon(upgrade.Config.Icon);
     }
 
     private string GetDescription(Upgrade upgrade)
@@ -113,27 +138,10 @@ public class UpgradeController : IInitializable
         float nextLevelEffect = upgrade.NextLevelBonusEffect;
         UpgradeConfig upgradeConfig = upgrade.Config;
 
-        string description;
-
         if (upgrade.UpgradeProgress.Level == 0)
-        {
-            description =
-                upgradeConfig.DescriptionPrefix +
-                $" {currentEffect:0.00} " +
-                upgradeConfig.DescriptionSuffix;
-        }
+            return $"{upgradeConfig.DescriptionPrefix} {currentEffect:0.00} {upgradeConfig.DescriptionSuffix}";
         else
-        {
-            float nextEffect = nextLevelEffect;
-
-            description =
-                upgradeConfig.DescriptionPrefix +
-                $" <b>{currentEffect:0.00}</b>" +
-                $" <b><color=green>(+{nextEffect:0.00})</color></b> " +
-                upgradeConfig.DescriptionSuffix;
-        }
-
-        return description;
+            return $"{upgradeConfig.DescriptionPrefix} <b>{currentEffect:0.00}</b> <b><color=green>(+{nextLevelEffect:0.00})</color></b> {upgradeConfig.DescriptionSuffix}";
     }
 
     private void Buy(string upgradeType)

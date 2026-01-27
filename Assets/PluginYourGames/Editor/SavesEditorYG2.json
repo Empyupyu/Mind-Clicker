@@ -1,24 +1,60 @@
 {
     "PlayerData": {
         "MindPoints": 0.0,
-        "MindLevel": 2,
-        "TotalMindLevel": 2,
+        "MindLevel": 0,
+        "TotalMindLevel": 0,
         "PrestigePoints": 0,
         "CurrentLevel": 0,
-        "SoftCurrency": 9.0,
+        "SoftCurrency": 0.0,
         "HardCurrency": 0.0,
         "AdvertisementIsDisabled": false,
         "Upgrades": [
             {
                 "ID": "ff",
-                "Level": 1
-            },
-            {
-                "ID": "qwe",
                 "Level": 0
             },
             {
-                "ID": "yyyyy",
+                "ID": "q1",
+                "Level": 0
+            },
+            {
+                "ID": "qz",
+                "Level": 0
+            },
+            {
+                "ID": "qx",
+                "Level": 0
+            },
+            {
+                "ID": "qc",
+                "Level": 0
+            },
+            {
+                "ID": "qv",
+                "Level": 0
+            },
+            {
+                "ID": "qb",
+                "Level": 0
+            },
+            {
+                "ID": "fasdss",
+                "Level": 0
+            },
+            {
+                "ID": "cvcvcv",
+                "Level": 0
+            },
+            {
+                "ID": "cvcvcv1",
+                "Level": 0
+            },
+            {
+                "ID": "cvcvcv2",
+                "Level": 0
+            },
+            {
+                "ID": "cvcvcv3",
                 "Level": 0
             }
         ],
@@ -36,5 +72,5 @@
         false,
         false
     ],
-    "idSave": 190
+    "idSave": 509
 }
