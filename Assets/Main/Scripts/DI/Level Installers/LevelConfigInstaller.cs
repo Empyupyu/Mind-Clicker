@@ -12,6 +12,7 @@ public class LevelConfigInstaller : MonoInstaller
     [SerializeField, Expandable] private LightConfig originLightConfig;
     [SerializeField, Expandable] private SphereArcConfig sphereArcConfig;
     [SerializeField, Expandable] private BossFightData bossFightData;
+    [SerializeField, Expandable] private UpgradeSettings upgradeSettings;
     [SerializeField, Expandable] private List<ThoughtSpawnPointData> thoughtSpawnPointDatas;
 
     public override void InstallBindings()
@@ -22,6 +23,7 @@ public class LevelConfigInstaller : MonoInstaller
         Container.Bind<SphereArcConfig>().FromInstance(sphereArcConfig).AsSingle();
         Container.Bind<BossEnvironmentManifest>().FromInstance(bossEnvironmentManifest).AsSingle();
         Container.Bind<NegativeThoughtConfig>().FromInstance(thoughtConfigs).AsSingle();
+        Container.Bind<UpgradeSettings>().FromInstance(upgradeSettings).AsSingle();
         Container.Bind<List<UpgradeConfig>>().FromInstance(upgradeConfigs).AsSingle();
         Container.Bind<List<ThoughtSpawnPointData>>().FromInstance(thoughtSpawnPointDatas).AsSingle();
     }

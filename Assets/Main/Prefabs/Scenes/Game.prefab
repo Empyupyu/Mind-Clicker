@@ -613,6 +613,7 @@ MonoBehaviour:
   originLightConfig: {fileID: 11400000, guid: 465bb3987eaf7244d9397e89bf88e71b, type: 2}
   sphereArcConfig: {fileID: 11400000, guid: 144ba6d95e204604d9a4ba44c553128f, type: 2}
   bossFightData: {fileID: 11400000, guid: 9dfcdb68c3ba3454b826f9bc76bf3640, type: 2}
+  upgradeSettings: {fileID: 11400000, guid: 971324b20b281e64cb8030535d563c95, type: 2}
   thoughtSpawnPointDatas:
   - {fileID: 11400000, guid: 6608347630c53ca40a8f4d95ae5cef72, type: 2}
   - {fileID: 11400000, guid: 71b07a6fbace85242a48b58eb333ed00, type: 2}

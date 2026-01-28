@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(menuName = "Config/UpgradeConfig 1")]
+[CreateAssetMenu(menuName = "Create Game Datas/UpgradeConfig 1")]
 public class UpgradeConfig : ScriptableObject
 {
     [field: SerializeField] public UpgradeType Type { get; private set; }

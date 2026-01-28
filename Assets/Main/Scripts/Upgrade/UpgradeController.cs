@@ -9,20 +9,20 @@ public class UpgradeController : IInitializable
     private readonly UpgradeService upgradeService;
     private readonly IUpgradeViewFactory upgradeViewFactory;
     private readonly UpgradeShopView upgradeShopView;
-
+    private readonly UpgradeSettings upgradeSettings;
     private List<Upgrade> upgrades;
     private List<UpgradeStateView> views = new();
-    private int visibleCount = 7;
     private int firstVisibleIndex;
-    private float itemHeight = 200f;
     public UpgradeController(
     UpgradeService upgradeService,
     IUpgradeViewFactory upgradeViewFactory,
-    UpgradeShopView upgradeShopView)
+    UpgradeShopView upgradeShopView,
+    UpgradeSettings upgradeSettings)
     {
         this.upgradeService = upgradeService;
         this.upgradeViewFactory = upgradeViewFactory;
         this.upgradeShopView = upgradeShopView;
+        this.upgradeSettings = upgradeSettings;
     }
 
     public void Initialize()
@@ -30,7 +30,7 @@ public class UpgradeController : IInitializable
         upgrades = upgradeService.EffectsData.Values.ToList();
         upgradeService.OnUpgrade += UnlockNextUpgrade;
 
-        upgradeShopView.ContentContainer.sizeDelta = new Vector2(upgradeShopView.ContentContainer.sizeDelta.x, upgrades.Count * itemHeight);
+        upgradeShopView.ContentContainer.sizeDelta = new Vector2(upgradeShopView.ContentContainer.sizeDelta.x, upgrades.Count * upgradeSettings.ItemHeight);
 
         upgradeShopView.ScrollRect.onValueChanged.AddListener(_ => OnScrollChanged());
 
@@ -56,7 +56,7 @@ public class UpgradeController : IInitializable
     {
         if(views.Count == 0)
         {
-            for (int i = 0; i < visibleCount; i++)
+            for (int i = 0; i < upgradeSettings.VisibleCount; i++)
             {
                 var view = upgradeViewFactory.Create();
                 views.Add(view);
@@ -87,9 +87,9 @@ public class UpgradeController : IInitializable
     private void OnScrollChanged()
     {
         int newFirstIndex = Mathf.Clamp(
-            Mathf.FloorToInt(upgradeShopView.ContentContainer.anchoredPosition.y / itemHeight),
+            Mathf.FloorToInt(upgradeShopView.ContentContainer.anchoredPosition.y / upgradeSettings.ItemHeight),
             0,
-            Mathf.Max(0, upgrades.Count - visibleCount)
+            Mathf.Max(0, upgrades.Count - upgradeSettings.VisibleCount)
         );
 
         if (newFirstIndex != firstVisibleIndex)
@@ -110,7 +110,7 @@ public class UpgradeController : IInitializable
             }
 
             var view = (RectTransform)views[i].transform;
-            view.anchoredPosition = new Vector2(0, -dataIndex * itemHeight);
+            view.anchoredPosition = new Vector2(0, -dataIndex * upgradeSettings.ItemHeight);
 
             BindView(views[i], upgrades[dataIndex]);
         }

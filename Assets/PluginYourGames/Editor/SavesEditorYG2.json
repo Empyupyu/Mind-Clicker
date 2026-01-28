@@ -1,11 +1,11 @@
 {
     "PlayerData": {
         "MindPoints": 0.0,
-        "MindLevel": 0,
-        "TotalMindLevel": 0,
+        "MindLevel": 2,
+        "TotalMindLevel": 2,
         "PrestigePoints": 0,
         "CurrentLevel": 0,
-        "SoftCurrency": 0.0,
+        "SoftCurrency": 10.0,
         "HardCurrency": 0.0,
         "AdvertisementIsDisabled": false,
         "Upgrades": [
@@ -72,5 +72,5 @@
         false,
         false
     ],
-    "idSave": 509
+    "idSave": 511
 }
